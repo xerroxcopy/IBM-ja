@@ -1,10 +1,12 @@
 --- 
-title: "Individual-based models of cultural evolution"
-subtitle: "A step-by-step guide using R"
+title: "文化進化のインディヴィジュアルベーストモデル"
+subtitle: "Rによるガイド"
 author: 
 - Alberto Acerbi
 - Alex Mesoudi
 - Marco Smolla
+translator:
+- Minoru Matsui
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -20,23 +22,55 @@ Please notice this is a “living” book. It will be updated over time.
 
 If you would like to cite this book, you can use this reference:
 
-Acerbi Alberto, Mesoudi Alex, and Smolla Marco (2020) *Individual-based models of cultural evolution. A step-by-step guide using R*. doi:110.31219/osf.io/32v6a
+Acerbi Alberto, Mesoudi Alex, and Smolla Marco (2020) *Individual-based models of cultural evolution. A step-by-step guide using R*. doi: 110.31219/osf.io/32v6a
 
-# Introduction {-}
+# 訳者まえがき {-}
 
-## Aim of the book {-}
+このBookdownはAcerbi, M., Mesoudi, A., Marco, S. (2020) *Individual-based models of cultural evolution. A step by step guide using R* の日本語訳である。原書はCC-By Attribution 4.0 International で[配布されている](https://osf.io/32v6a)ため、日本語訳版も同様にCC-By Attribution 4.0 International で配布される。
 
-The field of cultural evolution has emerged in the last few decades as a thriving, interdisciplinary effort to understand cultural change and cultural diversity within an evolutionary framework and using evolutionary tools, concepts and methods. Given its roots in evolutionary biology, much of cultural evolution is grounded in, or inspired by, formal models. Yet many researchers interested in cultural evolution come from backgrounds that lack training in formal models, such as psychology, anthropology or archaeology.
+## 原書との違い
 
-The aim of this book is to partly address this gap by showing readers how to create individual-based models (IBMs, also known as agent-based models, or ABMs) of cultural evolution. We provide example code written in the programming language [R](https://www.r-project.org), which has been widely adopted in the scientific community. We will go from very simple models of the basic processes of cultural evolution, such as biased transmission and cultural mutation, to more advanced topics such as the evolution of social learning, demographic effects, and social network analysis. Where possible we recreate existing models in the literature, so that readers can better understand those existing models, and perhaps even extend them to address questions of their own interest.
+原書を訳すだけでなく、Rスクリプトの可読性の向上、シンプル化、高速化も行っているため、Rスクリプトは大幅に改変されている。最終的に同じ挙動をするように注意を払っているが、その正確性は保証できないため、原書と全く厳密に同等のスクリプトを使いたい場合、原書を参照してほしい。また発展的な内容として、実際の論文出版の際に役立ちそうなプロット方法の例を追加して掲載している章がある。近年日本語で出版された、文化進化諸研究で用いられる様々な数理を網羅している田村（2020）に対応する内容がある場合、その結果の再現も試みている。
 
-## What is cultural evolution? {-}
+## 訳語対応表
 
-The theory of evolution is typically applied to genetic change. Darwin pointed out that the diversity and complexity of living things can be explained in terms of a deceptively simple process: (1) organisms vary in their characteristics, (2) these characteristics are inherited from parent to offspring, and (3) those characteristics that make an organism more likely to survive and reproduce will tend to increase in frequency over time. That's pretty much it. Since Darwin, biologists have filled in many of the details of this abstract idea. Geneticists have shown that heritable 'characteristics' are determined by genes, and worked out where genetic variation comes from (e.g. mutation, recombination) and how genetic inheritance works (e.g. via Mendel's laws, and DNA). The details of selection have been explored, revealing the many reasons why some genes spread and others don't. Others realised that not all biological change results from selection, it can also result from random processes like population bottlenecks (genetic drift).
+文化進化の用語で日本語の訳語が定着していないものについて、本書で採用した訳語の対応を掲載しておく。
 
-The modern theory of cultural evolution began from the observation that culture constitutes a similar evolutionary process to that outlined above. 'Culture' is defined as information that passes from one individual to another socially, rather than genetically. This could include things we colloquially call knowledge, beliefs, ideas, attitudes, customs, words, or values. These are all learned from others via various 'social learning' mechanisms such as imitation or spoken/written language. The key point is that social learning is an inheritance system. Cultural characteristics (or cultural traits) vary across individuals, they are passed from individual to individual, and in many cases some traits are more likely to spread than others. This is Darwin's insight, applied to culture. Cultural evolution researchers think that we can use similar evolutionary concepts, tools and methods to explain the diversity and complexity of culture, just as biologists have done for the diversity and complexity of living forms. The models in this book will help you to understand many of the above principles, by creating simulations of various aspects of cultural evolution.
+## 誤訳対応
+
+訳者に連絡してほしい。
+
+
+
+
+
+# まえがき {-}
+
+## 本書のねらい {-}
+
+<!-- The field of cultural evolution has emerged in the last few decades as a thriving, interdisciplinary effort to understand cultural change and cultural diversity within an evolutionary framework and using evolutionary tools, concepts and methods. Given its roots in evolutionary biology, much of cultural evolution is grounded in, or inspired by, formal models. Yet many researchers interested in cultural evolution come from backgrounds that lack training in formal models, such as psychology, anthropology or archaeology. -->
+
+近年数十年にわたって、文化の変遷や文化の多様性を、進化学のフレームワークとツール、コンセプトや方法をもちいて理解しようとする活気に満ちた学際的な試みとして立ち上がってきたのが文化進化という学問領域である。進化生物学にルーツをもつ文化進化学は、その大半を数理モデルに依拠している。しかし、文化進化に興味をもつ研究者の多くは、心理学や人類学、考古学といった、伝統的に数理モデルの訓練を必要としない経歴を持っていることが多い。
+
+<!-- The aim of this book is to partly address this gap by showing readers how to create individual-based models (IBMs, also known as agent-based models, or ABMs) of cultural evolution. We provide example code written in the programming language [R](https://www.r-project.org), which has been widely adopted in the scientific community. We will go from very simple models of the basic processes of cultural evolution, such as biased transmission and cultural mutation, to more advanced topics such as the evolution of social learning, demographic effects, and social network analysis. Where possible we recreate existing models in the literature, so that readers can better understand those existing models, and perhaps even extend them to address questions of their own interest. -->
+
+本書のねらいのひとつは、文化進化のインディヴィジュアルベーストモデル（IBM. エージェントベーストモデル/ABMとしても知られる）をいかにモデリングするかを伝えることで、このギャップを埋めることにある。モデルのコード実装例は科学研究コミュニティでひろく受容されているプログラミング言語[R](https://www.r-project.org)で示す。本書ではバイアスのある伝達や文化的変異のような極めて単純な文化進化の基礎的なプロセスから始めて、社会学習の進化や人口動態の効果、社会ネットワーク分析のような発展的なトピックまで触れる。また、可能であれば既往文献で提案されている諸モデルも再現することで従来のモデルを理解すると同時に、それを拡張して読者自らの研究上の疑問を解決できるようになる手助けになればと思う。
+
+## 文化進化とはなにか {-}
+
+<!-- The theory of evolution is typically applied to genetic change. Darwin pointed out that the diversity and complexity of living things can be explained in terms of a deceptively simple process: (1) organisms vary in their characteristics, (2) these characteristics are inherited from parent to offspring, and (3) those characteristics that make an organism more likely to survive and reproduce will tend to increase in frequency over time. That's pretty much it. Since Darwin, biologists have filled in many of the details of this abstract idea. Geneticists have shown that heritable 'characteristics' are determined by genes, and worked out where genetic variation comes from (e.g. mutation, recombination) and how genetic inheritance works (e.g. via Mendel's laws, and DNA). The details of selection have been explored, revealing the many reasons why some genes spread and others don't. Others realised that not all biological change results from selection, it can also result from random processes like population bottlenecks (genetic drift).  -->
+
+進化理論はふつう、生物の遺伝的な変化に適用される。ダーウィンは生物の多様性と複雑性が驚くほど単純なプロセスによって説明できることを示した。そのプロセスとは：(1)生命体は特徴に個体差があり、(2)その特徴が親から子孫に継承され、また(3)そういった特徴のうち、その生命体の生存能力や繁殖能力を高めるものは、時がたつにつれ広まっていくというものである。これだけである。ダーウィン以降、生物学者はこの抽象的な考えの詳細部分を埋めてきた。遺伝学者はここでいう”世代をまたいで受け継がれる特徴”が遺伝子によって決定されることや、遺伝的な個体差の生じるメカニズム（例：変異や遺伝的組み換え）、遺伝的な継承の生じるメカニズム（例：メンデルの法則、DNA）を解明してきた。自然淘汰の詳細についても探究されており、なぜほかのものではなく特定の遺伝子が広まるのかについての答えを無数に解明してきた。また生物的な変化はすべて自然淘汰によって引き起こされるのではなく、ボトルネック効果（遺伝的浮動）のようなランダムなプロセスによっても起こりうることを発見した者もいる。
+
+<!-- The modern theory of cultural evolution began from the observation that culture constitutes a similar evolutionary process to that outlined above. 'Culture' is defined as information that passes from one individual to another socially, rather than genetically. This could include things we colloquially call knowledge, beliefs, ideas, attitudes, customs, words, or values. These are all learned from others via various 'social learning' mechanisms such as imitation or spoken/written language. The key point is that social learning is an inheritance system. Cultural characteristics (or cultural traits) vary across individuals, they are passed from individual to individual, and in many cases some traits are more likely to spread than others. This is Darwin's insight, applied to culture. Cultural evolution researchers think that we can use similar evolutionary concepts, tools and methods to explain the diversity and complexity of culture, just as biologists have done for the diversity and complexity of living forms. The models in this book will help you to understand many of the above principles, by creating simulations of various aspects of cultural evolution. -->
+
+現代的な文化進化理論の構築は、文化がこれと類似した進化的なプロセスによって構成されているのではないかという観察から開始した。’文化’はある個人からもうひとりの個人へと遺伝的ではなく社会的に受け渡される情報である、と定義される。この定義には、われわれがふだん会話上で知識とか信念、アイディア、態度、習慣、ことば、価値と表現するようなものが含まれるだろう。これらはすべて、他人の模倣や会話、文書を通じた種々の’社会的学習’メカニズムをつうじて会得するものである。重要なのは、社会学習が継承のシステムだということだ。文化的な特徴（文化的形質）は個々人で異なり、個人から個人へと受け継がれ、多くの場合特定の形質がほかの形質にくらべて広がりやすい。これはダーウィンの洞察の文化への適用そのものだといえる。文化進化の研究者は、生物進化の研究者が生物の多様性と複雑性を説明するのに使っていたのと同じような進化的コンセプト、ツール、方法を文化の多様性と複雑性を説明するのに使えると考えている。本書に登場するモデルを通じて、様々な文化進化の特徴をシミュレーションとして実装することで上記の原理を理解する手助けになるだろう。
+
+
 
 Importantly, we do not need to assume that cultural evolution is identical to genetic evolution. Many of the details will be different. To take an obvious example, we get DNA only from our two parents, but we can get ideas from many sources: teachers, strangers on the internet, long-dead authors' books, or even our parents. Cultural evolution researchers seek to build models and do research to fill in these details. In the last part of the book we will also explore models that go beyond a strict analogy with biological evolution, and focus on features such as the fact that the 'rules' that regulate transmission can themselves culturally evolve, or that other processes than inheritance can create and stabilise culture. 
+
+ここで重要なのは、文化進化が生物進化と同一のものであると捉える必要がないことだ。細部には、二者には多くの違いがある。明らかな例をあげよう。われわれは両親からしかDNAを受け継がないのに比べ、さまざまなソースからアイディアを得ることができる：教師、インターネット上の見知らぬ人、死没して久しい著者の著作、親など。文化進化の研究者はモデルを構築したり調査をしたりして、こういった細部の差異を明らかにしようとしている。本書の最終章では、
 
 ## Why model? {-}
 
@@ -104,3 +138,5 @@ The 'foundational' books referred in the test above are @cavalli-sforza_cultural
 For more on the virtues of formal models for social scientists, with a cultural evolution perspective, see @smaldino_models_2017. @smaldino_how_2020 is dedicated to good practices to translate verbal theories into formal, especially individual-based, models.
 
 A good introduction to R programming is @grolemund_hands-programming_2014. Another general introduction, with a specific focus on the tidyverse logic, is @wickham_r_2017.
+
+
