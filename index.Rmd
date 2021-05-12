@@ -1,6 +1,6 @@
 --- 
 title: "文化進化のインディヴィジュアルベーストモデル"
-subtitle: "Rによるガイド"
+subtitle: "Rによるステップバイステップのガイド"
 author: 
 - Alberto Acerbi
 - Alex Mesoudi
@@ -54,7 +54,7 @@ Acerbi Alberto, Mesoudi Alex, and Smolla Marco (2020) *Individual-based models o
 
 <!-- The aim of this book is to partly address this gap by showing readers how to create individual-based models (IBMs, also known as agent-based models, or ABMs) of cultural evolution. We provide example code written in the programming language [R](https://www.r-project.org), which has been widely adopted in the scientific community. We will go from very simple models of the basic processes of cultural evolution, such as biased transmission and cultural mutation, to more advanced topics such as the evolution of social learning, demographic effects, and social network analysis. Where possible we recreate existing models in the literature, so that readers can better understand those existing models, and perhaps even extend them to address questions of their own interest. -->
 
-本書のねらいのひとつは、文化進化のインディヴィジュアルベーストモデル（IBM. エージェントベーストモデル/ABMとしても知られる）をいかにモデリングするかを伝えることで、このギャップを埋めることにある。モデルのコード実装例は科学研究コミュニティでひろく受容されているプログラミング言語[R](https://www.r-project.org)で示す。本書ではバイアスのある伝達や文化的変異のような極めて単純な文化進化の基礎的なプロセスから始めて、社会学習の進化や人口動態の効果、社会ネットワーク分析のような発展的なトピックまで触れる。また、可能であれば既往文献で提案されている諸モデルも再現することで従来のモデルを理解すると同時に、それを拡張して読者自らの研究上の疑問を解決できるようになる手助けになればと思う。
+本書のねらいのひとつは、文化進化のインディヴィジュアルベーストモデル（individual-based model/IBM。エージェントベーストモデル/ABMとしても知られる）をいかにモデリングするかを伝えることで、このギャップを埋めることにある。モデルのコード実装例は科学研究コミュニティでひろく受容されているプログラミング言語[R](https://www.r-project.org)で示す。本書ではバイアスのある伝達や文化的変異のような極めて単純な文化進化の基礎的なプロセスから始めて、社会学習の進化や人口動態の効果、社会ネットワーク分析のような発展的なトピックまで触れる。また、可能であれば既往文献で提案されている諸モデルも再現することで従来のモデルを理解すると同時に、それを拡張して読者自らの研究上の疑問を解決できるようになる手助けになればと思う。
 
 ## 文化進化とはなにか {-}
 
@@ -68,75 +68,137 @@ Acerbi Alberto, Mesoudi Alex, and Smolla Marco (2020) *Individual-based models o
 
 
 
-Importantly, we do not need to assume that cultural evolution is identical to genetic evolution. Many of the details will be different. To take an obvious example, we get DNA only from our two parents, but we can get ideas from many sources: teachers, strangers on the internet, long-dead authors' books, or even our parents. Cultural evolution researchers seek to build models and do research to fill in these details. In the last part of the book we will also explore models that go beyond a strict analogy with biological evolution, and focus on features such as the fact that the 'rules' that regulate transmission can themselves culturally evolve, or that other processes than inheritance can create and stabilise culture. 
+<!-- Importantly, we do not need to assume that cultural evolution is identical to genetic evolution. Many of the details will be different. To take an obvious example, we get DNA only from our two parents, but we can get ideas from many sources: teachers, strangers on the internet, long-dead authors' books, or even our parents. Cultural evolution researchers seek to build models and do research to fill in these details. In the last part of the book we will also explore models that go beyond a strict analogy with biological evolution, and focus on features such as the fact that the 'rules' that regulate transmission can themselves culturally evolve, or that other processes than inheritance can create and stabilise culture.  -->
 
-ここで重要なのは、文化進化が生物進化と同一のものであると捉える必要がないことだ。細部には、二者には多くの違いがある。明らかな例をあげよう。われわれは両親からしかDNAを受け継がないのに比べ、さまざまなソースからアイディアを得ることができる：教師、インターネット上の見知らぬ人、死没して久しい著者の著作、親など。文化進化の研究者はモデルを構築したり調査をしたりして、こういった細部の差異を明らかにしようとしている。本書の最終章では、
+ここで重要なのは、文化進化が生物進化と同一のものであると捉える必要がないことだ。細部には、二者には多くの違いがある。明らかな例をあげよう。DNAは両親からしか受け継げないのに対し、アイディアはさまざまなソースから得ることができる：教師、インターネット上の見知らぬ人、死没して久しい著者の本、親など。文化進化の研究者はモデルを構築したり調査をしたりして、こういった細部の差異を明らかにしようとしている。本書の最終章では、生物学的進化との厳密なアナロジーから離れた諸モデルを扱う。そこでは、文化伝達を制御するルールそのものが文化的に進化しうることや、継承以外のプロセスでも文化を創出し、安定化させることができることを取り上げる。
 
-## Why model? {-}
 
-A formal model is a simplified version of reality, written in mathematical equations or computer code. Formal models are useful because reality is complex. We can observe changes in species or cultures over time, or particular patterns of biological or cultural diversity, but there are always a vast array of possible causes for any particular pattern or trend, and huge numbers of variables interacting in many different ways. A formal model is a highly simplified recreation of a small part of this complex reality, containing a few elements or processes that the modeller suspects are important. A model, unlike reality, can be manipulated and probed in order to better understand how each part works. No model is ever a complete recreation of reality. That would be pointless: we would have replaced a complex, incomprehensible reality with a complex, incomprehensible model. Instead, models are useful *because* of their simplicity.
+## なぜモデリングするのか {-}
 
-Formal modelling is rare in the social sciences (with some exceptions, such as economics). Social scientists tend to be sceptical that very simple models can tell us anything useful about something as immensely complex as human culture. But the clear lesson from biology is that models are extremely useful in precisely this situation. Biologists face similarly immense complexity in the natural world. Despite this, models are useful. Population genetics models of the early 20th century helped to reconcile new findings in genetics with Darwin's theory of evolution. Ecological models helped understand interactions between species, such as predator-prey cycles. These models are hugely simplified: population genetics models typically make ridiculous assumptions like infinitely large populations and random mating. But they are useful because they precisely specify each part of a complex system, improving understanding of reality.
+<!-- A formal model is a simplified version of reality, written in mathematical equations or computer code. Formal models are useful because reality is complex. We can observe changes in species or cultures over time, or particular patterns of biological or cultural diversity, but there are always a vast array of possible causes for any particular pattern or trend, and huge numbers of variables interacting in many different ways. A formal model is a highly simplified recreation of a small part of this complex reality, containing a few elements or processes that the modeller suspects are important. A model, unlike reality, can be manipulated and probed in order to better understand how each part works. No model is ever a complete recreation of reality. That would be pointless: we would have replaced a complex, incomprehensible reality with a complex, incomprehensible model. Instead, models are useful *because* of their simplicity. -->
 
-Another way to look at this is that all social scientists use models, but only some use *formal* models. Most theories in social sciences are verbal models, written in words. The problem is that words can be imprecise, and verbal models contain all kinds of hidden or unstated assumptions. The advantage of formal modelling is that we are forced to precisely specify every element and process that we propose, and make all of our assumptions explicit. Maths and code do not accept any ambiguity: they must be told absolutely everything.
+数理的モデルは現実の単純化されたバージョンであり、数式や計算機のコードとして表現される。数理モデルは現実が複雑であるからこそ有用である。生物種や文化の時系列上の変化、生物的・文化的多様性の特定のパターンを観察できたとしても、そういったパターンや傾向にはつねにありうる原因が無数にある。さらには無数の変数が無数の交互作用を引き起こす。数理モデルはこういった複雑な現実を、一部だけ切り出し、極度に単純化して再現しようとする。モデルを構築する者は、重要なのではないかと疑っている要素やプロセスをいくつか選んでモデルに含めるのだ。現実と違い、モデルは各部がどう作用するかを理解するために改変したり精査したりできる。モデルが現実の完全な再現になることはありえない。無意味だからだ。そんなことができたとしても、この複雑で理解し難い現実世界を、複雑で理解し難いモデルで置き換えることになる。そうではなく、モデルは単純*だからこそ*有用なのだ。
 
-Models can also help to understand the consequences of our theories. Social systems, like many others, are typically under the influence of several different interacting forces. In isolation the effects of these forces can be easy to predict. However, when several forces interact the resulting dynamics quickly become non-trivial. This is the basic idea behind defining these systems as 'complex' systems. With verbal descriptions, figuring out the effects of interactions is left to our insights. With formal models, we can set up systems with these forces and observe the dynamics of their interactions.
+<!-- Formal modelling is rare in the social sciences (with some exceptions, such as economics). Social scientists tend to be sceptical that very simple models can tell us anything useful about something as immensely complex as human culture. But the clear lesson from biology is that models are extremely useful in precisely this situation. Biologists face similarly immense complexity in the natural world. Despite this, models are useful. Population genetics models of the early 20th century helped to reconcile new findings in genetics with Darwin's theory of evolution. Ecological models helped understand interactions between species, such as predator-prey cycles. These models are hugely simplified: population genetics models typically make ridiculous assumptions like infinitely large populations and random mating. But they are useful because they precisely specify each part of a complex system, improving understanding of reality. -->
+
+経済学のような少数の例外を除き、数理モデルは社会科学の文脈で目にすることはまれである。単純化されたモデルごときで人類の文化のような途方もなく複雑な現象について有用なことが語れるものか、と懐疑的な社会学者は多い。しかし、生物学分野での実績から明らかなように、モデルはまさにこういった現象でこそ輝く。20世紀初頭の集団遺伝学の諸モデルは、遺伝学の数々の発見とダーウィンの理論とを統合![](統合より仲裁とか調停、和睦、調和とかのほうが近い？)することに貢献した。生態学のモデルは捕食者・被捕食者サイクルのような種間の相互作用の理解を深めた。これらモデルは大いに単純化されたものだった。たとえば集団遺伝学では通常、無限に大きな集団やランダムな交配などの、ある種馬鹿げた前提をおいてモデルをつくる。しかしそれでも、こういったモデルは複雑なシステムの一部を正確に記述しているため、現実世界の理解を手助けしてきた。
+
+<!-- Another way to look at this is that all social scientists use models, but only some use *formal* models. Most theories in social sciences are verbal models, written in words. The problem is that words can be imprecise, and verbal models contain all kinds of hidden or unstated assumptions. The advantage of formal modelling is that we are forced to precisely specify every element and process that we propose, and make all of our assumptions explicit. Maths and code do not accept any ambiguity: they must be told absolutely everything. -->
+
+もう一つの見方をすると、社会科学者もじつは全員モデルは使っているのだが、*数理*モデルを使っているのはその一部に過ぎない、ともいえる。社会科学のほとんどの理論は言葉で表現された言語モデルだ。ここで問題になるのは、言葉は不正確に伝わりがちで、言葉によるモデルには隠された・明言されていない無数の前提をおいているということだ。数理モデルの強みは、構築時に強制的にあらゆる組み込みたい要素とプロセスを設定し、すべての前提を明白にせねばならないことだ。数学やコードはあらゆる曖昧さを拒絶する。一から十まですべてを伝えなければ動かない。
+
+<!-- Models can also help to understand the consequences of our theories. Social systems, like many others, are typically under the influence of several different interacting forces. In isolation the effects of these forces can be easy to predict. However, when several forces interact the resulting dynamics quickly become non-trivial. This is the basic idea behind defining these systems as 'complex' systems. With verbal descriptions, figuring out the effects of interactions is left to our insights. With formal models, we can set up systems with these forces and observe the dynamics of their interactions. -->
+
+モデルを通じて、自論の〜〜を理解することもできる。他のシステムと同様に、社会的システムは通常、複数の力の相互作用の影響下にある。作用している力がひとつだけであれば、その及ぼす効果は簡単に予測可能だ。しかし、いちどにいくつもの力が影響を及ぼす場合、引き起こされる動態はすぐに一筋縄には理解できないものとなる。これが、こういったシステムを「複雑系」であると定義しようとする基本的な動機となっている。言語的な説明では、洞察で相互作用の影響を理解しようとするしかない。数理モデルを使えば、複数の力を考慮に入れたシステムをいちから組み上げてその相互作用の動態を観察することができる。
 
 ## Why individual-based models? {-}
+## なぜインディヴィジュアルベーストモデルか
 
-There are several different types of formal models. Some models describe the behaviour of a system at the population-level, tracking overall frequencies or other descriptive statistics of traits without explicitly modelling individuals. For example, a model can specify that the frequency of a cultural trait $A$ at time $t$ depends on its frequency at time $t-1$. Perhaps it doubles at each time step. Other models, instead, describe the behaviour of a system at the individual-level, explicitly modelling the individual entities that possess the traits. Imagine the same question, but now we specify that, in a population of $N$ individuals, each individual observes each time a random number of other individuals and, if at least one of them has trait $A$, it copies that trait.
+<!-- There are several different types of formal models. Some models describe the behaviour of a system at the population-level, tracking overall frequencies or other descriptive statistics of traits without explicitly modelling individuals. For example, a model can specify that the frequency of a cultural trait $A$ at time $t$ depends on its frequency at time $t-1$. Perhaps it doubles at each time step. Other models, instead, describe the behaviour of a system at the individual-level, explicitly modelling the individual entities that possess the traits. Imagine the same question, but now we specify that, in a population of $N$ individuals, each individual observes each time a random number of other individuals and, if at least one of them has trait $A$, it copies that trait. -->
 
-Another distinction concerns models that are analytically tractable and models that are not. The former are mathematical models that consist of sets of equations that can be solved to find specific answers (e.g. equilibria points). Our population-level model described above would fit this description. A big advantage of these models is that they can provide insight into the dynamics of a system for a wide range of parameters, or exact results for specific questions. However, this approach requires the studied dynamics to be rather simple. It would be more difficult (or perhaps impossible) to write and analytically solve the systems of equations necessary to describe the behaviours of the single individuals in the second model. 
+数理モデルには数種類ある。集団レベルのシステムの振る舞いを記述するタイプでは、個々人をモデリングすることなく、形質の頻度をはじめとする記述統計量の変化を追うものがある。たとえば、時間$t$での文化形質$A$の頻度が時間$t-1$における頻度に依存するように設定するようなものである。タイムステップごとに倍増するようなものが考えられる。それに対し、個人レベルでシステムの振る舞いを記述するものもある。こちらのタイプでは、 形質を有する個々人の実体を詳細にモデリングする。このタイプのモデルで上記と同様の状況を想定して考えてみよう。$N$人の個人により構成される集団において、個々人は各タイムステップにおいてランダムな数の他人を観察し、もし形質$A$を有する他人が少なくとも一人いれば、形質$A$をコピーする、というモデルが考えられる。
 
-Often, when we want or need to describe the behaviour at the individual level - if, for example, individuals differ in their characteristics, exhibit learning or adaptation, or are embedded in social networks - trying to write a system of equations may not be the best strategy. Instead, we need to write code and let the computer program run. These are individual-based models (IBMs). These models are both individual-level (i.e. they specifies the characteristics of the individuals and some rules by which those individuals interact or change over time) and simulations (i.e. they are not solved analytically, but simulated through a computer program). 
+<!-- Another distinction concerns models that are analytically tractable and models that are not. The former are mathematical models that consist of sets of equations that can be solved to find specific answers (e.g. equilibria points). Our population-level model described above would fit this description. A big advantage of these models is that they can provide insight into the dynamics of a system for a wide range of parameters, or exact results for specific questions. However, this approach requires the studied dynamics to be rather simple. It would be more difficult (or perhaps impossible) to write and analytically solve the systems of equations necessary to describe the behaviours of the single individuals in the second model.  -->
 
-Simulations have greater flexibility than analytical models. Due to their structure they are often more intuitive to understand, especially for people with little training in mathematics. However, it is also important to be aware of their downsides. For example, generalisations are often not possible and statements only hold for parameters (or sets thereof) that have been simulated. Another potential downside is that the high flexibility of simulations can quickly lead to models that are *too* complex, and it can be hard to understand what is happening inside the model. That's why, hopefully, our IBMs are simple enough to understand, and provide a gateway into cultural evolution modelling.
+もう一つの重要な区別として、解析的に扱いやすいモデルか否かという点があげられる。前者はいくつかの数式により構成される数学的モデルで、特定の解析解（たとえば平衡点）が導出可能なものである。前述の集団レベルのモデルはこのタイプである。このタイプの大きな利点は、幅広いパラメータの値に関してダイナミクスを理解する手助けになることと、特定の疑問に厳密な結果を与えられることである。しかしこのアプローチを採用する場合、解明するダイナミクスはどうしてもかなりシンプルになってしまう。前述した個人レベルでのモデルにおいて個々人の振る舞いを数式として記述し、解析しようとすることはずっと難しく（おそらく不可能に）なるだろう。
+
+<!-- Often, when we want or need to describe the behaviour at the individual level - if, for example, individuals differ in their characteristics, exhibit learning or adaptation, or are embedded in social networks - trying to write a system of equations may not be the best strategy. Instead, we need to write code and let the computer program run. These are individual-based models (IBMs). These models are both individual-level (i.e. they specifies the characteristics of the individuals and some rules by which those individuals interact or change over time) and simulations (i.e. they are not solved analytically, but simulated through a computer program). -->
+
+個々人で特徴が違う、学習する、適応する、社会的なネットワークに組み込まれている、などの個人レベルでの振る舞いを説明したい場合、数式によるシステムを記述するのは、たいていはあまりよい戦略といえない。数式ではなく、コードを書いてコンピュータープログラムにやってもらうのがよい。これがインディヴィジュアルベーストモデル（individual-based models, 以下IBMs）である。IBMは個人レベルのモデルである。すなわち、IBMにおいては個人の特徴が設定され、彼ら個人がルールと相互作用したり、変更したりする振る舞いが記述されている。またIBMはシミュレーションである。すなわち、解析的に解かれるのではなく、コンピュータープログラム上で数値的にシミュレートされるのである。
+
+<!-- Simulations have greater flexibility than analytical models. Due to their structure they are often more intuitive to understand, especially for people with little training in mathematics. However, it is also important to be aware of their downsides. For example, generalisations are often not possible and statements only hold for parameters (or sets thereof) that have been simulated. Another potential downside is that the high flexibility of simulations can quickly lead to models that are *too* complex, and it can be hard to understand what is happening inside the model. That's why, hopefully, our IBMs are simple enough to understand, and provide a gateway into cultural evolution modelling.  -->
+
+シミュレーションは解析的モデルよりも柔軟性が高い。その構造によって、特に数学の訓練を積んでいない人にとって、より直感的に理解しやすい。しかし、シミュレーションの欠点を理解しておくこともまた重要になる。たとえば、たいていの場合シミュレーション結果は一般化できず、シミュレートしたパラメータ（もしくはパラメータのセット）の範囲内に関してしか言えない。さらに、高い柔軟性は、容易に複雑*すぎる*モデルにエスカレートしかねず、内部で何が起きているのか理解し難いという状況に陥りうる。それゆえ、本書で紹介するIBMは理解できる程度に単純にしてあり、文化進化のモデリングへの入門になればと思っている。
 
 ## How to use this book - the programming {-}
+## 本書のつかいかた：プログラミング
 
 All of the code in this book is written in R. Originally R had a strong focus on statistical data analysis. Its growing user-base has turned R into a more general-purpose programming language. While R is used less often for modelling, it is widely taught in many university departments and is the subject of lots of online tutorials and support forums. It is quite likely that many readers already have some experience in R for data analysis and visualisation which can be used also for IBMs, more easily than learning another programming language. Also, if your IBMs run in R, you can use the same language to analyse the output and plot the results.  
 
-We have used the [bookdown](https://bookdown.org) package to create an html version of the book, which you may well be reading now. This is created from RMarkdown (.Rmd) files, which are a mix of regular text and code. As a reader, you can therefore read the online book and, alongside, run the code using an Rmd file (or just copying and pasting it from the html file). Of course you can just read the book, but running the code as you go will give you more direct experience of how the code executes, and will allow you to play around with parameters and commands. The best way of learning - especially modelling! - is to try it out yourself.
+本書のコードはすべてRで書かれている。当初、Rは統計データの解析に重きを置かれていた。ユーザー層が拡大するにつれ、Rはより汎用のプログラミング言語として成長してきている。モデリングはRの主要な用途ではないものの、多数の大学機関で広く教えられており、オンラインチュートリアルやサポートフォーラムも充実している。本書読者には、Rを用いたデータ解析や可視化にいくばくかの経験があるのではないかと思う。その知識はIBMにも使えるし、新しくプログラミング言語を学ぶよりはずっと簡単だろう。しかも、RでIBMを実行すれば、その結果を分析したりプロットしたりといった作業を同じ言語内で行える。
 
-We assume that the reader has basic knowledge of R (and [RStudio](https://rstudio.com), which provides a powerful user-interface for R), including installing it, setting it up, updating it, installing packages and running code. We strived to proceed from very simple to more complex code in a gradual way, and to explain all the non-obvious newly introduced programming techniques, but a basic knowledge of R as a programming language, e.g. the use of variables, dataframes, functions, subsetting and loops, will greatly facilitate the reading. 
+<!-- We have used the [bookdown](https://bookdown.org) package to create an html version of the book, which you may well be reading now. This is created from RMarkdown (.Rmd) files, which are a mix of regular text and code. As a reader, you can therefore read the online book and, alongside, run the code using an Rmd file (or just copying and pasting it from the html file). Of course you can just read the book, but running the code as you go will give you more direct experience of how the code executes, and will allow you to play around with parameters and commands. The best way of learning - especially modelling! - is to try it out yourself. -->
 
-We use the [tidyverse](https://www.tidyverse.org) package and follow the underlying logic. For example, we use the tidyverse-typical data structures (tibbles rather than dataframes) and the [ggplot](https://ggplot2.tidyverse.org) graphic system (rather than the base R plot function). These are user-friendly and widely used, and they will make it easier to manipulate data and create professional-looking visualisations. The tidyverse, however, has not been created with IBMs in mind. We have therefore not religiously stuck to tidyverse, and we also use functions, data structures, and programming styles that go beyond the tidyverse (in [Chapter 7][Multiple traits models], for example, we show how matrices are more effective than tibbles in computationally-heavy simulations).  
+本書のHTMLバージョン（今まさにあなたが読んでいるこれ）を作成するにあたり、[bookdown](https://bookdown.org)パッケージを用いた。本書はコードとテキストの入り混じったRMarkdown(.Rmd)ファイルから生成されている。読者はこのオンラインブックを読みつつ、Rmdファイルから（もしくは単にHTMLファイルからコード部分をコピペして）コードを実行できる。もちろん本書を読むだけでもよいのだが、コードを走らせることによってコードがどのように動くのかという直接的な経験が得られるうえ、パラメータを変えて試してみたり、コマンドを試したりできる。最良の勉強法は自分でやってみることだ、特にモデリングにおいては！
 
-Beside the tidyverse package, we have limited as much as possible the number of additional packages needed to run the simulations. The few packages needed to compile some of the code are explicitly introduced in the book when needed. 
+<!-- We assume that the reader has basic knowledge of R (and [RStudio](https://rstudio.com), which provides a powerful user-interface for R), including installing it, setting it up, updating it, installing packages and running code. We strived to proceed from very simple to more complex code in a gradual way, and to explain all the non-obvious newly introduced programming techniques, but a basic knowledge of R as a programming language, e.g. the use of variables, dataframes, functions, subsetting and loops, will greatly facilitate the reading. -->
+
+本書は読者がR（およびRを使うために強力なユーザーインターフェイスを提供する[RStudio](https://rstudio.com)）の基礎的な使い方を習得している前提で書いている。RとRStudioのインストール方法、設定方法、アップデート方法、パッケージのインストール方法とコードの実行方法はわかっているとみなす。極めて単純なコードから、だんだんとより複雑なコードへと移行するように努めた。新しく紹介する自明でない実装テクニックはすべてそのつど説明する。とはいえ、変数の使い方やデータフレーム、関数、データの抜き取り方やループの書き方などのRの基礎的な言語知識があれば、読解はとてもらくになるだろう。
+
+<!-- We use the [tidyverse](https://www.tidyverse.org) package and follow the underlying logic. For example, we use the tidyverse-typical data structures (tibbles rather than dataframes) and the [ggplot](https://ggplot2.tidyverse.org) graphic system (rather than the base R plot function). These are user-friendly and widely used, and they will make it easier to manipulate data and create professional-looking visualisations. The tidyverse, however, has not been created with IBMs in mind. We have therefore not religiously stuck to tidyverse, and we also use functions, data structures, and programming styles that go beyond the tidyverse (in [Chapter 7][Multiple traits models], for example, we show how matrices are more effective than tibbles in computationally-heavy simulations).  --> 
+
+本書では[tidyverse](https://www.tidyverse.org)パッケージとそれに通底するロジックを利用する。たとえば、tidyverseでよく用いられるデータ構造tibble(dataframeの代わりに)、グラフィックシステム [ggplot](https://ggplot2.tidyverse.org)（無印Rのplot関数の代わりに）を用いる。これらはユーザーに優しいうえに広く用いられている。また操作が無印Rより容易でプロフェッショナルな可視化が作成可能だ。ただ、tidyverseそのものはIBMを想定して作られていない。そのため。tidyverseのやりかたに信仰のごとく追従することはなく、必要に応じてtidyverseを脱した関数、データ構造、プログラミングスタイルを採用する。たとえば[7章][!!Multiple traits models]において、tibbleよりも無印Rのマトリックスmatrixのほうが計算量の多いシミュレーションにはむいていることを取り上げる。
+
+<!-- Beside the tidyverse package, we have limited as much as possible the number of additional packages needed to run the simulations. The few packages needed to compile some of the code are explicitly introduced in the book when needed.  -->
+
+tidyverse以外のパッケージについては、可能な限り追加のパッケージなしにシミュレーションを走らせられるように工夫した。少数のどうしても必要になるパッケージに関しては本文で明示し説明してある。
+
 
 ## How to use this book - the simulations {-}
+## 本書のつかいかた：シミュレーション
 
-The book is intended - as the title says - as a step-by-step guide. If you are interested in modelling cultural evolution, or in modelling in general, and you do not have previous experience, you should go through the simulations we describe chapter by chapter. The chapters build in complexity both from the programming and from the conceptual point of view. Alternatively, if you are interested in specific models then you can go straight to the relevant chapter. In this case, however, you will need previous programming experience. (And you will have to figure out by yourself at least some of our programming choices!)
+<!-- The book is intended - as the title says - as a step-by-step guide. If you are interested in modelling cultural evolution, or in modelling in general, and you do not have previous experience, you should go through the simulations we describe chapter by chapter. The chapters build in complexity both from the programming and from the conceptual point of view. Alternatively, if you are interested in specific models then you can go straight to the relevant chapter. In this case, however, you will need previous programming experience. (And you will have to figure out by yourself at least some of our programming choices!) -->
 
-The book is organised as follows. We start by presenting IBM versions of some of the now-classic mathematical and population-level models described in the foundational cultural evolution books, such as Robert Boyd and Peter Richerson's *Culture and the Evolutionary Process* and Luigi-Luca Cavalli-Sforza and Marc Feldman's *Cultural Transmission and Evolution*. The models do not add conceptually to the original analytical treatments, but they show how to use them to develop IBMs, and they provide several basic tools to build models that describe cultural evolution. Some of the subsequent chapters develop aspects that are possible only with IBMs, for example, simulating cultural dynamics with many different traits ([Chapter 7][Multiple traits models]).
+本書はタイトルのとおり、ステップバイステップのガイドを意図している。もし文化進化のモデリング、もしくはモデリング一般に興味があり、しかも今までモデリングの経験がないのなら、一章から一つずつシミュレーションを追っていってほしい。章を追うごとにプログラミング的にも概念的にも複雑になっていくからだ。いっぽう、もし特定のモデルに興味があるのなら、関連する章にすぐに行ってしまっても構わない。ただその場合はプログラミング経験が必要になるし、われわれが下したプログラミング上の意思決定の少なくとも一部を自分で解明する必要に迫られることになるだろう。
 
-We then move to what we call 'Advanced topics'. These chapters deal with more recent work in cultural evolution and include different perspectives, or they concern analyses that are not customary in cultural evolution modelling (for example network analysis in [Chapter 14][Social network structure]).
+<!-- The book is organised as follows. We start by presenting IBM versions of some of the now-classic mathematical and population-level models described in the foundational cultural evolution books, such as Robert Boyd and Peter Richerson's *Culture and the Evolutionary Process* and Luigi-Luca Cavalli-Sforza and Marc Feldman's *Cultural Transmission and Evolution*. The models do not add conceptually to the original analytical treatments, but they show how to use them to develop IBMs, and they provide several basic tools to build models that describe cultural evolution. Some of the subsequent chapters develop aspects that are possible only with IBMs, for example, simulating cultural dynamics with many different traits ([Chapter 7][Multiple traits models]). -->
+
+本書の構成は以下のようになる。まず、文化進化研究の萌芽の礎となったロバート・ボイドとピーター・リチャーソンの*Culture and the Evolutionary Process*やルイージ=ルカ・カヴァリ＝スフォルツァとマーク・フェルドマンの*Cultural Transmission and Evolution*で説明されたような、今や古典的となった数学的で集団レベルのモデルのIBMバージョンを紹介する。オリジナルバージョンの解析的な処理になんら概念的な追加は行わないものの、IBMを作り上げる際に解析的処理をどのように使うのかを追っていくのに最適だし、文化進化を説明するモデルを作る際に必要となる基礎的なツールを提供する。つづく章には[7章][!!Multiple traits models]での多数の異なる形質での文化的ダイナミクスのように、IBMでしか実装できないものもある。
+
+<!-- We then move to what we call 'Advanced topics'. These chapters deal with more recent work in cultural evolution and include different perspectives, or they concern analyses that are not customary in cultural evolution modelling (for example network analysis in [Chapter 14][Social network structure]). -->
+
+本書はその後、いわゆる発展的な内容に進む。より最近の文化進化研究に触れ、違う観点からの研究や、従来の文化進化モデリングでは一般的でない分析まで扱う（たとえば[14章][!!Social network structure]でのネットワーク分析）。
 
 The book does not present *new* models, views or findings on cultural evolution. We are trying to provide as much as possible an up-to-date reflection of the field and, mostly, to show some of the possibilities that IBMs offer to cultural evolutionists. If, while reading this book, you are suddenly struck by an idea for a new model or an alteration of one of the models we present here, we have succeeded in our mission.
 
+本書では文化進化の*新奇な*モデルや見方、知見は提示しない。分野のなるべく直近のすがたを示すと同時に、なによりも文化の進化を研究する者にIBMの提供する選択肢をいくつか伝えたい。もしあなたが本書を利用中にとつぜん新しいモデルを閃いたり、本書で提示したモデルの改変を思いついたとしたら、我々の目論見は達成されたことになる。
+
 ## Conventions and formatting {-}
+## コーディングの慣習やスタイル
 
-In general, we follow the [tidyverse style guide](https://style.tidyverse.org) for naming functions and variables, and code formatting.
+<!-- In general, we follow the [tidyverse style guide](https://style.tidyverse.org) for naming functions and variables, and code formatting. -->
 
-Names of functions and variables use underscores to separate words and lowercase letters, e.g. `previous_population`, `biased_mutation`. If in the same chapter we have more than one function for the same model (for example because we gradually add parameters), they are numbered as `unbiased_transmission_1()`, `unbiased_transmission_2()`, etc.
+基本的に、変数の命名法やコードのスタイルは[tidyverse style guide](https://style.tidyverse.org)に従う。
 
-For the text, we use the following conventions:
+<!-- Names of functions and variables use underscores to separate words and lowercase letters, e.g. `previous_population`, `biased_mutation`. If in the same chapter we have more than one function for the same model (for example because we gradually add parameters), they are numbered as `unbiased_transmission_1()`, `unbiased_transmission_2()`, etc.-->
+
+関数名や変数名では、単語をアンダースコア(_)でわけるようにする（例：`previous_population`, `biased_mutation`）。もし同じ章で同じモデルをいくつも構築する場合（段階的にパラメータを投入したりすることがあるため）、モデルは`unbiased_transmission_1()`、`unbiased_transmission_2()`、などなどと命名するようにする。
+
+<!-- For the text, we use the following conventions:
+
 
 * names of functions and data structures: `unbiased_transmission()`, `population`, `output`  
 
 * technical terms: 'geoms', 'chr'
 
-* names of variables: $p$, $generation$
+* names of variables: $p$, $generation$ -->
+
+テキストにおいては、以下のようなルールでフォーマッティングしている。
+
+* 関数名やデータ名: `unbiased_transmission()`, `population`, `output`
+
+* Rで用いられる技術的な用語：'geoms', 'chr'
+* 変数名：$p$, $generation$ 
+
+
 
 
 ## Further reading {-}
+## より詳しく学びたいひとへ {-}
 
-For some recent general books on cultural evolution, you can check @mesoudi_cultural_2011, @morin_how_2015, @henrich_secret_2016, @laland_darwins_2017, and @acerbi_cultural_2019-1.  
+<!-- For some recent general books on cultural evolution, you can check @mesoudi_cultural_2011, @morin_how_2015, @henrich_secret_2016, @laland_darwins_2017, and @acerbi_cultural_2019-1.   -->
 
-The 'foundational' books referred in the test above are @cavalli-sforza_cultural_1981 and @boyd_culture_1985.
-
-For more on the virtues of formal models for social scientists, with a cultural evolution perspective, see @smaldino_models_2017. @smaldino_how_2020 is dedicated to good practices to translate verbal theories into formal, especially individual-based, models.
-
-A good introduction to R programming is @grolemund_hands-programming_2014. Another general introduction, with a specific focus on the tidyverse logic, is @wickham_r_2017.
+最近の文化進化についての一般書であれば、@morin_how_2015、@henrich_secret_2016、@laland_darwins_2017、@acerbi_cultural_2019-1がある。
 
 
+<!-- The 'foundational' books referred in the test above are @cavalli-sforza_cultural_1981 and @boyd_culture_1985.-->
+
+前述したが、領域の礎となった学術書に@cavalli-sforza_cultural_1981と@boyd_culture_1985がある。
+
+<!-- For more on the virtues of formal models for social scientists, with a cultural evolution perspective, see @smaldino_models_2017. @smaldino_how_2020 is dedicated to good practices to translate verbal theories into formal, especially individual-based, models. -->
+
+社会学者にとっての数理モデルの有用性については、@smaldino_models_2017が文化進化の観点から説明している。@smaldino_how_2020はさらに、言語的な理論を数理的な、特にインディヴィジュアル・ベーストの、モデルに翻訳する際のグッドプラクティスについて説明している書籍である。
+
+<!-- A good introduction to R programming is @grolemund_hands-programming_2014. Another general introduction, with a specific focus on the tidyverse logic, is @wickham_r_2017. -->
+
+R言語に関しては@grolemund_hands-programming_2014がよい入門書だ。tidyverseのロジックにフォーカスを当てた一般的な入門書として@wickham_r_2017もあげられる。
