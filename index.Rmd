@@ -30,7 +30,7 @@ Acerbi Alberto, Mesoudi Alex, and Smolla Marco (2020) *Individual-based models o
 
 ## 原書との違い
 
-原書を訳すだけでなく、Rスクリプトの可読性の向上、シンプル化、高速化も行っているため、Rスクリプトは大幅に改変されている。最終的に同じ挙動をするように注意を払っているが、その正確性は保証できないため、原書と全く厳密に同等のスクリプトを使いたい場合、原書を参照してほしい。また発展的な内容として、実際の論文出版の際に役立ちそうなプロット方法の例を追加して掲載している章がある。近年日本語で出版された、文化進化諸研究で用いられる様々な数理を網羅している田村（2020）に対応する内容がある場合、その結果の再現も試みている。
+原書を訳すだけでなく、Rスクリプトの可読性の向上、変数名の変更、シンプル化、高速化も行っているため、Rスクリプトは大幅に改変されている。最終的に同じ挙動をするように注意を払っているが、その正確性は保証できないため、原書と全く厳密に同等のスクリプトを使いたい場合、原書を参照してほしい。また発展的な内容として、実際の論文出版の際に役立ちそうなプロット方法の例を追加して掲載している章がある。近年日本語で出版された、文化進化諸研究で用いられる様々な数理を網羅している田村（2020）に対応する内容がある場合、その結果の再現も試みている。
 
 ## 訳語対応表
 
@@ -178,7 +178,7 @@ The book does not present *new* models, views or findings on cultural evolution.
 * 関数名やデータ名: `unbiased_transmission()`, `population`, `output`
 
 * Rで用いられる技術的な用語：'geoms', 'chr'
-* 変数名：$p$, $generation$ 
+* 変数名：$probability$^[訳註: 日本語訳版では一文字変数名を可能な限り避け、$p$を$probability$、$mu$を$mutation_rate$などの一目で意味のわかるものとした。], $generation$ 
 
 
 
@@ -188,12 +188,12 @@ The book does not present *new* models, views or findings on cultural evolution.
 
 <!-- For some recent general books on cultural evolution, you can check @mesoudi_cultural_2011, @morin_how_2015, @henrich_secret_2016, @laland_darwins_2017, and @acerbi_cultural_2019-1.   -->
 
-最近の文化進化についての一般書であれば、@morin_how_2015、@henrich_secret_2016、@laland_darwins_2017、@acerbi_cultural_2019-1がある。
+最近の文化進化についての一般書であれば、@morin_how_2015、@henrich_secret_2016、@laland_darwins_2017、@acerbi_cultural_2019-1がある。邦訳は、〜〜〜〜〜〜。
 
 
 <!-- The 'foundational' books referred in the test above are @cavalli-sforza_cultural_1981 and @boyd_culture_1985.-->
 
-前述したが、領域の礎となった学術書に@cavalli-sforza_cultural_1981と@boyd_culture_1985がある。
+前述の、領域の礎となった学術書@cavalli-sforza_cultural_1981と@boyd_culture_1985に関しては邦訳は2021年現在ない。
 
 <!-- For more on the virtues of formal models for social scientists, with a cultural evolution perspective, see @smaldino_models_2017. @smaldino_how_2020 is dedicated to good practices to translate verbal theories into formal, especially individual-based, models. -->
 

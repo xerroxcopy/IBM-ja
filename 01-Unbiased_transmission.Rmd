@@ -1,62 +1,104 @@
-# (PART\*) Basics {-} 
+<!-- # (PART\*) Basics {-} -->
+# (PART\*) 基礎 {-} 
 
-# Unbiased transmission
+# ライブラリの読み込み
 
-We start by simulating a simple case of unbiased cultural transmission. We will detail each step of the simulation and explain the code line-by-line. In the following chapters, we will reuse most of this initial model, building up the complexity of our simulations.  
-
-## Initialising the simulation 
-
-Here we will simulate a case where $N$ individuals each possess one of two mutually exclusive cultural traits. These alternative traits are denoted $A$ and $B$. For example, $A$ might be eating a vegetarian diet, and $B$ might be eating a non-vegetarian diet. In reality, traits are seldom clear-cut (e.g. what about pescatarians?), but models are designed to cut away all the complexity to give tractable answers to simplified situations.
-
-Our model has non-overlapping generations. In each generation, all $N$ individuals are replaced with $N$ new individuals. Again, this is unlike any real biological group but provides a simple way of simulating change over time. Generations here could correspond to biological generations, but could equally be 'cultural generations' (or learning episodes), which might be much shorter.
-
-Each new individual of each new generation picks a member of the previous generation at random and copies their cultural trait. This is known as unbiased oblique cultural transmission. 'Unbiased' refers to the fact that traits are copied entirely at random. The term 'oblique' means that members of one generation learn from those of the previous, non-overlapping, generation. This is different from, for example, horizontal cultural transmission, where individuals copy members of the same generation, and vertical cultural transmission, where offspring copy their biological parents.
-
-If we assume that the two cultural traits are transmitted in an unbiased way, what does that mean for the average trait frequency in the population? To answer this question, we must track the proportion of individuals who possess trait $A$ over successive generations. We will call this proportion $p$. We could also track the proportion who possess trait $B$, but this will always be $1 - p$ given that the two traits are mutually exclusive. For example, if $70\%$ of the population have trait $A$ $(p=0.7)$, then the remaining $30\%$ must have trait $B$ (i.e. $1-p=1-0.7=0.3$).
-
-The output of the model will be a plot showing $p$ over all generations up to the last generation. Generations (or time steps) are denoted by $t$, where generation one is $t=1$, generation two is $t=2$, up to the last generation $t=t_{\text{max}}$. 
-
-First, we need to specify the fixed parameters of the model. These are quantities that we decide on at the start and do not change during the simulation. In this model these are `N` (the number of individuals) and `t_max` (the number of generations). Let's start with `N = 100` and `t_max = 200`:
+まずは必要となるライブラリをまとめて読み込む。^[原著では必要になったタイミングでライブラリを読み込んでいるが、Tidyverse style guideにあるように（"If your script uses add-on packages, load them all at once at the very beginning of the file. This is more transparent than sprinkling library() calls throughout your code", [Tidyverse style guide](https://style.tidyverse.org/files.html)）ライブラリはファイルの冒頭で読み込んでしまうのがベストプラクティスとされている。]RStudio上でこの.Rmdファイルを開いている場合、⌘以下のコードでも
 
 ```{r 1-1}
-N <- 100
-t_max <- 200
-```
-
-Now we need to create our individuals. The only information we need to keep about our individuals is their cultural trait ($A$ or $B$). We'll call `population` the data structure containing the individuals. The type of data structure we have chosen here is a tibble. This is a more user-friendly version of a dataframe. Tibbles, and the tibble command, are part of the `tidyverse` library, which we need to call before creating the tibble. We will use other commands from the `tidyverse` throughout the book.
-
-Initially, we'll give each individual either an $A$ or $B$ at random, using the `sample()` command. This can be seen in the code chunk below. The `sample()` command takes three arguments (i.e. inputs or options). The first argument lists the elements to pick at random, in our case, the traits $A$ and $B$. The second argument gives the number of times to pick, in our case $N$ times, once for each individual. The final argument says to replace or reuse the elements specified in the first argument after they've been picked (otherwise there would only be one copy of $A$ and one copy of $B$, so we could only give two individuals traits before running out). Within the tibble command, the word `trait` denotes the name of the variable within the tibble that contains the random $A$s and $B$s, and the whole tibble is assigned the name `population`.
-
-```{r 1-2, message = FALSE}
 library(tidyverse)
-population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE))
+library(magrittr)
+library(tictoc)
 ```
 
-We can see the cultural traits of our population by simply entering its name in the R console: 
+# バイアスなしの伝達 Unbiased transmission
 
-```{r 1-3}
+<!-- We start by simulating a simple case of unbiased cultural transmission. We will detail each step of the simulation and explain the code line-by-line. In the following chapters, we will reuse most of this initial model, building up the complexity of our simulations.  -->
+
+シンプルなバイアスのない文化伝達のシミュレーションから始めよう。まずはシミュレーションの各ステップを、コードを一行ずつ追っていきながら説明する。最初に書くモデルは次章以降も引き続き使い、少しずつ複雑性を高めていく。
+
+## シミュレーションの初期化 Initialising the simulation 
+
+<!-- Here we will simulate a case where $N$ individuals each possess one of two mutually exclusive cultural traits. These alternative traits are denoted $A$ and $B$. For example, $A$ might be eating a vegetarian diet, and $B$ might be eating a non-vegetarian diet. In reality, traits are seldom clear-cut (e.g. what about pescatarians?), but models are designed to cut away all the complexity to give tractable answers to simplified situations. -->
+
+ここでは$population\_size$^[訳註：$population\_size$は、原著では$N$であった。序章で述べたように、日本語版ではコード中での可読性を優先し、一文字の変数名は避け、意味のわかる変数名を採用している。]人の個人が二つの独立した文化形質のどちらかひとつだけを有している状況を想定しシミュレートしてみよう。それら2つの形質の選択肢は、$A$および$B$としよう。$A$はたとえばベジタリアンの食事習慣を採用することで、$A$はノンベジタリアンの食事習慣を採用することだ。現実には、形質というのは明確に二分できるものであることは少ない（たとえば、前記の例であれば、動物の肉は食べないが魚介類は食べるペスカタリアンはこのどちらにも容易に分類できない）。しかし、モデルというものはそういった複雑さを切り捨て、単純化された状況で理解可能な答えを導出するためにデザインするものなのだ。
+
+<!-- Our model has non-overlapping generations. In each generation, all $N$ individuals are replaced with $N$ new individuals. Again, this is unlike any real biological group but provides a simple way of simulating change over time. Generations here could correspond to biological generations, but could equally be 'cultural generations' (or learning episodes), which might be much shorter. -->
+
+このモデルでは、世代generationはオーバーラップしない。各世代において、$population\_size$人の個人全員が $population\_size$人に置き換えられる。これもまた、現実の生物の群れではまずありえない話だが、時系列の変化をシミュレートするうえで有用な単純化ができる。ここでいう世代は生物学的な世代でもよいが、いわば文化的世代（もしくは学習エピソードlearning episodes）のようなずっと短い世代であってもよい。
+
+<!-- Each new individual of each new generation picks a member of the previous generation at random and copies their cultural trait. This is known as unbiased oblique cultural transmission. 'Unbiased' refers to the fact that traits are copied entirely at random. The term 'oblique' means that members of one generation learn from those of the previous, non-overlapping, generation. This is different from, for example, horizontal cultural transmission, where individuals copy members of the same generation, and vertical cultural transmission, where offspring copy their biological parents. -->
+
+新世代の新人たちは、前世代の成員からランダムに一人選び、その人の有する文化形質をコピーするとしよう。これはバイアスのない（unbiased）、斜めの(oblique)、文化伝達として知られている。「バイアスのない」とは形質が全くのランダムで決定することからきている。「斜め」とは成員が、前の、しかもオーバーラップしていない世代からコピーすることを意味する。ほかの伝達方法、たとえば水平伝達においては成員は自分と同じ世代から形質をコピーするし、垂直伝達においては子孫が自らの生物学的な親から形質をコピーする。
+
+<!-- If we assume that the two cultural traits are transmitted in an unbiased way, what does that mean for the average trait frequency in the population? To answer this question, we must track the proportion of individuals who possess trait $A$ over successive generations. We will call this proportion $p$. We could also track the proportion who possess trait $B$, but this will always be $1 - p$ given that the two traits are mutually exclusive. For example, if $70\%$ of the population have trait $A$ $(p=0.7)$, then the remaining $30\%$ must have trait $B$ (i.e. $1-p=1-0.7=0.3$). -->
+
+バイアスのない方法でふたつの文化形質が伝達されると想定すると、集団での形質の頻度にはどのような影響を及ぼすだろうか。この疑問に答えるには、形質$A$を有する個人の割合の世代ごとの変化を追う必要がある。この割合を$proportion\_of\_trait\_a$としよう。形質$B$の割合も追うことはできるのだが、$A$と$B$の排他的な関係からこれは常に$1 - proportion\_of\_trait\_a$となる。たとえば人口の$70\%$が形質$A$を有する場合$(proportion\_of\_trait\_a=0.7)$、残りの$30\%$が形質$B$を有することになる（つまり$1-proportion\_of\_trait\_a=1-0.7=0.3$）。
+
+<!-- The output of the model will be a plot showing $p$ over all generations up to the last generation. Generations (or time steps) are denoted by $t$, where generation one is $t=1$, generation two is $t=2$, up to the last generation $t=t_{\text{max}}$. --> 
+
+このモデルのアウトプットは$proportion\_of\_trait\_a$の変化を全世代にわたってプロットすることになる。世代(もしくはタイムステップ)は$timestep$で表す。第1世代は$timestep=1$、第2世代は$timestep=2$と続き、最終世代は$timestep=timesteps$とする。
+
+<!-- First, we need to specify the fixed parameters of the model. These are quantities that we decide on at the start and do not change during the simulation. In this model these are `N` (the number of individuals) and `t_max` (the number of generations). Let's start with `N = 100` and `t_max = 200`: -->
+
+まずは固定のパラメータを決定しよう。シミュレーション開始前に決定し、シミュレーション実行中に変更しない量だ。このモデルにおいては`population_size`（個人の数）と`timesteps`だ。`population_size = 100`と`timesteps = 200`ではじめてみよう。
+
+
+```{r 1-2}
+population_size <- 100
+timesteps <- 200
+```
+
+<!-- Now we need to create our individuals. The only information we need to keep about our individuals is their cultural trait ($A$ or $B$). We'll call `population` the data structure containing the individuals. The type of data structure we have chosen here is a tibble. This is a more user-friendly version of a dataframe. Tibbles, and the tibble command, are part of the `tidyverse` library, which we need to call before creating the tibble. We will use other commands from the `tidyverse` throughout the book.-->
+
+つぎに成員をつくろう。個々人について記録すべき唯一の情報は、彼らが有する文化形質($A$もしくは$B$)だ。`population`を個人の属する集団としよう。`population`のデータ構造はベクトルである^[訳註：原著ではtidyverseのtibbleを採用していたが、この時点では1列しかないため、日本語版ではより計算量が少なくてすむベクトルを採用している]。
+
+<!-- Initially, we'll give each individual either an $A$ or $B$ at random, using the `sample()` command. This can be seen in the code chunk below. The `sample()` command takes three arguments (i.e. inputs or options). The first argument lists the elements to pick at random, in our case, the traits $A$ and $B$. The second argument gives the number of times to pick, in our case $N$ times, once for each individual. The final argument says to replace or reuse the elements specified in the first argument after they've been picked (otherwise there would only be one copy of $A$ and one copy of $B$, so we could only give two individuals traits before running out). Within the tibble command, the word `trait` denotes the name of the variable within the tibble that contains the random $A$s and $B$s, and the whole tibble is assigned the name `population`. -->
+
+初期設定として、$A$か$B$をランダムに各個人に割り当てよう。`sample()`という関数が使える。`sample()`関数には3つの引数（ひきすう。インプット、オプション）がある。詳しくはRStudioのコンソールで`?sample`と入力することでヘルプが参照できるが、第一引数はランダムにサンプルする元となる選択肢を格納したベクトルであり、今回の場合であれば形質$A$と$B$を文字列（`"A"`と`"B"`）として格納することにしよう。第二引数は何回ランダムにサンプルするかであり、今回の場合であれば一個人につき一つであるから全員分、つまり$population_size$回となる。第三引数`replace`は一度選ばれた選択肢をそれ以降も選択肢として残す(`TRUE`)か否か(`FALSE`)を指定する。今回の場合であればもしサンプルしたのちにそれ以降選択肢として残さないとなると、一人目に$A$か$B$のどちらかを割り振ると、二人目で選択肢はもう片方しか残っておらずすぐに選択肢が尽きることになるため、当然選択肢を再利用する（`replace = TRUE`を設定する）ことになる。デフォルト値は`FALSE`であるため、必ず設定しなければならない。
+
+```{r 1-3, message = FALSE}
+population <- sample(c("A", "B"), population_size, replace = TRUE)
+```
+<!-- We can see the cultural traits of our population by simply entering its name in the R console: -->
+変数名をRコンソールに打ち込むことによって簡単に文化形質の状況がわかる：
+
+```{r 1-4}
 population
 ```
 
-As expected, there is a single column called `trait` containing $A$s and $B$s. The type of the column, in this case `<chr>` (i.e. character), is reported below the name. 
+<!-- As expected, there is a single column called `trait` containing $A$s and $B$s. The type of the column, in this case `<chr>` (i.e. character), is reported below the name.  -->
 
-A specific individual's trait can be retrieved using the square bracket notation in R. For example, individual 4's trait can be retrieved by typing: 
+想定通り、`population`は$A$と$B$をランダムに含むベクトルとなっている。
 
-```{r 1-4}
-population$trait[4]
-```
+<!-- A specific individual's trait can be retrieved using the square bracket notation in R. For example, individual 4's trait can be retrieved by typing: -->
 
-This should match the fourth row in the table above.
+特定の個人の形質はRの大かっこ表記で抽出することができる。たとえば4番目の個人の形質は次のように見ることができる：
 
-We also need a tibble to record the output of our simulation, that is, to track the trait frequency $p$ in each generation. This will have two columns with $t_{\text{max}}$ rows, one row for each generation. The first column is simply a counter of the generations, from 1 to $t_{\text{max}}$. This will be useful for plotting the output later. The other column should contain the values of $p$ for each generation. 
-
-At this stage we don't know what $p$ will be in each generation, so for now let's fill the `output` tibble with lots of NAs, which is R's symbol for Not Available, or missing value. We can use the `rep()` (repeat) command to repeat NA $t_{\text{max}}$ times. We're using NA rather than, say, zero, because zero could be misinterpreted as $p=0$, which would mean that all individuals have trait $B$. This would be misleading, because at the moment we haven't yet calculated $p$, so it's nonexistent, rather than zero.
 
 ```{r 1-5}
-output <- tibble(generation = 1:t_max, p = rep(NA, t_max))
+population[4]
 ```
 
+<!-- This should match the fourth row in the table above. -->
+
+<!-- We also need a tibble to record the output of our simulation, that is, to track the trait frequency $p$ in each generation. This will have two columns with $t_{\text{max}}$ rows, one row for each generation. The first column is simply a counter of the generations, from 1 to $t_{\text{max}}$. This will be useful for plotting the output later. The other column should contain the values of $p$ for each generation.  -->
+
+つぎにシミュレーションのアウトプットを格納するtibbleを用意しよう。tibbleはよりユーザーフレンドリーなdataframeで、`tidyverse`ライブラリに含まれている。アウトプットは各世代での$proportion_of_trait_a$の推移を記録する。アウトプットのtibbleの大きさは2列$timesteps$行になる。1世代につき1行で、一列目は世代数（1から$timesteps$まで）で、アウトプットをプロットする際に役立つ。二列目は各世代での$proportion_of_trait_a$を格納しよう。
+
+<!-- At this stage we don't know what $p$ will be in each generation, so for now let's fill the `output` tibble with lots of NAs, which is R's symbol for Not Available, or missing value. We can use the `rep()` (repeat) command to repeat NA $t_{\text{max}}$ times. We're using NA rather than, say, zero, because zero could be misinterpreted as $p=0$, which would mean that all individuals have trait $B$. This would be misleading, because at the moment we haven't yet calculated $p$, so it's nonexistent, rather than zero. -->
+
+現時点では$proportion_of_trait_a$が各世代でいくつになるかがわからないので、ひとまず`output`tibbleのその列にはすべて`NA`を入れておこう。`NA`はR言語での「該当なし(Not Available)」、つまり欠測値を意味するシンボルである。`NA`を$timesteps$回リピートするには`rep()`関数を使う。`NA`を使い、`0`を使わないのは、`0`は$proportion_of_trait_a=0`であると誤解されかねないからで、それ自体はシミュレーションの結果全個人が形質$B$を有しているというあり得る結果だからである。現時点では$proportion_of_trait_a`の値は算出されないので、値は`0`ではなく「存在しない」のが正しい。さらに、`NA`でもよいのだが、じつはRのデフォルトの`NA`は`TRUE/FALSE`の類の値が入ることを想定しており、ロジカル型(logical type)である。ここには実数(real number)が入るということを考慮に入れ、tidyverseの用意するdouble型の`NA`である`NA_real_`を使ってみよう。
+
+```{r 1-6}
+output <- tibble(generation = 1:timesteps, proportion_of_trait_a = rep(NA_real_, timesteps))
+```
+
+`output`をコンソールに入れてみると
+
 We can, however, fill in the first value of `p` for our already-created first generation of individuals, held in `population`. The command below sums the number of $A$s in `population` and divides by $N$ to get a proportion out of 1 rather than an absolute number. It then puts this proportion in the first slot of `p` in `output`, the one for the first generation, $t=1$. We can again write the name of the tibble, `output`, to see that it worked.
+
+
 
 ```{r 1-6}
 output$p[1] <- sum(population$trait == "A") / N
