@@ -1,9 +1,10 @@
+
 <!-- # (PART\*) Basics {-} -->
 # (PART\*) 基礎 {-} 
 
 # ライブラリの読み込み
 
-まずは必要となるライブラリをまとめて読み込む。^[原著では必要になったタイミングでライブラリを読み込んでいるが、Tidyverse style guideにあるように（"If your script uses add-on packages, load them all at once at the very beginning of the file. This is more transparent than sprinkling library() calls throughout your code", [Tidyverse style guide](https://style.tidyverse.org/files.html)）ライブラリはファイルの冒頭で読み込んでしまうのがベストプラクティスとされている。]RStudio上でこの.Rmdファイルを開いている場合、⌘以下のコードでも
+まずは必要となるライブラリをまとめて読み込む。^[原著では必要になったタイミングでライブラリを読み込んでいるが、Tidyverse style guideにあるように（"If your script uses add-on packages, load them all at once at the very beginning of the file. This is more transparent than sprinkling library() calls throughout your code", [Tidyverse style guide](https://style.tidyverse.org/files.html)）ライブラリはファイルの冒頭で読み込んでしまうのがベストプラクティスとされている。]RStudio上でこの.Rmdファイルを開いている場合、`cmd+enter`(windowsなら`ctrl+enter`)で一行ずつ、`cmd+shift+enter`(windowsなら`ctrl+shift+enter`)でチャンクを一気に実行できる。
 
 ```{r 1-1}
 library(tidyverse)
@@ -21,7 +22,7 @@ library(tictoc)
 
 <!-- Here we will simulate a case where $N$ individuals each possess one of two mutually exclusive cultural traits. These alternative traits are denoted $A$ and $B$. For example, $A$ might be eating a vegetarian diet, and $B$ might be eating a non-vegetarian diet. In reality, traits are seldom clear-cut (e.g. what about pescatarians?), but models are designed to cut away all the complexity to give tractable answers to simplified situations. -->
 
-ここでは$population\_size$^[訳註：$population\_size$は、原著では$N$であった。序章で述べたように、日本語版ではコード中での可読性を優先し、一文字の変数名は避け、意味のわかる変数名を採用している。]人の個人が二つの独立した文化形質のどちらかひとつだけを有している状況を想定しシミュレートしてみよう。それら2つの形質の選択肢は、$A$および$B$としよう。$A$はたとえばベジタリアンの食事習慣を採用することで、$A$はノンベジタリアンの食事習慣を採用することだ。現実には、形質というのは明確に二分できるものであることは少ない（たとえば、前記の例であれば、動物の肉は食べないが魚介類は食べるペスカタリアンはこのどちらにも容易に分類できない）。しかし、モデルというものはそういった複雑さを切り捨て、単純化された状況で理解可能な答えを導出するためにデザインするものなのだ。
+ここでは$population\_size$^[$population\_size$は、原著では$N$であった。序章で述べたように、日本語版ではコード中での可読性を優先し、一文字の変数名は避け、意味のわかる変数名を採用している。]人の個人が二つの独立した文化形質のどちらかひとつだけを有している状況を想定しシミュレートしてみよう。それら2つの形質の選択肢は、$A$および$B$としよう。$A$はたとえばベジタリアンの食事習慣を採用することで、$A$はノンベジタリアンの食事習慣を採用することだ。現実には、形質というのは明確に二分できるものであることは少ない（たとえば、前記の例であれば、動物の肉は食べないが魚介類は食べるペスカタリアンはこのどちらにも容易に分類できない）。しかし、モデルというものはそういった複雑さを切り捨て、単純化された状況で理解可能な答えを導出するためにデザインするものなのだ。
 
 <!-- Our model has non-overlapping generations. In each generation, all $N$ individuals are replaced with $N$ new individuals. Again, this is unlike any real biological group but provides a simple way of simulating change over time. Generations here could correspond to biological generations, but could equally be 'cultural generations' (or learning episodes), which might be much shorter. -->
 
@@ -37,7 +38,7 @@ library(tictoc)
 
 <!-- The output of the model will be a plot showing $p$ over all generations up to the last generation. Generations (or time steps) are denoted by $t$, where generation one is $t=1$, generation two is $t=2$, up to the last generation $t=t_{\text{max}}$. --> 
 
-このモデルのアウトプットは$proportion\_of\_trait\_a$の変化を全世代にわたってプロットすることになる。世代(もしくはタイムステップ)は$timestep$で表す。第1世代は$timestep=1$、第2世代は$timestep=2$と続き、最終世代は$timestep=timesteps$とする。
+このモデルのアウトプットは$proportion\_of\_trait\_a$の変化を全世代にわたってプロットすることになる。世代(もしくはタイムステップ)は$timestep$で表す。第1世代は$timestep=1$、第2世代は$timestep=2$と続き、合計世代数は$timesteps$とする。
 
 <!-- First, we need to specify the fixed parameters of the model. These are quantities that we decide on at the start and do not change during the simulation. In this model these are `N` (the number of individuals) and `t_max` (the number of generations). Let's start with `N = 100` and `t_max = 200`: -->
 
@@ -55,7 +56,7 @@ timesteps <- 200
 
 <!-- Initially, we'll give each individual either an $A$ or $B$ at random, using the `sample()` command. This can be seen in the code chunk below. The `sample()` command takes three arguments (i.e. inputs or options). The first argument lists the elements to pick at random, in our case, the traits $A$ and $B$. The second argument gives the number of times to pick, in our case $N$ times, once for each individual. The final argument says to replace or reuse the elements specified in the first argument after they've been picked (otherwise there would only be one copy of $A$ and one copy of $B$, so we could only give two individuals traits before running out). Within the tibble command, the word `trait` denotes the name of the variable within the tibble that contains the random $A$s and $B$s, and the whole tibble is assigned the name `population`. -->
 
-初期設定として、$A$か$B$をランダムに各個人に割り当てよう。`sample()`という関数が使える。`sample()`関数には3つの引数（ひきすう。インプット、オプション）がある。詳しくはRStudioのコンソールで`?sample`と入力することでヘルプが参照できるが、第一引数はランダムにサンプルする元となる選択肢を格納したベクトルであり、今回の場合であれば形質$A$と$B$を文字列（`"A"`と`"B"`）として格納することにしよう。第二引数は何回ランダムにサンプルするかであり、今回の場合であれば一個人につき一つであるから全員分、つまり$population_size$回となる。第三引数`replace`は一度選ばれた選択肢をそれ以降も選択肢として残す(`TRUE`)か否か(`FALSE`)を指定する。今回の場合であればもしサンプルしたのちにそれ以降選択肢として残さないとなると、一人目に$A$か$B$のどちらかを割り振ると、二人目で選択肢はもう片方しか残っておらずすぐに選択肢が尽きることになるため、当然選択肢を再利用する（`replace = TRUE`を設定する）ことになる。デフォルト値は`FALSE`であるため、必ず設定しなければならない。
+初期設定として、$A$か$B$をランダムに各個人に割り当てよう。`sample()`という関数が使える。`sample()`関数には3つの引数（ひきすう。インプット、オプション）がある。詳しくはRStudioのコンソールで`?sample`と入力することでヘルプが参照できるが、第一引数はランダムにサンプルする元となる選択肢を格納したベクトルであり、今回の場合であれば形質$A$と$B$を文字列（`"A"`と`"B"`）として格納することにしよう。第二引数は何回ランダムにサンプルするかであり、今回の場合であれば一個人につき一つであるから全員分、つまり$population\_size$回となる。第三引数`replace`は一度選ばれた選択肢をそれ以降も選択肢として残す(`TRUE`)か否か(`FALSE`)を指定する。今回の場合であればもしサンプルしたのちにそれ以降選択肢として残さないとなると、一人目に$A$か$B$のどちらかを割り振ると、二人目で選択肢はもう片方しか残っておらずすぐに選択肢が尽きることになるため、当然選択肢を再利用する（`replace = TRUE`を設定する）ことになる。デフォルト値は`FALSE`であるため、必ず設定しなければならない。
 
 ```{r 1-3, message = FALSE}
 population <- sample(c("A", "B"), population_size, replace = TRUE)
@@ -84,65 +85,86 @@ population[4]
 
 <!-- We also need a tibble to record the output of our simulation, that is, to track the trait frequency $p$ in each generation. This will have two columns with $t_{\text{max}}$ rows, one row for each generation. The first column is simply a counter of the generations, from 1 to $t_{\text{max}}$. This will be useful for plotting the output later. The other column should contain the values of $p$ for each generation.  -->
 
-つぎにシミュレーションのアウトプットを格納するtibbleを用意しよう。tibbleはよりユーザーフレンドリーなdataframeで、`tidyverse`ライブラリに含まれている。アウトプットは各世代での$proportion_of_trait_a$の推移を記録する。アウトプットのtibbleの大きさは2列$timesteps$行になる。1世代につき1行で、一列目は世代数（1から$timesteps$まで）で、アウトプットをプロットする際に役立つ。二列目は各世代での$proportion_of_trait_a$を格納しよう。
+つぎにシミュレーションのアウトプットを格納するtibbleを用意しよう。tibbleはよりユーザーフレンドリーなdataframeで、`tidyverse`ライブラリに含まれている。アウトプットは各世代での$proportion\_of\_trait\_a$の推移を記録する。アウトプットのtibbleの大きさは2列$timesteps$行になる。1世代につき1行で、一列目は世代数（1から$timesteps$まで）で、アウトプットをプロットする際に役立つ。二列目は各世代での$proportion\_of\_trait\_a$を格納しよう。
 
 <!-- At this stage we don't know what $p$ will be in each generation, so for now let's fill the `output` tibble with lots of NAs, which is R's symbol for Not Available, or missing value. We can use the `rep()` (repeat) command to repeat NA $t_{\text{max}}$ times. We're using NA rather than, say, zero, because zero could be misinterpreted as $p=0$, which would mean that all individuals have trait $B$. This would be misleading, because at the moment we haven't yet calculated $p$, so it's nonexistent, rather than zero. -->
 
-現時点では$proportion_of_trait_a$が各世代でいくつになるかがわからないので、ひとまず`output`tibbleのその列にはすべて`NA`を入れておこう。`NA`はR言語での「該当なし(Not Available)」、つまり欠測値を意味するシンボルである。`NA`を$timesteps$回リピートするには`rep()`関数を使う。`NA`を使い、`0`を使わないのは、`0`は$proportion_of_trait_a=0`であると誤解されかねないからで、それ自体はシミュレーションの結果全個人が形質$B$を有しているというあり得る結果だからである。現時点では$proportion_of_trait_a`の値は算出されないので、値は`0`ではなく「存在しない」のが正しい。さらに、`NA`でもよいのだが、じつはRのデフォルトの`NA`は`TRUE/FALSE`の類の値が入ることを想定しており、ロジカル型(logical type)である。ここには実数(real number)が入るということを考慮に入れ、tidyverseの用意するdouble型の`NA`である`NA_real_`を使ってみよう。
+現時点では$proportion\_of\_trait\_a$が各世代でいくつになるかがわからないので、ひとまず`output`tibbleの当該列にはすべて`NA`を入れておこう。`NA`はR言語での「該当なし(Not Available)」、つまり欠測値を意味するシンボルである。`NA`を$timesteps$回リピートするには`rep()`関数を使う。`NA`を使い、`0`を使わないのは、`0`は$proportion\_of\_trait\_a=0$であると誤解されかねないからで、それ自体はシミュレーションの結果全個人が形質$B$を有しているというあり得る結果だからである。現時点では$proportion\_of\_trait\_a$の値は算出されないので、値は`0`ではなく「存在しない」のが正しい。さらに、`NA`でもよいのだが、じつはRのデフォルトの`NA`は`TRUE/FALSE`の類の値が入ることを想定しており、ロジカル型(logical type)である。ここには実数(real number)が入るということを考慮に入れ、tidyverseの用意するdouble型の`NA`である`NA_real_`を使ってみよう。
 
 ```{r 1-6}
 output <- tibble(generation = 1:timesteps, proportion_of_trait_a = rep(NA_real_, timesteps))
+output
 ```
 
-`output`をコンソールに入れてみると
+`output`をコンソールに入れてみると、`proportion\_of\_trait\_a`の列の型がlgl(logical型)ではなくdouble型になっていることがわかる。
 
-We can, however, fill in the first value of `p` for our already-created first generation of individuals, held in `population`. The command below sums the number of $A$s in `population` and divides by $N$ to get a proportion out of 1 rather than an absolute number. It then puts this proportion in the first slot of `p` in `output`, the one for the first generation, $t=1$. We can again write the name of the tibble, `output`, to see that it worked.
+<!-- We can, however, fill in the first value of `p` for our already-created first generation of individuals, held in `population`. The command below sums the number of $A$s in `population` and divides by $N$ to get a proportion out of 1 rather than an absolute number. It then puts this proportion in the first slot of `p` in `output`, the one for the first generation, $t=1$. We can again write the name of the tibble, `output`, to see that it worked. -->
 
-
+`NA`を入力することには成功したが、考えてみると第1世代の集団の形質は既に生成しているのだから、第1世代の`proportion\_of\_trait\_a`の値は計算可能のはずだ。以下のコードでは`population`ベクトル内の文字列`"A"`の数を数え上げ、`population\_size`で割ることで割合を計算している。そしてその値を`output`のテーブルの`proportion\_of\_trait\_a`の列の第一行目（`[1]`）つまり第1世代$timestep=1$に代入している。チャンクの2行目ではこれまでと同様、テーブルの変数名を書くことでうまくいっているか確認している。
 
 ```{r 1-6}
 output$p[1] <- sum(population$trait == "A") / N
 output
 ```
 
-This first value of `p` should be around $0.5$, meaning that around 50 individuals have trait $A$, and 50 have trait $B$. Even though `sample()` returns either trait with equal probability, this does not necessarily mean that we will get exactly 50 $A$s and 50 $B$s. This happens with simulations and finite population sizes: they are probabilistic (or stochastic), not deterministic. Analogously, flipping a coin 100 times will not always give exactly 50 heads and 50 tails. Sometimes we will get 51 heads, sometimes 49, etc. To see this in our simulation, you can re-run all of the above code and you should get a different $p$.
+<!-- This first value of `p` should be around $0.5$, meaning that around 50 individuals have trait $A$, and 50 have trait $B$. Even though `sample()` returns either trait with equal probability, this does not necessarily mean that we will get exactly 50 $A$s and 50 $B$s. This happens with simulations and finite population sizes: they are probabilistic (or stochastic), not deterministic. Analogously, flipping a coin 100 times will not always give exactly 50 heads and 50 tails. Sometimes we will get 51 heads, sometimes 49, etc. To see this in our simulation, you can re-run all of the above code and you should get a different $p$. -->
+
+この`proportion\_of\_trait\_a`の第1世代の値は$0.5$前後になっているはずだ。つまり$population\_size=100$人のうち50人程度が形質$A$を有し、残り50人程度が形質$B$を有しているはずだ。`sample()`関数はそれぞれの形質を同じ確率で返すはずなのだが、だからといって形質$A$をちょうど50、形質$B$をちょうど50返すというわけではない。これは、有限な人口サイズでシミュレーションをする場合にはつきものの現象で、決定論的ではなく確率論的なふるまいだ。コインを100回投げたとしても、常に表が50回でて裏が50回でるわけではないのと同じだ。ときには表が51回、ときには表が49回、などとでるはずだ。上記の`sample()`関数からこのシミュレーションをやりなおすと、毎回異なる`proportion\_of\_trait\_a`の値が算出されることでこの現象を確かめられる。
 
 ## Execute generation turn-over many times
 
-Now that we have built the population, we can simulate what individuals do in each generation. We iterate these actions over $t_{\text{max}}$ generations. In each generation, we need to:
+<!-- Now that we have built the population, we can simulate what individuals do in each generation. We iterate these actions over $t_{\text{max}}$ generations. In each generation, we need to: -->
 
-* copy the current individuals to a separate tibble called `previous_population` to use as demonstrators for the new individuals; this allows us to implement oblique transmission with its non-overlapping generations, rather than mixing up the generations
+集団は作れたので、実際に世代を更新していきシミュレーションを回してみよう。処理を$timesteps$世代ぶん繰り返すことになる。いちどの世代更新で、次の処理をする必要がある：
+
+
+<!-- * copy the current individuals to a separate tibble called `previous_population` to use as demonstrators for the new individuals; this allows us to implement oblique transmission with its non-overlapping generations, rather than mixing up the generations
 
 * create a new generation of individuals, each of whose trait is picked at random from the `previous_population` tibble
 
-* calculate $p$ for this new generation and store it in the appropriate slot in `output`
+* calculate $p$ for this new generation and store it in the appropriate slot in `output`-->
 
-To iterate, we'll use a for-loop, using `t` to track the generation. We've already done generation 1 so we'll start at generation 2. The random picking of models is done with `sample()` again, but this time picking from the traits held in `previous_population`. Note that we have added comments briefly explaining what each line does. This is perhaps superfluous when the code is this simple, but it's always good practice. Code often gets cut-and-pasted into other places and loses its context. Explaining what each line does lets other people - and a future, forgetful you - know what's going on.
+* いまの`population`ベクトルは先程までの集団の形質を保存しているため、`previous_population`という別のベクトルに保管し、今世代の個人にとってのデモンストレーター^[形質をコピーしてくる源となる、いわば先輩たち]とする。こうすることによってオーバーラップしない、複数世代が混在しない世代間の斜めの伝達が実装できる。
+* `previous_population`ベクトルからランダムに形質を選択した今世代の個人を生成する
+* 今世代の`proportion\_of\_trait\_a`を計算し、`output`の該当するセルに保管する
+
+<!-- To iterate, we'll use a for-loop, using `t` to track the generation. We've already done generation 1 so we'll start at generation 2. The random picking of models is done with `sample()` again, but this time picking from the traits held in `previous_population`. Note that we have added comments briefly explaining what each line does. This is perhaps superfluous when the code is this simple, but it's always good practice. Code often gets cut-and-pasted into other places and loses its context. Explaining what each line does lets other people - and a future, forgetful you - know what's going on. -->
+
+`timestep`をひとつずつ増やしながらforループで繰り返し計算しよう^[Rのforループは遅く、なるべく避けるべきとされているが、IBMの特性からforループを避けて実装することは難しい]。第1世代に関してはここまでのコードで実装されているため、第2世代からはじめる。各行で何をしようとしているかをコメントでかんたんに説明している。現時点の非常にシンプルなコードにはあまりに冗長に思えるかもしれないが、習慣として身につけておくに越したことはない^[実装時は隅から隅までわかっていても、数ヶ月後に実際に論文を投稿する際に憶えているとは限らない。]。コードはしばしば他のところにコピペされ、当初の文脈を失う。各行が何をするかをメモしておけば、他のひと（とくに未来の忘れっぽいあなた）に意図を知ってもらえる。
 
 ```{r 1-7}
-for (t in 2:t_max) {
-  # Copy the population tibble to previous_population tibble
-  previous_population <- population 
-  
-  # Randomly copy from previous generation's individuals
-  population <- tibble(trait = sample(previous_population$trait, N, replace = TRUE)) 
-  
-  # Get p and put it into the output slot for this generation t
-  output$p[t] <- sum(population$trait == "A") / N 
+ for (timestep in 2:timesteps) {
+  # populationテーブルをprevious_populationという新しいテーブルにコピー
+  previous_population <- population
+  # 前世代の個人からランダムに形質をコピーする
+  population <- sample(previous_population, population_size, replace = TRUE)
+  # proportion_of_trait_aを計算し、outputの今timestep世代のところに格納する
+  output$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
 }
 ```
 
-Now we should have 200 values of `p` stored in `output`, one for each generation. You can list them by typing `output`, but more effective is to plot them.
+<!-- Now we should have 200 values of `p` stored in `output`, one for each generation. You can list them by typing `output`, but more effective is to plot them.-->
 
-## Plotting the model results
+上記のコードチャンクを実行すれば、200世代に渡って`proportion\_of\_trait\_a`が計算・記録されているはずだ。`output`とタイプすることでそのリストを閲覧することもできるが、その結果をプロット（描画）するほうがずっと効果的だ。
 
-We use `ggplot()` to plot our data. The syntax of ggplot may be slightly obscure at first, but it forces us to have a clear picture of the data before plotting.
+## モデルの結果をプロットするPlotting the model results
 
-In the first line in the code below, we are telling ggplot that the data we want to plot is in the tibble `output`. Then, with the command `aes()` we declare the 'aesthetics' of the plot, that is, how we want our data mapped in our plot. In this case, we want the values of `p` on the y-axis, and the values of `generation` on the x-axis (this is why earlier we created, in the tibble `output`, a column to keep the count of generations).
+<!-- We use `ggplot()` to plot our data. The syntax of ggplot may be slightly obscure at first, but it forces us to have a clear picture of the data before plotting. -->
+
+`ggplot()`を使ってデータをプロットする。ggplotの構文（シンタックス）はもしかすると少しとっつきにくいかもしれないが、強制的に「プロットに必要なデータはどんな構造になるか」をプロット前に考えさせるように工夫されている。
+
+
+<!-- In the first line in the code below, we are telling ggplot that the data we want to plot is in the tibble `output`. Then, with the command `aes()` we declare the 'aesthetics' of the plot, that is, how we want our data mapped in our plot. In this case, we want the values of `p` on the y-axis, and the values of `generation` on the x-axis (this is why earlier we created, in the tibble `output`, a column to keep the count of generations).-->
+
+下記のコードの1行目では、ggplotにプロットしたいデータは`output`tibbleだということを伝えている。それから、`aes()`関数で見た目aestheticsを宣言する。見た目とはいうが、ここではプロットにおいてデータをどう表示したいかを司る。今回の場合では、`proportion\_of\_trait\_a`をy軸に、`timestep`をx軸にしたい（そしてこれが`output`tibbleにおいて`timestep`の列を作っておいた理由である）。
 
 We then use `geom_line()`. In ggplot, 'geoms' describe what kind of visual representation should be plotted: lines, bars, boxes and so on. This visual representation is independent of the mapping that we declared before with `aes()`. The same data, with the same mapping, can be visually represented in many different ways. In this case, we are asking ggplot to represent the data as a line. You can change `geom_line()` in the code below to `geom_point()` and see what happens (other geoms have less obvious effects, and we will see some of them in later chapters).
 
+2行目で`geom_line()`関数を使う。ggplotでは、'geoms'で視覚的な表現法を指定する。線なのか、バーなのか、ボックスなのか、などである。視覚的な表現法は既に宣言したデータのマッピングとは独立である。同じデータを同じマッピングで、異なる視覚的な方法で表現する方法は複数ある。今回は、ggplotにデータを線グラフとして（`_line()`で）表現するようお願いしている。もし点々の散布図で表現したければ、下記`geom_line()`を`geom_point()`に書き換えて何が起きるか見てみよう。geomsはこれら2つのようにわかりやすいものばかりではない。本書のあとのほうでその一部が登場する。
+
 The other commands are mainly to make the plot look nicer. We want the y-axis to span all the possible values of $p$, from 0 to 1, and we use a particular 'theme' for our plot, in this case, a simple black and white (`theme_bw`) theme. With the command `labs()` we can provide a more informative label for the y-axis. ggplot automatically labels the axis with the name of the tibble columns that are plotted: this is good for `generation`, but less so for `p`.
+
+それ以降のコードは主にプロットの見た目を整えている。y軸
 
 ```{r 1-8, fig.cap = "Random fluctuations of the proportion of trait A under unbiased cultural transmission"}
 ggplot(data = output, aes(y = p, x = generation)) +
@@ -384,4 +406,4 @@ We have also introduced several programming techniques that will be useful in la
 
 ## Further reading
 
-@cavalli-sforza_cultural_1981 explored how cultural drift affects cultural evolution, which was extended by @neiman_stylistic_1995 in an archaeological context. @bentley_random_2004 present models of unbiased transmission for several cultural datasets. @lansing_domain_2011 and commentaries explore the underlying assumptions of applying random drift to cultural evolution.
+@cavalli-sforza_cultural_1981 explored how cultural drproportion\_of\_trait\_a
