@@ -8,7 +8,7 @@
 
 ```{r 1-1}
 library(tidyverse)
-# library(magrittr)
+library(magrittr)
 library(tictoc)
 ```
 
@@ -52,7 +52,7 @@ timesteps <- 200
 
 <!-- Now we need to create our individuals. The only information we need to keep about our individuals is their cultural trait ($A$ or $B$). We'll call `population` the data structure containing the individuals. The type of data structure we have chosen here is a tibble. This is a more user-friendly version of a dataframe. Tibbles, and the tibble command, are part of the `tidyverse` library, which we need to call before creating the tibble. We will use other commands from the `tidyverse` throughout the book.-->
 
-つぎに成員をつくろう。個々人について記録すべき唯一の情報は、彼らが有する文化形質($A$もしくは$B$)だ。`population`を個人の属する集団としよう。`population`のデータ構造はベクトルである^[訳註：原著ではtidyverseのtibbleを採用していたが、この時点では1列しかないため、日本語版ではより計算量が少なくてすむベクトルを採用している。ベンチマークしてみると、およそ2倍の速度で計算される。]。
+つぎに成員をつくろう。個々人について記録すべき唯一の情報は、彼らが有する文化形質($A$もしくは$B$)だ。`population`を個人の属する集団としよう。`population`のデータ構造はベクトルである^[訳註：原著ではtidyverseのtibbleを採用していたが、この時点では1列しかないため、日本語版ではより計算量が少なくてすむベクトルを採用している]。
 
 <!-- Initially, we'll give each individual either an $A$ or $B$ at random, using the `sample()` command. This can be seen in the code chunk below. The `sample()` command takes three arguments (i.e. inputs or options). The first argument lists the elements to pick at random, in our case, the traits $A$ and $B$. The second argument gives the number of times to pick, in our case $N$ times, once for each individual. The final argument says to replace or reuse the elements specified in the first argument after they've been picked (otherwise there would only be one copy of $A$ and one copy of $B$, so we could only give two individuals traits before running out). Within the tibble command, the word `trait` denotes the name of the variable within the tibble that contains the random $A$s and $B$s, and the whole tibble is assigned the name `population`. -->
 
@@ -186,9 +186,8 @@ Ideally, we would like to repeat the simulation to explore this idea in more det
 
 
 ```{r 1-9}
-
-model_unbiased_transmission <- function(population_size, timesteps) {
-  population <- sample(c("A", "B"), population_size, replace = TRUE)
+model_unbiased_transmission_1 <- function(population_size, timesteps) {
+  population <- sample(c("A", "B"), population_size, replace = TRUE))
 
   output <- tibble(timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
 
@@ -209,108 +208,82 @@ model_unbiased_transmission <- function(population_size, timesteps) {
 }
 ```
 
-<!-- This is just all of the code snippets that we already ran above, but all within a function with parameters $N$ and $t_{\text{max}}$ as arguments to the function. In addition, `unbiased_transmission_1()`  ends with the line `output`. This means that this tibble will be exported from the function when it is run. This is useful for storing data from simulations wrapped in functions, otherwise that data is lost after the function is executed.  -->
+This is just all of the code snippets that we already ran above, but all within a function with parameters $N$ and $t_{\text{max}}$ as arguments to the function. In addition, `unbiased_transmission_1()`  ends with the line `output`. This means that this tibble will be exported from the function when it is run. This is useful for storing data from simulations wrapped in functions, otherwise that data is lost after the function is executed. 
 
-これは今まで実行してきたコードスニペットをひとつにまとめただけではあるが、2つのパラメーター$population_size$と$timesteps$を引数にとるひとつの関数にまとめられている。さらに、`model_unbiased_transmission()`は`output`という行で終わっている。これは`output`tibbleが返り値として返されるということを意味する。こうすることによって、シミュレーションを走らせたあとにデータを失うことなくデータを保管しておくことができる。
-
-
-<!-- Nothing will happen when you run the above code, because all you have done is define the function and not actually run it. The point is that we can now call the function in one go, easily changing the values of $N$ and $t_{\text{max}}$. Let's try first with the same values of $N$ and $t_{\text{max}}$ as before, and save the output from the simulation into `data_model`, as a record of what happened. -->
-
-上記のコードを実行しても何も起きない。今の段階では単に上記の関数を定義しただけで、シミュレーションを実際に走らせたわけではないからだ。しかしこれで、一気に関数を実行することができ、簡単に$population_size$や$timesteps$といった設定を買えることができる。今までと同じ$population_size$、同じ$timesteps$でシミュレーションを走らせ、返り値を`data_unbiased_transmission`に格納してみよう。
-
+Nothing will happen when you run the above code, because all you have done is define the function and not actually run it. The point is that we can now call the function in one go, easily changing the values of $N$ and $t_{\text{max}}$. Let's try first with the same values of $N$ and $t_{\text{max}}$ as before, and save the output from the simulation into `data_model`, as a record of what happened.
 
 ```{r 1-10}
-data_unbiased_transmission <- model_unbiased_transmission(population_size = 100, timesteps = 20)
+data_model <- unbiased_transmission_1(N = 100, t_max = 200)
 ```
 
-<!-- We also need to create another function to plot the data, so we do not need to rewrite all the plotting instructions each time. Whereas this may seem impractical now, it is convenient to separate the function that runs the simulation and the function that plots the data for various reasons. With more complicated models, we do not want to rerun a simulation just because we want to change some detail in the plot. It also makes conceptual sense to keep separate the raw output of the model from the various ways we can visualise it, or the further analysis we want to perform on it. As above, the code is identical to what we already wrote: -->
-
-もうひとつ、プロット用の関数を用意することで、毎回プロットの指令を書き下す手間を省こう。現時点ではあまり実用的でないように思えるかもしれないが、シミュレーションを走らせる関数とその結果をプロットする関数をわけておくことにはいくつかの利点がある。もっと複雑なモデルになってくると、プロットの細部を変更したいからといってシミュレーションを回し直すのは望ましくない。また、モデルの生の返り値と、そのありうる可視化方法や解析方法を明確に分離しておくことは概念的にも意味がある。モデルと同様、以下のコードも既に書いたコードの使いまわしである。
+We also need to create another function to plot the data, so we do not need to rewrite all the plotting instructions each time. Whereas this may seem impractical now, it is convenient to separate the function that runs the simulation and the function that plots the data for various reasons. With more complicated models, we do not want to rerun a simulation just because we want to change some detail in the plot. It also makes conceptual sense to keep separate the raw output of the model from the various ways we can visualise it, or the further analysis we want to perform on it. As above, the code is identical to what we already wrote: 
 
 ```{r 1-11}
-plot_single_run <- function(data) {
-  ggplot(data = data, aes(x = timesteps, y = population_size)) +
+plot_single_run <- function(data_model) {
+  ggplot(data = data_model, aes(y = p, x = generation)) +
     geom_line() +
     ylim(c(0, 1)) +
     theme_bw() +
-    labs(y = "proportion of individuals with trait A")
+    labs(y = "p (proportion of individuals with trait A)")
 }
 ```
 
-<!-- At this point, we can visualise the results: -->
+At this point, we can visualise the results:
 
-こうすることで、つぎのように結果を可視化できる。
-
-```{r 1-12, fig.cap = "バイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
-data_unbiased_transmission |>
-  plot_single_run()
+```{r 1-12, fig.cap = "Random fluctuations of the proportion of trait A under unbiased cultural transmission"}
+plot_single_run(data_model)
 ```
 
-ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`%>%`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
+As anticipated, the plot is different from the simulation we ran before, even though the code is exactly the same. This is due to the stochastic nature of the simulation. 
 
-```{r 1-12}
-plot_single_run(data_unbiased_transmission)
+Now let's try changing the parameters. We can call the simulation and the plotting functions together. The code below reruns and plots the simulation with a much larger $N$.
+
+```{r 1-13, fig.cap = "Random fluctuations of the proportion of trait A under unbiased cultural transmission and a large population size"}
+data_model <- unbiased_transmission_1(N = 10000, t_max = 200)
+plot_single_run(data_model)
 ```
 
-<!-- As anticipated, the plot is different from the simulation we ran before, even though the code is exactly the same. This is due to the stochastic nature of the simulation. -->
-
-予想されたとおり、コードが全く同一のものであるにも関わらず今回のプロットは前回のプロットとは異なっている。これは本シミュレーションの確率的な性質によるものだ。
-
-<!-- Now let's try changing the parameters. We can call the simulation and the plotting functions together. The code below reruns and plots the simulation with a much larger $N$. -->
-
-つぎに、パラメータを変えてみよう。こんどはシミュレーションの試行とプロットを一気に行ってみる。下記コードでは、ずっと大きな$population_size$でシミュレーションをもう一度回した上でプロットしている^[前述の「シミュレーションの結果とプロットの関数をわけるべき」という原則に反するが、シミュレーションからプロットまで一気通貫に1アクションで行えるパイプの魅力に勝るものはない]。
-
-```{r 1-13, fig.cap = "大きな集団サイズにおけるバイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
-model_unbiased_transmission(population_size = 10000, timesteps = 200) |>
-  plot_single_run()
-```
-
-<!-- You should see much less fluctuation. Rarely in a population of $N = 10000$ will either trait go to fixation. Try re-running the previous code chunk to explore the effect of $N$ on long-term dynamics. -->
-
-振動がずっと小さくなっているはずだ。$population_size = 10000$の集団ではどちらの形質も固定化fixationすることはほとんどない。もう一度コードを実行してみて、$population_size$が長期的な動態にどのような影響を及ぼすか調べてみよう。
+You should see much less fluctuation. Rarely in a population of $N = 10000$ will either trait go to fixation. Try re-running the previous code chunk to explore the effect of $N$ on long-term dynamics.
 
 ## Run several independent simulations and plot their results
 
-<!-- Wrapping a simulation in a function like this is good because we can easily re-run it with just a single command. However, it's a bit laborious to manually re-run it. Say we wanted to re-run the simulation 10 times with the same parameter values to see how many times $A$ goes to fixation, and how many times $B$ goes to fixation. Currently, we'd have to manually run the `unbiased_transmission_1()` function 10 times and record somewhere else what happened in each run. It would be better to automatically re-run the simulation several times and plot each run as a separate line on the same plot. We could also add a line showing the mean value of $p$ across all runs. -->
+Wrapping a simulation in a function like this is good because we can easily re-run it with just a single command. However, it's a bit laborious to manually re-run it. Say we wanted to re-run the simulation 10 times with the same parameter values to see how many times $A$ goes to fixation, and how many times $B$ goes to fixation. Currently, we'd have to manually run the `unbiased_transmission_1()` function 10 times and record somewhere else what happened in each run. It would be better to automatically re-run the simulation several times and plot each run as a separate line on the same plot. We could also add a line showing the mean value of $p$ across all runs.
 
-このようにシミュレーションをひとつの関数でくるむのはひとつのコマンドで何度でも試行しなおせるため有用だ。しかし、手作業で何度も走らせるのはさすがに面倒だ。たとえば同じパラメータ値で10回試行し、そのうち何回$A$が固定化し、何回$B$が固定化するかをみたいとしよう。現状、`model_unbiased_transmission()`関数を10回走らせ、毎回その記録をどこかに保管しなければならない。自動的に何度もシミュレーションを試行し、それぞれを別の線でひとつのプロットにまとめられないだろうか。さらに、全試行の$proportion_of_trait_a$の平均値を線として加えられないだろうか。
+Let's use a new parameter $r_{\text{max}}$ to specify the number of independent runs, and use another for-loop to cycle over the $r_{\text{max}}$ runs. Let's rewrite the `unbiased_transmission_1()` function to handle multiple runs. We will call the new function `unbiased_transmission_2()`.
 
-<!-- Let's use a new parameter $r_{\text{max}}$ to specify the number of independent runs, and use another for-loop to cycle over the $r_{\text{max}}$ runs. Let's rewrite the `unbiased_transmission_1()` function to handle multiple runs. We will call the new function `unbiased_transmission_2()`. -->
-
-新しい変数$runs$を独立した試行回数として導入しよう。全体を新たなforループでくるみ、$runs$回の試行を繰り返す。`model_unbiased_transmission()`関数を書き換え、複数回試行を取り扱えるようにし、`model_unbiased_transmissions()`としよう。  
 ```{r 1-14}
-model_unbiased_transmissions <- function(population_size, timesteps, runs) {
-  output <- tibble(run = numeric(), timestep = numeric(), proportion_of_trait_a = numeric())
-  # 毎回の試行
-  for (run in 1:runs) {
-    # １回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(run = rep(run, timesteps), timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
-    # 第1世代
-    population <- sample(c("A", "B"), population_size, replace = TRUE)
-    # 第１世代のproportion_of_trait_aを計算
-    proportion_of_trait_a <- sum(population == "A") / population_size
-    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
-    for (timestep in 2:timesteps) {
-      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
-      previous_population <- population
-      # ランダムに前世代の個人から形質をコピーする
-      population <- sample(previous_population, population_size, replace = TRUE)
-      # proportion_of_trait_aを計算し、tibbleのうちproportion_of_trait_a列のtimestep行目に格納する
-      output_single_run$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+unbiased_transmission_2 <- function(N, t_max, r_max) {
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max))) 
+  # For each run
+  for (r in 1:r_max) { 
+    # Create first generation
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE))
+    
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <-
+      sum(population$trait == "A") / N 
+    
+    # For each generation
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Randomly copy from previous generation
+      population <- tibble(trait = sample(previous_population$trait, N, replace = TRUE))
+      
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
     }
-    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
-    output <- bind_rows(output, output_single_run)
   }
-  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
-  output
+  # Export data from function
+  output 
 }
 ```
 
 There are a few changes here. First, we need a different `output` tibble, because we need to store data for all the runs. For that, we initialise the same `generation` and `p` columns as before, but with space for all the runs. `generation` is now built by repeating the count of each generation $r_{\text{max}}$ times, and `p` is NA repeated for all generations, for all runs.
-
-ここでいくつかの変更を加えている。まず、`output`tibbleには全試行のデータを格納できるようにしなければならない。そのため、従前と同様`timestep`と`proportion_of_trait_a`を保管するのに加え、何回目の試行であるかの列`run`を追加した。
-`bind_rows()`関数は
-
 
 We also need a new column called `run` that keeps track of which run the data in the other two columns belongs to. Note that the definition of `run` is preceded by `as.factor()`. This specifies the type of data to put in the `run` column. We want `run` to be a 'factor' or categorical variable so that, even if runs are labelled with numbers (1, 2, 3...), this should not be misinterpreted as a continuous, real number: there is no sense in which run 2 is twice as 'runny' as run 1, or run 3 half as 'runny' as run 6. Runs could equally have been labelled using letters, or any other arbitrary scheme. While omitting `as.factor()` does not make any difference when running the simulation, it would create problems when plotting the data because ggplot would treat runs as continuous real numbers rather than discrete categories (you can see this yourself by modifying the definition of `output` in the previous code chunk). This is a good example of how it is important to have a clear understanding of your data before trying to plot or analyse them.
 
@@ -438,4 +411,4 @@ We have also introduced several programming techniques that will be useful in la
 
 ## Further reading
 
-@cavalli-sforza_cultural_1981 explored how cultural 
+@cavalli-sforza_cultural_1981 explored how cultural drproportion\_of\_trait\_a

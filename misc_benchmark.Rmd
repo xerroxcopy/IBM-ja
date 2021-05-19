@@ -1,0 +1,78 @@
+---
+title: "code improvements"
+output: html_notebook
+---
+
+# library
+
+```{r}
+library(bench)
+```
+
+[bench](https://www.tidyverse.org/blog/2018/06/bench-1.0.1/)で測る。毎回シミュレーション結果は異なるのだが、それだとエラーが出るので`check = FALSE`にする。
+
+
+# unbiased transmission
+
+populationをtibbleではなくvectorに格納する意義の検証
+
+```{r}
+# original
+
+unbiased_transmission_1 <- function(population_size, timesteps) {
+  
+  population <- tibble(trait = sample(c("A", "B"), population_size, replace = TRUE))
+
+  output <- tibble(timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
+
+  output$proportion_of_trait_a[1] <- sum(population$trait == "A") / population_size
+
+  for (timestep in 2:timesteps) {
+    
+    # Copy individuals to previous_population tibble
+    previous_population <- population 
+    
+    # Randomly copy from previous generation
+    population <- sample(previous_population, population_size, replace = TRUE)
+    
+    # Get p and put it into output slot for this generation t
+    output$proportion_of_trait_a[timestep] <- sum(population$trait == "A") / population_size
+  }
+  # Export data from function
+  output
+}
+# matsui
+model_unbiased_transmission_1_ <- function(population_size, timesteps) {
+  
+  population <- sample(c("A", "B"), population_size, replace = TRUE)
+
+  output <- tibble(timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
+
+  output$proportion_of_trait_a[1] <- sum(population == "A") / population_size
+
+  for (timestep in 2:timesteps) {
+    
+    # Copy individuals to previous_population tibble
+    previous_population <- population 
+    
+    # Randomly copy from previous generation
+    population <- sample(previous_population, population_size, replace = TRUE)
+    
+    # Get p and put it into output slot for this generation t
+    output$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+  }
+  # Export data from function
+  output
+}
+
+
+bench_1 <- bench::mark(
+  original = unbiased_transmission_1(population_size = 1000, timesteps = 100),
+  ours = model_unbiased_transmission_1(population_size = 1000, timesteps = 100),
+  
+  iterations = 100,
+  relative = TRUE,
+  check = FALSE)
+bench_1 %>% autoplot()
+```
+
