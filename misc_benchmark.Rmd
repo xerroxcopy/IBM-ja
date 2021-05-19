@@ -7,6 +7,7 @@ output: html_notebook
 
 ```{r}
 library(bench)
+library(tidyverse)
 ```
 
 [bench](https://www.tidyverse.org/blog/2018/06/bench-1.0.1/)で測る。毎回シミュレーション結果は異なるのだが、それだとエラーが出るので`check = FALSE`にする。
@@ -42,7 +43,7 @@ unbiased_transmission_1 <- function(population_size, timesteps) {
   output
 }
 # matsui
-model_unbiased_transmission_1_ <- function(population_size, timesteps) {
+model_unbiased_transmission_1 <- function(population_size, timesteps) {
   
   population <- sample(c("A", "B"), population_size, replace = TRUE)
 
@@ -74,5 +75,78 @@ bench_1 <- bench::mark(
   relative = TRUE,
   check = FALSE)
 bench_1 %>% autoplot()
+bench_1
 ```
+2倍程度の高速化、メモリー1/3
+
+
+
+```{r}
+model_unbiased_transmissions <- function(population_size, timesteps, runs) {
+  output <- tibble(run = numeric(), timestep = numeric(), proportion_of_trait_a = numeric())
+  # 毎回の試行
+  for (run in 1:runs) {
+    # １回の試行の結果を保管するtibbleを初期化
+    output_single_run <- tibble(run = rep(run, timesteps), timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
+    # 第1世代
+    population <- sample(c("A", "B"), population_size, replace = TRUE)
+    # 第１世代のproportion_of_trait_aを計算
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (timestep in 2:timesteps) {
+      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
+      previous_population <- population
+      # ランダムに前世代の個人から形質をコピーする
+      population <- sample(previous_population, population_size, replace = TRUE)
+      # proportion_of_trait_aを計算し、tibbleのうちproportion_of_trait_a列のtimestep行目に格納する
+      output_single_run$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+    }
+    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
+    output <- bind_rows(output, output_single_run)
+  }
+  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
+  output
+}
+
+
+unbiased_transmission_2 <- function(N, t_max, r_max) {
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max))) 
+  # For each run
+  for (r in 1:r_max) { 
+    # Create first generation
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE))
+    
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <-
+      sum(population$trait == "A") / N 
+    
+    # For each generation
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Randomly copy from previous generation
+      population <- tibble(trait = sample(previous_population$trait, N, replace = TRUE))
+      
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
+    }
+  }
+    # Export data from function
+  output 
+}
+
+bench_2 <- bench::mark(
+  original = unbiased_transmission_2(N = 1000, t_max = 100, r_max = 5),
+  ours = model_unbiased_transmissions(population_size = 1000, timesteps = 100, runs = 5),
+  iterations = 100,
+  relative = TRUE,
+  check = FALSE)
+bench_2
+bench_2 %>% autoplot()
+```
+7.5倍程度はやくメモリーも1/3.7
 
