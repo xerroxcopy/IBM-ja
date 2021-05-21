@@ -8,6 +8,7 @@
 
 ```{r 1-1}
 library(tidyverse)
+library(magrittr)
 ```
 
 # バイアスなしの伝達 Unbiased transmission
@@ -131,7 +132,7 @@ output
 `timestep`をひとつずつ増やしながらforループで繰り返し計算しよう^[Rのforループは遅く、なるべく避けるべきとされているが、IBMの特性からforループを避けて実装することは難しい]。第1世代に関してはここまでのコードで実装されているため、第2世代からはじめる。各行で何をしようとしているかをコメントでかんたんに説明している。現時点の非常にシンプルなコードにはあまりに冗長に思えるかもしれないが、習慣として身につけておくに越したことはない^[実装時は隅から隅までわかっていても、数ヶ月後に実際に論文を投稿する際に憶えているとは限らない。]。コードはしばしば他のところにコピペされ、当初の文脈を失う。各行が何をするかをメモしておけば、他のひと（とくに未来の忘れっぽいあなた）に意図を知ってもらえる。
 
 ```{r 1-7}
-for (timestep in 2:timesteps) {
+ for (timestep in 2:timesteps) {
   # populationテーブルをprevious_populationという新しいテーブルにコピー
   previous_population <- population
   # 前世代の個人からランダムに形質をコピーする
@@ -194,11 +195,11 @@ model_unbiased_transmission <- function(population_size, timesteps) {
 
   for (timestep in 2:timesteps) {
     # Copy individuals to previous_population tibble
-    previous_population <- population
-
+    previous_population <- population 
+    
     # Randomly copy from previous generation
     population <- sample(previous_population, population_size, replace = TRUE)
-
+    
     # Get p and put it into output slot for this generation t
     output$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
   }
@@ -241,7 +242,7 @@ plot_single_run <- function(data) {
 
 ```{r 1-12, fig.cap = "バイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
 data_unbiased_transmission |>
-plot_single_run()
+  plot_single_run()
 ```
 
 ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`%>%`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
@@ -260,7 +261,7 @@ plot_single_run(data_unbiased_transmission)
 
 ```{r 1-13, fig.cap = "大きな集団サイズにおけるバイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
 model_unbiased_transmission(population_size = 10000, timesteps = 200) |>
-plot_single_run()
+  plot_single_run()
 ```
 
 <!-- You should see much less fluctuation. Rarely in a population of $N = 10000$ will either trait go to fixation. Try re-running the previous code chunk to explore the effect of $N$ on long-term dynamics. -->
@@ -336,16 +337,16 @@ plot_multiple_runs <- function(data) {
 
 ```{r 1-16, eval=FALSE}
 output |>
-ggplot(aes(x = timestep, y = proportion_of_trait_a)) +
-  geom_line()
+  ggplot(aes(x = timestep, y = proportion_of_trait_a)) +
+    geom_line()
 ```
 
 上記は下記と同等である：
 
 ```{r 1-17, eval=FALSE}
 output |>
-ggplot() +
-  geom_line(aes(x = timestep, y = proportion_of_trait_a))
+  ggplot() +
+    geom_line(aes(x = timestep, y = proportion_of_trait_a))
 ```
 
 <!-- We can use this property to make more complex plots. The plot created in `plot_multiple_runs()` has a first geom, `geom_line()`. This inherits the aesthetics specified in the initial call to `ggplot()` but also has a new mapping specific to `geom_line()`, `colour = run`. This tells ggplot to plot each run line with a different colour. The next command, `stat_summary()`, calculates the mean of all runs. However, this only inherits the mapping specified in the initial `ggplot()` call. If in the aesthetic of `stat_summary()` we had also specified `colour = run`, it would separate the data by run, and it would calculate the mean of each run. This, though, is just the lines we have already plotted with the `geom_line()` command. For this reason, we did not put `colour = run` in the `ggplot()` call, only in `geom_line()`. As always, there are various ways to obtain the same result. This code: -->
@@ -354,9 +355,9 @@ ggplot() +
 
 ```{r 1-18, eval=FALSE}
 output |>
-ggplot(data = output) +
-  geom_line(aes(x = timestep, y = proportion_of_trait_a, colour = run)) +
-  stat_summary(aes(x = timestep, y = proportion_of_trait_a), fun = mean, geom = "line", size = 1)
+  ggplot(data = output) +
+    geom_line(aes(x = timestep, y = proportion_of_trait_a, colour = run)) +
+    stat_summary(aes(x = timestep, y = proportion_of_trait_a), fun = mean, geom = "line", size = 1)
 ```
 
 <!-- is equivalent to the code we wrapped in the function above. However, the original code is clearer, as it distinguishes the global mapping, and the mappings specific to each visual representation.  -->
@@ -408,15 +409,16 @@ To find out, we can add another parameter, `p_0`, which specifies the initial pr
 
 ```{r 1-22}
 
-model_unbiased_transmissions_varying_initial_condition <- function(population_size,
-                                                                   timesteps,
-                                                                   runs,
-                                                                   initial_proportion_of_trait_a) {
+model_unbiased_transmissions_varying_initial_condition <- function(
+  population_size,
+  timesteps,
+  runs, 
+  initial_proportion_of_trait_a) {
   output <- tibble(
-    run = numeric(),
-    timestep = numeric(),
+    run = numeric(), 
+    timestep = numeric(), 
     proportion_of_trait_a = numeric()
-  )
+    )
   for (run in 1:runs) {
     # 1回の試行の結果を保管するtibbleを初期化
     output_single_run <- tibble(run = rep(run, timesteps), timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))

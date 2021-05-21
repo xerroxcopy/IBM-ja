@@ -8,6 +8,7 @@
 
 ```{r 1-1}
 library(tidyverse)
+library(magrittr)
 ```
 
 # バイアスなしの伝達 Unbiased transmission
@@ -101,7 +102,7 @@ output
 `NA`を入力することには成功したが、考えてみると第1世代の集団の形質は既に生成しているのだから、第1世代の`proportion\_of\_trait\_a`の値は計算可能のはずだ。以下のコードでは`population`ベクトル内の文字列`"A"`の数を数え上げ、`population\_size`で割ることで割合を計算している。そしてその値を`output`のテーブルの`proportion\_of\_trait\_a`の列の第一行目（`[1]`）つまり第1世代$timestep=1$に代入している。チャンクの2行目ではこれまでと同様、テーブルの変数名を書くことでうまくいっているか確認している。
 
 ```{r 1-6}
-output$proportion_of_trait_a[1] <- sum(population$trait == "A") / N
+output$p[1] <- sum(population$trait == "A") / N
 output
 ```
 
@@ -131,7 +132,7 @@ output
 `timestep`をひとつずつ増やしながらforループで繰り返し計算しよう^[Rのforループは遅く、なるべく避けるべきとされているが、IBMの特性からforループを避けて実装することは難しい]。第1世代に関してはここまでのコードで実装されているため、第2世代からはじめる。各行で何をしようとしているかをコメントでかんたんに説明している。現時点の非常にシンプルなコードにはあまりに冗長に思えるかもしれないが、習慣として身につけておくに越したことはない^[実装時は隅から隅までわかっていても、数ヶ月後に実際に論文を投稿する際に憶えているとは限らない。]。コードはしばしば他のところにコピペされ、当初の文脈を失う。各行が何をするかをメモしておけば、他のひと（とくに未来の忘れっぽいあなた）に意図を知ってもらえる。
 
 ```{r 1-7}
-for (timestep in 2:timesteps) {
+ for (timestep in 2:timesteps) {
   # populationテーブルをprevious_populationという新しいテーブルにコピー
   previous_population <- population
   # 前世代の個人からランダムに形質をコピーする
@@ -194,11 +195,11 @@ model_unbiased_transmission <- function(population_size, timesteps) {
 
   for (timestep in 2:timesteps) {
     # Copy individuals to previous_population tibble
-    previous_population <- population
-
+    previous_population <- population 
+    
     # Randomly copy from previous generation
     population <- sample(previous_population, population_size, replace = TRUE)
-
+    
     # Get p and put it into output slot for this generation t
     output$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
   }
@@ -241,7 +242,7 @@ plot_single_run <- function(data) {
 
 ```{r 1-12, fig.cap = "バイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
 data_unbiased_transmission |>
-plot_single_run()
+  plot_single_run()
 ```
 
 ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`%>%`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
@@ -260,7 +261,7 @@ plot_single_run(data_unbiased_transmission)
 
 ```{r 1-13, fig.cap = "大きな集団サイズにおけるバイアスなしの文化伝達下での形質Aを有する個人の割合のランダムな変動"}
 model_unbiased_transmission(population_size = 10000, timesteps = 200) |>
-plot_single_run()
+  plot_single_run()
 ```
 
 <!-- You should see much less fluctuation. Rarely in a population of $N = 10000$ will either trait go to fixation. Try re-running the previous code chunk to explore the effect of $N$ on long-term dynamics. -->
@@ -281,11 +282,11 @@ model_unbiased_transmissions <- function(population_size, timesteps, runs) {
   output <- tibble(run = factor(), timestep = numeric(), proportion_of_trait_a = numeric())
   # 毎回の試行
   for (run in 1:runs) {
-    # 1回の試行の結果を保管するtibbleを初期化
+    # １回の試行の結果を保管するtibbleを初期化
     output_single_run <- tibble(run = rep(run, timesteps) %>% as.factor(), timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
     # 第1世代
     population <- sample(c("A", "B"), population_size, replace = TRUE)
-    # 第1世代のproportion_of_trait_aを計算
+    # 第１世代のproportion_of_trait_aを計算
     proportion_of_trait_a <- sum(population == "A") / population_size
     output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
     for (timestep in 2:timesteps) {
@@ -330,114 +331,89 @@ plot_multiple_runs <- function(data) {
 }
 ```
 
-<!-- To understand how the above code works, we need to explain the general functioning of ggplot. As explained above, `aes()` specifies the 'aesthetics', or how the data are mapped in the plot. This is independent from the possible visual representations of this mapping, or 'geoms'. If we declare specific aesthetics when we call `ggplot()`, these aesthetics will be applied to all geoms we call afterwards. Alternatively, we can specify the aesthetics in the geom itself. For example this: -->
-
-上記コードがどう動くかを理解するには、ggplotの一般的な機能の仕方を説明する必要がある。前述したとおり、`aes()`はaesthetics、つまりデータがどうプロットにマップされるかを設定する。これはマッピングの視覚的な表現、つまり'geoms'とは独立である。`ggplot()`関数を呼び出したときに特定のaestheticsを宣言したら、そのaestheticsはそれ以降のgeomsすべてに適用される。しかし、geomごとにaestheticsを指定することもできる。例えば次のように：
+To understand how the above code works, we need to explain the general functioning of ggplot. As explained above, `aes()` specifies the 'aesthetics', or how the data are mapped in the plot. This is independent from the possible visual representations of this mapping, or 'geoms'. If we declare specific aesthetics when we call `ggplot()`, these aesthetics will be applied to all geoms we call afterwards. Alternatively, we can specify the aesthetics in the geom itself. For example this:
 
 ```{r 1-16, eval=FALSE}
-output |>
-ggplot(aes(x = timestep, y = proportion_of_trait_a)) +
+ggplot(data = output, aes(y = p, x = generation)) +
   geom_line()
 ```
 
-上記は下記と同等である：
+is equivalent to this:
 
 ```{r 1-17, eval=FALSE}
-output |>
-ggplot() +
-  geom_line(aes(x = timestep, y = proportion_of_trait_a))
+ggplot(data = output) +
+  geom_line(aes(y = p, x = generation))
 ```
 
-<!-- We can use this property to make more complex plots. The plot created in `plot_multiple_runs()` has a first geom, `geom_line()`. This inherits the aesthetics specified in the initial call to `ggplot()` but also has a new mapping specific to `geom_line()`, `colour = run`. This tells ggplot to plot each run line with a different colour. The next command, `stat_summary()`, calculates the mean of all runs. However, this only inherits the mapping specified in the initial `ggplot()` call. If in the aesthetic of `stat_summary()` we had also specified `colour = run`, it would separate the data by run, and it would calculate the mean of each run. This, though, is just the lines we have already plotted with the `geom_line()` command. For this reason, we did not put `colour = run` in the `ggplot()` call, only in `geom_line()`. As always, there are various ways to obtain the same result. This code: -->
-
-この性質を使うと、もっと複雑なプロットを構築することができる。`plot_multiple_runs()`で最初に登場するgeomである`geom_line()`を考えよう。`geom_line()`は最初に呼び出した`ggplot()`で設定したaestheticsを継承するが、加えて`geom_line()`特有の新しいマッピング`colour = run`を指定している。これにより、各試行のラインを違う色で塗るようにggplotに伝えているのだ。次のgeomの`stat_summary()`はすべての試行について平均を計算する^[`colour = run`のaestheticsを`ggplot()`の中で設定するとすべての試行についての平均にはならない。わざわざ色の情報を`geom_line()`に書いているのは、`stat_summary()`では試行ごとでグルーピングしたくないから。]。しかし、マッピングに関しては最初の`ggplot()`の呼び出しのものしか継承しない。もし`stat_summary()`内でaestheticを`colour = run`と指定すれば、データを`run`でわけ、それぞれの試行ごとに平均を計算するだろう。しかし、その平均の線はさきほど`geom_line()`でプロットしたものと全くおなじになる。それゆえ、`colour = run`を`ggplot()`関数の中では指定せず、色を分けたい`geom_line()`でのみ指定するようにしている。よくあることだが、同じ結果をいくつもの方法で実装できる。以下のコードは：
+We can use this property to make more complex plots. The plot created in `plot_multiple_runs()` has a first geom, `geom_line()`. This inherits the aesthetics specified in the initial call to `ggplot()` but also has a new mapping specific to `geom_line()`, `colour = run`. This tells ggplot to plot each run line with a different colour. The next command, `stat_summary()`, calculates the mean of all runs. However, this only inherits the mapping specified in the initial `ggplot()` call. If in the aesthetic of `stat_summary()` we had also specified `colour = run`, it would separate the data by run, and it would calculate the mean of each run. This, though, is just the lines we have already plotted with the `geom_line()` command. For this reason, we did not put `colour = run` in the `ggplot()` call, only in `geom_line()`. As always, there are various ways to obtain the same result. This code:
 
 ```{r 1-18, eval=FALSE}
-output |>
 ggplot(data = output) +
-  geom_line(aes(x = timestep, y = proportion_of_trait_a, colour = run)) +
-  stat_summary(aes(x = timestep, y = proportion_of_trait_a), fun = mean, geom = "line", size = 1)
+  geom_line(aes(y = p, x = generation, colour = run)) +
+  stat_summary(aes(y = p, x = generation), fun = mean, geom = "line", size = 1)
 ```
 
-<!-- is equivalent to the code we wrapped in the function above. However, the original code is clearer, as it distinguishes the global mapping, and the mappings specific to each visual representation.  -->
-上記の関数として書いたものと同等である。しかし、元のコードのほうがグローバルマッピングと各視覚的な表現で用いる特定のマッピングをはっきりとわけて書いており、より明快である。
+is equivalent to the code we wrapped in the function above. However, the original code is clearer, as it distinguishes the global mapping, and the mappings specific to each visual representation. 
 
-<!-- `stat_summary()` is a generic ggplot function which can be used to plot different statistics to summarise our data. In this case, we want to calculate the mean of the data mapped in $y$, we want to plot them with a line, and we want this line to be thicker than the lines for the single runs. The default line size for geom_line is 0.5, so `size = 1` doubles the thickness. -->
+`stat_summary()` is a generic ggplot function which can be used to plot different statistics to summarise our data. In this case, we want to calculate the mean of the data mapped in $y$, we want to plot them with a line, and we want this line to be thicker than the lines for the single runs. The default line size for geom_line is 0.5, so `size = 1` doubles the thickness.
 
-`stat_summary()`はggplotのジェネリックな関数で、データをなんらかの統計量に要約summarizeする際に使える。今回は、$y$にマップされたデータを平均し、折れ線として描画し、ほかの試行結果のプロット線よりも太く描画したい。デフォルトの線幅は0.5のため、`size = 1`と設定するとデフォルト値の倍の太さになる。
+Let's now run the function and plot the results for five runs with the same parameters we used at the beginning ($N=100$ and $t_{\text{max}}=200$):
 
-<!-- Let's now run the function and plot the results for five runs with the same parameters we used at the beginning ($N=100$ and $t_{\text{max}}=200$): -->
-
-つぎに関数を実行し、最初に用いたのと同じパラメーター（$population_size = 100$、$timesteps = 200$）で5試行まわした結果をプロットしてみよう。
-
-```{r 1-19, fig.cap = "バイアスなしの文化伝達が複数回試行すると異なった動態を示す"}
-data <- model_unbiased_transmissions(population_size = 100, timesteps = 200, runs = 5)
-plot_multiple_runs(data)
+```{r 1-19, fig.cap = "Unbiased cultural transmission generates different dynamics in multiple runs"}
+data_model <- unbiased_transmission_2(N = 100, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
 ```
 
-<!-- You should be able to see five independent runs of our simulation shown as regular thin lines, along with a thicker line showing the mean of these lines. Some runs have probably gone to 0 or 1, and the mean should be somewhere in between. The data is stored in `data_model`, which we can inspect by writing its name. -->
-
-5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては0か1に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
+You should be able to see five independent runs of our simulation shown as regular thin lines, along with a thicker line showing the mean of these lines. Some runs have probably gone to 0 or 1, and the mean should be somewhere in between. The data is stored in `data_model`, which we can inspect by writing its name.
 
 ```{r 1-20}
-data
+data_model
 ```
 
-<!-- Now let's run the `unbiased_transmission_2()` model with $N = 10000$, to compare with $N = 100$. -->
+Now let's run the `unbiased_transmission_2()` model with $N = 10000$, to compare with $N = 100$.
 
-今度は`model_unbiased_transmissions`の$population_size$を10000に設定し、$population_size = 100$と比較してみよう。
-
-```{r 1-21, fig.cap = "バイアスなしの文化伝達は集団サイズが極めて大きいと、異なる試行間でも似たようなダイナミクスを示す"}
-data <- model_unbiased_transmissions(population_size = 10000, timesteps = 200, runs = 5)
-plot_multiple_runs(data)
+```{r 1-21, fig.cap = "Unbiased cultural transmission generates similar dynamics in multiple runs when population sizes are very large"}
+data_model <- unbiased_transmission_2(N = 10000, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
 ```
 
-<!-- The mean line should be almost exactly at $p=0.5$ now, with the five independent runs fairly close to it. -->
+The mean line should be almost exactly at $p=0.5$ now, with the five independent runs fairly close to it.
 
-平均を示す線は今回ほぼ完全に$proportion_of_trait_a = 0.5$になったはずで、５回の独立した試行の線もかなりそれに近いはずだ。
+## Varying initial conditions
 
-## 初期状態を変えるVarying initial conditions
-
-<!-- Let's add one final modification. So far the starting frequencies of $A$ and $B$ have been the same, roughly 0.5 each. But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.2$ or $p=0.9$? Would unbiased transmission keep $p$ at these initial values, or would it go to $p=0.5$ as we have found so far? -->
-
-最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい0.5ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
+Let's add one final modification. So far the starting frequencies of $A$ and $B$ have been the same, roughly 0.5 each. But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.2$ or $p=0.9$? Would unbiased transmission keep $p$ at these initial values, or would it go to $p=0.5$ as we have found so far?
 
 To find out, we can add another parameter, `p_0`, which specifies the initial probability of an individual having an $A$ rather than a $B$ in the first generation. Previously this was always `p_0 = 0.5`, but in the new function below we add it to the `sample()` function to weight the initial allocation of traits.
 
-これに答えるために、もう一つのパラメータ$initial_proportion_of_trait_a$^[原著では$p_0$]を加えよう。この新パラメータは第1世代の個々人が$B$ではなく$A$を有する初期の確率を設定する。いままではつねに$initial_proportion_of_trait_a = 0.5$ではじめていたが、次の新しい関数では`sample()`関数において最初の形質配分を$initial_proportion_of_trait_a$を用いて制御する。
-
 ```{r 1-22}
+unbiased_transmission_3 <- function(N, p_0, t_max, r_max) {
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+  # For each run
+  for (r in 1:r_max) {
+    # Create first generation
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE, 
+                                        prob = c(p_0, 1 - p_0)))
+    
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
 
-model_unbiased_transmissions_varying_initial_condition <- function(population_size,
-                                                                   timesteps,
-                                                                   runs,
-                                                                   initial_proportion_of_trait_a) {
-  output <- tibble(
-    run = numeric(),
-    timestep = numeric(),
-    proportion_of_trait_a = numeric()
-  )
-  for (run in 1:runs) {
-    # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(run = rep(run, timesteps), timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
-    # 第1世代
-    population <- sample(c("A", "B"), population_size, replace = TRUE, prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a))
-    # 第1世代のproportion_of_trait_aを計算
-    proportion_of_trait_a <- sum(population == "A") / population_size
-    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
-    for (timestep in 2:timesteps) {
-      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
-      previous_population <- population
-      # ランダムに前世代の個人から形質をコピーする
-      population <- sample(previous_population, population_size, replace = TRUE)
-      # proportion_of_trait_aを計算し、tibbleのうちproportion_of_trait_a列のtimestep行目に格納する
-      output_single_run$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Randomly copy from previous generation
+      population <- tibble(trait = sample(previous_population$trait, N, replace = TRUE))
+      
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N  
     }
-    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
-    output <- bind_rows(output, output_single_run)
   }
-  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
-  output
+  # Export data from function
+  output 
 }
 ```
 
