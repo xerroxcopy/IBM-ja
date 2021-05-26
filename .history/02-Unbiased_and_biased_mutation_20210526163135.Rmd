@@ -343,8 +343,6 @@ model_unbiased_mutation_truefalse <- function(
 ベンチマークしながら一歩ずつ高速化するのは非常に有意義である。当初`if_else()`と`recode()`を使った高速化を試みた(`population <- if_else(is_mutant, population[is_mutant] |> recode(A = "B", B = "A"), population)`)が、むしろオリジナルよりも遅くなった。
 
 
-## もっと深く知りたい人に
+## Further reading
 
 @boyd_culture_1985 model what they call 'guided variation', which is equivalent to biased mutation as modelled in this chapter. @henrich_cultural_2001 shows how biased mutation / guided variation generates r-shaped curves similar to those generated here.
-
-@boyd_culture_1985　では誘導された変異guided variationをモデリングしている。誘導された変異は本章でモデルしたバイアスのある変異に対応する。@henrich_cultural_2001 はバイアスのある変異/誘導された変異がどのように生じるかについて説明している。

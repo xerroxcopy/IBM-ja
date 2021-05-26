@@ -340,11 +340,9 @@ model_unbiased_mutation_truefalse <- function(
 - `is_mutant`を世代のたびに計算しているが、全`runs`、全`generations`について一気に、つまり`population_size`ぶんの`sample()`ではなく`population_size \times generations \times runs`ぶんの`sample()`を一気に計算したらどうなるか
 といった検討が思い浮かぶ。もしかすると速くなるかもしれないし、遅くなるかもしれない。特に前者のアイディアは、tibbleの利用によって遅くなるぶんと、一気に計算することによって速くなるぶんを比べると、遅くなるぶんのほうが大きそうではある。また後者のアイディアは高速化には貢献しそうだが、データ構造を大きく変えなければならず、可読性も犠牲になりそうだ。このように、高速化を施すことはコードの総合的な品質としては一長一短であることが多く、一筋縄にはいかない。`bench`ライブラリの`mark()`や`tictoc`ライブラリの`tic()`, `toc()`関数などを活用して、速さを測りながら高速化してみよう。
 
-ベンチマークしながら一歩ずつ高速化するのは非常に有意義である。当初`if_else()`と`recode()`を使った高速化を試みた(`population <- if_else(is_mutant, population[is_mutant] |> recode(A = "B", B = "A"), population)`)が、むしろオリジナルよりも遅くなった。
+ベンチマークしながら一歩ずつ高速化するのは非常に有意義である。当初`if_else()`と`recode()`を使った高速化を試みたが、むしろオリジナルよりも遅くなった。
 
 
-## もっと深く知りたい人に
+## Further reading
 
 @boyd_culture_1985 model what they call 'guided variation', which is equivalent to biased mutation as modelled in this chapter. @henrich_cultural_2001 shows how biased mutation / guided variation generates r-shaped curves similar to those generated here.
-
-@boyd_culture_1985　では誘導された変異guided variationをモデリングしている。誘導された変異は本章でモデルしたバイアスのある変異に対応する。@henrich_cultural_2001 はバイアスのある変異/誘導された変異がどのように生じるかについて説明している。
