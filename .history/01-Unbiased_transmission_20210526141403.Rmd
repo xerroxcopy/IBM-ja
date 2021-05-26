@@ -324,7 +324,7 @@ We also need a new column called `run` that keeps track of which run the data in
 
 <!-- Going back to the function, we then set up a loop which executes once for each run. The code within this loop is mostly the same as before, except that we now use the `[output$generation == t & output$run == r, ]` notation to put $p$ into the right place in `output`.  -->
 
-関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion\_of\_trait\_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
+関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion_of_trait_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
 
 <!-- The plotting function is also changed to handle multiple runs: -->
 

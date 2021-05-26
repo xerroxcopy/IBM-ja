@@ -1,0 +1,214 @@
+# バイアスのない変異とバイアスのある変異Unbiased and biased mutation
+
+<!-- Evolution doesn't work without a source of variation that introduces new variation upon which selection, drift and other processes can act. In genetic evolution, mutation is almost always blind with respect to function. Beneficial genetic mutations are no more likely to arise when they are needed than when they are not needed - in fact, most genetic mutations are neutral or detrimental to an organism. Cultural evolution is more interesting, in that novel variation may sometimes be directed to solve specific problems, or systematically biased due to features of our cognition. In the models below, we'll simulate both unbiased and biased mutation. -->
+
+淘汰や浮動といった進化的プロセスは、新たな変異を生み出す源なしには成り立たない。遺伝子進化において、変異はほぼつねに変異が引き起こす機能と無関係に、盲目に発生する。有益な遺伝的変異が無益な遺伝的変異よりも起きやすいということはない。というか、実際にはほとんどの遺伝的変異は生物にとって中立か有害である。文化進化には新奇の変異が特定の問題を解決するよう方向づけされていたり、我々の認知の特徴によってシステマティックにバイアスがかかっている場合があるという興味深い特徴がある。以下で取り扱うモデルでは、バイアスのない変異とバイアスのある変異両方をシミュレートしてみたい。
+
+## バイアスのない変異Unbiased mutation
+
+First, we will simulate unbiased mutation in the same basic model as used in the previous chapter. We'll remove unbiased transmission to see the effect of unbiased mutation alone. 
+
+まず、バイアスのない変異を前章で構築した基本的なモデルをもとにシミュレートする。バイアスのない伝達の過程を取り除き、バイアスのない変異の影響だけを観察できるようにする。
+
+As in the previous model, we assume $N$ individuals each of whom possesses one of two discrete cultural traits, denoted $A$ and $B$. In each generation, from $t=1$ to $t=t_{\text{max}}$, the $N$ individuals are replaced with $N$ new individuals. Instead of random copying, each individual now gives rise to a new individual with the same cultural trait as them. (Another way of looking at this is in terms of timesteps, such as years: the same $N$ individual live for $t_{\text{max}}$ years and keep their cultural trait from one year to the next.)
+
+いままでのモデルと同様、人数$population_size$の個人がそれぞれ、ふたつの独立した文化的形質$A$か$B$を有しているとしよう。$
+generation = 1$から$generation = generations$までの各世代において、人数$population_size$の個人は同じく人数$population_size$の新しい個人に入れ替えられる。ただし今回は個々人がランダムに誰かから形質をコピーするのではなく、新しい個人は一つ前の世代の文化的形質をそのままコピーする。これは次のような状況とも考えられる。つまり、年数のようなタイムステップとしても捉えられる。$population_size$人の個人がちょうど$generations$年間生き、そのあいだ、毎年同じ文化的形質を有し続けるのだ。
+
+At each generation, however, there is a probability $\mu$ that each individual mutates from their current trait to the other trait (the Greek letter Mu is the standard notation for the mutation rate in genetic evolution, and it has an analogous function here). For example, vegetarian individuals can decide to eat animal products, and vice versa. Remember, this is not copied from other individuals, as in the previous model, but can be thought of as an individual decision. Another way to see this is that the probability of changing trait applies to each individual independently; whether an individual mutates has no bearing on whether or how many other individuals have mutated. On average, this means that $\mu N$ individuals mutate each generation. Like in the previous model, we are interested in tracking the proportion $p$ of agents with trait $A$ over time.
+
+しかし、各世代において個々人は$mutation_rate$^[原著では$\mu$。ギリシャ文字ミュー$\mu$は遺伝子進化において変異率をあらわす際の標準的な文字であり、ここでも類似の機能をもつ。]の確率で今の形質からもうひとつの形質に持ち替える。たとえば、ベジタリアンの個人が動物性の食品を食べ始めたり、その逆だったり、という具合だ。ここで気をつけてほしいのは、これらは（これまでのモデルのように）他の個人からコピーされるのではなく、個々人による意思決定による産物のたぐいであることだ。こうも考えられる。形質を持ち替える確率は各個人に独立して作用し、個人が変異するかどうかは他に何人変異した人がいるかになんの影響も受けない。平均して、各世代$mutation_rate population_size$人の個人が変異することになる。以前のモデルと同様、$A$を有する個人の割合$proportion\_of\_trait\_a$の推移に興味がある。
+
+We'll wrap this in a function called `unbiased_mutation()`, using much of the same code as `unbiased_transmission_3()`. As before, we need to call the tidyverse library in order to use the tibble command, and later commands like ggplot2.
+
+`model_unbiased_mutation()`という関数でラップしよう。ほとんどのコードは`model_unbiased_transmissions_varying_initial_condition`からの流用だ。以前と同様、tibbleコマンドやggplot2などを使うためにtidyverseライブラリを読み込む。
+
+```{r 2-1, message = FALSE}
+library(tidyverse)
+
+model_unbiased_mutation <- function(
+  population_size,
+  generations,
+  runs, 
+  initial_proportion_of_trait_a) {
+  output <- tibble(
+    run = factor(), 
+    generation = numeric(), 
+    proportion_of_trait_a = numeric()
+  )
+  for (run in 1:runs) {
+    # 1回の試行の結果を保管するtibbleを初期化
+    output_single_run <- tibble(
+      run = rep(run, generations) %>% as.factor(), 
+      generation = 1:generations, 
+      proportion_of_trait_a = rep(NA, generations)
+    )
+    # 第1世代
+    population <- sample(
+      c("A", "B"), 
+      population_size, replace = TRUE, 
+      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
+    )
+    # 第1世代のproportion_of_trait_aを計算
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (generation in 2:generations) {
+      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
+      previous_population <- population
+      # 変異する個人('mutant')を決める
+      is_mutant <- sample(
+        c(TRUE, FALSE), 
+        population_size, 
+        prob = c(mutation_rate, 1 - mutation_rate),
+        replace = TRUE
+      )
+      # is_mutantがTRUEであるスロットの形質がもしAならBに、もしBならAにする。
+      # is_mutantがFALSEであるスロットはそのままにする。
+      population <- 
+      if_else(
+        is_mutant, 
+        if_else(population == "A", "B", "A"), 
+        population
+      )
+      # proportion_of_trait_aを計算し、tibbleのうち
+      # proportion_of_trait_a列のgeneration行目に格納する
+      output_single_run$proportion_of_trait_a[generation] <- 
+      sum(population == "A") / population_size
+    }
+    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
+    output <- bind_rows(output, output_single_run)
+  }
+  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
+  output
+}
+```
+
+
+The only changes from the previous model are the addition of `mu`, the parameter that specifies the probability of mutation, in the function definition and new lines of code within the `for` loop on `t` which replace the random copying command with unbiased mutation. Let's examine these lines to see how they work.
+
+`mutation_rate`の追加が唯一の変更である。`mutation_rate`パラメータは変異確率を決めるもので、`generation`を更新していくforループ内で、ランダムコピーするコマンドをバイアスなしの変異に置き換えている。変更点をひとつずつみていこう。
+
+
+The most obvious way of implementing unbiased mutation - which is *not* done above - would have been to set up another `for` loop. We would cycle through every individual one by one, each time calculating whether it should mutate or not based on `mu`. This would certainly work, but R is notoriously slow at loops. It's always preferable in R, where possible, to use 'vectorised' code. That's what is done above in our three added lines, starting from `mutate <- sample()`. 
+
+バイアスなしの変異を実装する最もありがちな方法は（上記の例では採用してい*ない*が）、もう一重`for`ループを追加することだろう。各個人を一人ひとり集会していき、そのたびにその個人の形質が変異すべきかどうかを`mutation_rate`を使って計算していくのだ。これでもまあ動くには動くのだが、Rはループ計算が遅いことで非常に悪名高い。
+
+`is_mutant`は`TRUE``FALSE`値を返すから、`is_`の接頭語がふさわしい。
+
+
+First, we pre-specify the probability of mutating for each individual. For this, we again use the function `sample()`, picking `TRUE` (corresponding to being a mutant) or `FALSE` (not mutating, i.e. keeping the same cultural trait) for $N$ times. The draw, however, is not random: the probability of drawing `TRUE` is equal to $\mu$, and the probability of drawing `FALSE` is $1-\mu$. You can think about the procedure in this way: each individual in the population flips a biased coin that has $\mu$ probability to land on, say, heads, and $1-\mu$ to land on tails. If it lands on heads they change their cultural trait.
+
+In the subsequent lines we change the traits for the 'mutant' individuals. We need to check whether there are individuals that change their trait, both from $A$ to $B$ and vice versa, using the two `if` conditionals. If there are no such individuals, then assigning a new value to an empty tibble returns an error. To avoid this, we make sure that the number of rows is greater than 0 (using `nrow()>0` within the `if`). 
+
+To plot the results, we can use the same function `plot_multiple_runs()` we wrote in the [previous chapter][Unbiased transmission].
+
+```{r 2-2, echo=FALSE}
+plot_multiple_runs <- function(data_model) {
+  ggplot(data = data_model, aes(y = p, x = generation)) +
+    geom_line(aes(colour = run)) +
+    stat_summary(fun = mean, geom = "line", size = 1) +
+    ylim(c(0, 1)) +
+    theme_bw() +
+    labs(y = "p (proportion of individuals with trait A)")
+}
+```
+
+Let's now run and plot the model:
+
+```{r 2-3, fig.cap = "Trait frequencies fluctuate around 0.5 under unbiased mutation"}
+data_model <- unbiased_mutation(N = 100, mu = 0.05, p_0 = 0.5, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
+```
+
+Unbiased mutation produces random fluctuations over time and does not alter the overall frequency of $A$, which stays around $p=0.5$. Because mutations from $A$ to $B$ are as equally likely as $B$ to $A$, there is no overall directional trend. 
+
+If you remember from the previous chapter, with unbiased transmission, when populations were small (e.g. $N=100$) generally one of the traits disappeared after a few generations. Here, though, with $N=100$, both traits remain until the end of the simulation. Why this difference? You can think of it in this way: when one trait becomes popular, say the frequency of $A$ is equal to $0.8$, with unbiased transmission it is more likely that individuals of the new generation will pick up $A$ randomly when copying. The few individuals with trait $B$ will have 80% probability of copying $A$. With unbiased mutation, on the other hand, since $\mu$ is applied independently to each individual, when $A$ is common then there will be more individuals that will flip to $B$ (specifically, $\mu p N$ individuals, which in our case is 4) than individuals that will flip to $A$ (equal to $\mu (1-p) N$ individuals, in our case 1) keeping the traits at similar frequencies.
+
+But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.1$ and $p=0.9$? Would $A$ disappear? Would unbiased mutation keep $p$ at these initial values, like we saw unbiased transmission does in Model 1?
+
+To find out, let's change $p_0$, which specifies the initial probability of drawing an $A$ rather than a $B$ in the first generation.
+
+```{r 2-4, fig.cap = "Unbiased mutation causes trait frequencies to converge on 0.5, irrespective of starting frequencies"}
+data_model <- unbiased_mutation(N = 100, mu = 0.05, p_0 = 0.1, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
+```
+
+You should see $p$ go from $0.1$ up to $0.5$. In fact, whatever the initial starting frequencies of $A$ and $B$, unbiased mutation always leads to $p=0.5$, for the reason explained above: unbiased mutation always tends to balance the proportion of $A$s and $B$s.
+
+## Biased mutation
+
+A more interesting case is biased mutation. Let's assume now that there is a probability $\mu_b$ that an individual with trait $B$ mutates into $A$, but there is no possibility of trait $A$ mutating into trait $B$. Perhaps trait $A$ is a particularly catchy or memorable version of a story or an intuitive explanation of a phenomenon, and $B$ is difficult to remember or unintuitive to understand.
+
+The function `biased_mutation()` captures this unidirectional mutation.
+
+```{r 2-5}
+biased_mutation <- function(N, mu_b, p_0, t_max, r_max) {
+   # Create the output tibble
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+
+  for (r in 1:r_max) {
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE, 
+                                        prob = c(p_0, 1 - p_0)))
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Determine 'mutant' individuals
+      mutate <- sample(c(TRUE, FALSE), N, prob = c(mu_b, 1 - mu_b), replace = TRUE) 
+      
+      # If there are 'mutants' from B to A
+      if (nrow(population[mutate & previous_population$trait == "B", ]) > 0) {
+        # Then flip them to A
+        population[mutate & previous_population$trait == "B", ]$trait <- "A"
+      }
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
+    }
+  }
+  # Export data from function
+  output 
+}
+```
+
+There are just two changes in this code compared to `unbiased_mutation()`. First, we've replaced `mu` with `mu_b` to keep the two parameters distinct and avoid confusion. Second, the line in `unbiased_mutation()` which caused individuals with $A$ to mutate to $B$ has been deleted.
+
+Let's see what effect this has by running `biased_mutation()`. We'll start with the population entirely composed of individuals with $B$, i.e. $p_0=0$, to see how quickly and in what manner $A$ spreads via biased mutation.
+
+```{r 2-6, fig.cap = "Biased mutation causes the favoured trait to replace the unfavoured trait"}
+data_model <- biased_mutation(N = 100, mu_b = 0.05, p_0 = 0, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
+```
+
+The plot shows a steep increase that slows and plateaus at $p=1$ by around generation $t=100$. There should be a bit of fluctuation in the different runs, but not much. Now let's try a larger sample size.
+
+```{r 2-7, fig.cap = "Increasing the population size does not change the rate at which biased mutation causes the favoured trait to increase in frequency"}
+data_model <- biased_mutation(N = 10000, mu_b = 0.05, p_0 = 0, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
+```
+
+With $N = 10000$ the line should be smooth with little (if any) fluctuation across the runs. But notice that it plateaus at about the same generation, around $t=100$. Population size has little effect on the rate at which a novel trait spreads via biased mutation. $\mu_b$, on the other hand, does affect this speed. Let's double the biased mutation rate to 0.1.
+
+```{r 2-8, fig.cap = "Increasing the mutation rate increases the rate at which biased mutation causes the favoured trait to increase in frequency"}
+data_model <- biased_mutation(N = 10000, mu_b = 0.1, p_0 = 0, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
+```
+
+Now trait $A$ reaches fixation around generation $t=50$. Play around with $N$ and $\mu_b$ to confirm that the latter determines the rate of diffusion of trait $A$, and that it takes the same form each time - roughly an 'r' shape with an initial steep increase followed by a plateauing at $p=1$.
+
+## Summary of the model
+
+With this simple model, we can draw the following insights. Unbiased mutation, which resembles genetic mutation in being non-directional, always leads to an equal mix of the two traits. It introduces and maintains cultural variation in the population. It is interesting to compare unbiased mutation to unbiased transmission from the previous chapter. While unbiased transmission did not change $p$ over time, unbiased mutation always converges on $p=0.5$, irrespective of the starting frequency. (NB $p = 0.5$ assuming there are two traits; more generally, $p=1/v$, where $v$ is the number of traits.) 
+
+Biased mutation, which is far more common - perhaps even typical - in cultural evolution, shows different dynamics. Novel traits favoured by biased mutation spread in a characteristic fashion - an r-shaped diffusion curve - with a speed characterised by the mutation rate $\mu_b$. Population size has little effect, whether $N = 100$ or $N = 10000$. Whenever biased mutation is present ($\mu_b>0$), the favoured trait goes to fixation, even if it is not initially present.
+
+In terms of programming techniques, the major novelty in this model is the use of `sample()` to determine which individuals should undergo whatever the fixed probability specifies (in our case, mutation). This could be done with a loop, but vectorising code in the way we did here is much faster in R than loops.
+
+## Further reading
+
+@boyd_culture_1985 model what they call 'guided variation', which is equivalent to biased mutation as modelled in this chapter. @henrich_cultural_2001 shows how biased mutation / guided variation generates r-shaped curves similar to those generated here.

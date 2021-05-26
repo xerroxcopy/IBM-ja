@@ -11,7 +11,7 @@ library(tidyverse)
 
 ```
 
-# バイアスなしの伝達
+# バイアスなしの伝達 Unbiased transmission
 
 <!-- We start by simulating a simple case of unbiased cultural transmission. We will detail each step of the simulation and explain the code line-by-line. In the following chapters, we will reuse most of this initial model, building up the complexity of our simulations.  -->
 
@@ -245,7 +245,7 @@ data_unbiased_transmission |>
   plot_single_run()
 ```
 
-ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`|>`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
+ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`%>%`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
 
 ```{r 1-14}
 plot_single_run(data_unbiased_transmission)
@@ -288,7 +288,7 @@ model_unbiased_transmissions <- function(population_size, generations, runs) {
   for (run in 1:runs) {
     # 1回の試行の結果を保管するtibbleを初期化
     output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
+      run = rep(run, generations) %>% as.factor(), 
       generation = 1:generations, 
       proportion_of_trait_a = rep(NA, generations)
     )
@@ -319,12 +319,12 @@ model_unbiased_transmissions <- function(population_size, generations, runs) {
 
 We also need a new column called `run` that keeps track of which run the data in the other two columns belongs to. Note that the definition of `run` is preceded by `as.factor()`. This specifies the type of data to put in the `run` column. We want `run` to be a 'factor' or categorical variable so that, even if runs are labelled with numbers (1, 2, 3...), this should not be misinterpreted as a continuous, real number: there is no sense in which run 2 is twice as 'runny' as run 1, or run 3 half as 'runny' as run 6. Runs could equally have been labelled using letters, or any other arbitrary scheme. While omitting `as.factor()` does not make any difference when running the simulation, it would create problems when plotting the data because ggplot would treat runs as continuous real numbers rather than discrete categories (you can see this yourself by modifying the definition of `output` in the previous code chunk). This is a good example of how it is important to have a clear understanding of your data before trying to plot or analyse them. -->
 
-ここでいくつかの変更を加えている。まず、`output`tibbleには全試行のデータを格納できるようにしなければならない。そのため、従前と同様`generation`と`proportion_of_trait_a`を保管するのに加え、何回目の試行であるかを示す列`run`を追加した^[原著では最初に最終的なアウトプットと同サイズの巨大なtibbleをつくり、`NA`を入れるなどして初期化している。本バージョンでは型だけ指定した0行３列のtibbleの殻を用意し、試行が終了するたびに行を一気に追加するようにしている。この変更と今までの高速化により、筆者の環境で7.5倍程度高速化している]。まずは`output`tibbleには１行も追加せず、型だけ指定してみよう。列の中身を`numeric()`としておくことで連続値のみで構成される行であると、また`factor()`としておくことでfactor型（カテゴリカルな値）のみで構成される行であると指定できる。そしてそれぞれの試行において、`generation`の更新のたびに結果を`output_single_run` tibbleに格納していく（１試行につきひとつの`output_single_run`を使い回す）。そして試行がおわるたびに`bind_rows()`関数で結果を`output`tibbleの下部に付け加えていく^[`bind_rows()`関数の使い方に関しては [tidyverse](https://dplyr.tidyverse.org/reference/bind.html) のマニュアルを参照。]。`run`は`as.factor()`関数にパイプでつなぎ、factor型、つまりカテゴリカル変数として記録している。これは、`run`を1,2,3という数字で記録しても、何番目の試行であるというだけの理由でつけられた便宜上のラベルであり、3番目の試行が6番目の試行にくらべて半分しか「試行」でない、ということはありえず、連続値の実数として捉えられるべきではないからだ。試行は文字やその他どんな方法でラベル付けしてもいいたぐいのものである。`as.factor()`を除いてもシミュレーションの実行そのものにはなんの差もうまないが、データをプロットする段になって問題が起きる。というのも、ggplotが試行を離散のカテゴリとしてではなく連続の実数として扱うためだ（この差は上記コードで`factor()`を`numeric()`にしたうえで`|> as.factor()`を削除することで確認できる）。に必要なデータの構造をプロットや解析をするまえに考えることの重要性を示すよい例である^[と原著では書いているが、factor型への変更などはシミュレーションをまわしたあとでもごく簡単に(`data |> mutate(run = as.factor(run))`とするか、`geom_line(aes(group = as.factor(run))`)できるし、連続値として保存しておくことの利点も大きい。まずは連続値として保管しておき、プロットの段になってデータを微調整する、というワークフローのほうが現実的には有用だと私は思う。]。
+ここでいくつかの変更を加えている。まず、`output`tibbleには全試行のデータを格納できるようにしなければならない。そのため、従前と同様`generation`と`proportion_of_trait_a`を保管するのに加え、何回目の試行であるかを示す列`run`を追加した^[原著では最初に最終的なアウトプットと同サイズの巨大なtibbleをつくり、`NA`を入れるなどして初期化している。本バージョンでは型だけ指定した0行３列のtibbleの殻を用意し、試行が終了するたびに行を一気に追加するようにしている。この変更と今までの高速化により、筆者の環境で7.5倍程度高速化している]。まずは`output`tibbleには１行も追加せず、型だけ指定してみよう。列の中身を`numeric()`としておくことで連続値のみで構成される行であると、また`factor()`としておくことでfactor型（カテゴリカルな値）のみで構成される行であると指定できる。そしてそれぞれの試行において、`generation`の更新のたびに結果を`output_single_run` tibbleに格納していく（１試行につきひとつの`output_single_run`を使い回す）。そして試行がおわるたびに`bind_rows()`関数で結果を`output`tibbleの下部に付け加えていく^[`bind_rows()`関数の使い方に関しては [tidyverse](https://dplyr.tidyverse.org/reference/bind.html) のマニュアルを参照。]。`run`は`as.factor()`関数にパイプでつなぎ、factor型、つまりカテゴリカル変数として記録している。これは、`run`を1,2,3という数字で記録しても、何番目の試行であるというだけの理由でつけられた便宜上のラベルであり、3番目の試行が6番目の試行にくらべて半分しか「試行」でない、ということはありえず、連続値の実数として捉えられるべきではないからだ。試行は文字やその他どんな方法でラベル付けしてもいいたぐいのものである。`as.factor()`を除いてもシミュレーションの実行そのものにはなんの差もうまないが、データをプロットする段になって問題が起きる。というのも、ggplotが試行を離散のカテゴリとしてではなく連続の実数として扱うためだ（この差は上記コードで`factor()`を`numeric()`にしたうえで`%>% as.factor()`を削除することで確認できる）。に必要なデータの構造をプロットや解析をするまえに考えることの重要性を示すよい例である^[と原著では書いているが、factor型への変更などはシミュレーションをまわしたあとでもごく簡単に(`data %>% mutate(run = as.factor(run))`とするか、`geom_line(aes(group = as.factor(run))`)できるし、連続値として保存しておくことの利点も大きい。まずは連続値として保管しておき、プロットの段になってデータを微調整する、というワークフローのほうが現実的には有用だと私は思う。]。
 
 
 <!-- Going back to the function, we then set up a loop which executes once for each run. The code within this loop is mostly the same as before, except that we now use the `[output$generation == t & output$run == r, ]` notation to put $p$ into the right place in `output`.  -->
 
-関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion\_of\_trait\_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
+関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion_of_trait_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
 
 <!-- The plotting function is also changed to handle multiple runs: -->
 
@@ -388,7 +388,7 @@ plot_multiple_runs(data)
 
 <!-- You should be able to see five independent runs of our simulation shown as regular thin lines, along with a thicker line showing the mean of these lines. Some runs have probably gone to 0 or 1, and the mean should be somewhere in between. The data is stored in `data_model`, which we can inspect by writing its name. -->
 
-5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては$0$か$1$に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
+5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては0か1に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
 
 ```{r 1-22}
 data
@@ -411,7 +411,7 @@ plot_multiple_runs(data)
 
 <!-- Let's add one final modification. So far the starting frequencies of $A$ and $B$ have been the same, roughly 0.5 each. But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.2$ or $p=0.9$? Would unbiased transmission keep $p$ at these initial values, or would it go to $p=0.5$ as we have found so far? -->
 
-最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい$0.5$ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
+最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい0.5ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
 
 <!-- To find out, we can add another parameter, `p_0`, which specifies the initial probability of an individual having an $A$ rather than a $B$ in the first generation. Previously this was always `p_0 = 0.5`, but in the new function below we add it to the `sample()` function to weight the initial allocation of traits. -->
 
@@ -425,14 +425,14 @@ model_unbiased_transmissions_varying_initial_condition <- function(
   runs, 
   initial_proportion_of_trait_a) {
   output <- tibble(
-    run = factor(), 
+    run = numeric(), 
     generation = numeric(), 
     proportion_of_trait_a = numeric()
   )
   for (run in 1:runs) {
     # 1回の試行の結果を保管するtibbleを初期化
     output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
+      run = rep(run, generations), 
       generation = 1:generations, 
       proportion_of_trait_a = rep(NA, generations)
     )
@@ -465,7 +465,7 @@ model_unbiased_transmissions_varying_initial_condition <- function(
 
 <!-- `unbiased_transmission_3()` is almost identical to the previous function. The only changes are the addition of $p_0$ as an argument to the function, and the $prob$ argument in the `sample()` command. The $prob$ argument gives the probability of picking each option, in our case $A$ and $B$, in the first generation. The probability of $A$ is now $p_0$, and the probability of $B$ is now $1-p_0$. We can use the same plotting function as before to visualise the result. Let's see what happens with a different value of $p_0$, for example $p_0=0.2$. -->
 
-`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial\_proportion\_of\_trait\_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば$0.2$に変えると何が起きるかを見てみよう。
+`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial\_proportion\_of\_trait\_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば0.2に変えると何が起きるかを見てみよう。
 
 ```{r 1-25, fig.cap = "ランダムな変動はあるものの、バイアスなしの伝達は初期状態から形質頻度を変えることはない"}
 model_unbiased_transmissions_varying_initial_condition(

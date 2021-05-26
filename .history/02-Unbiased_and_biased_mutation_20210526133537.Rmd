@@ -6,20 +6,20 @@
 
 ## バイアスのない変異Unbiased mutation
 
-<!-- First, we will simulate unbiased mutation in the same basic model as used in the previous chapter. We'll remove unbiased transmission to see the effect of unbiased mutation alone. -->
+First, we will simulate unbiased mutation in the same basic model as used in the previous chapter. We'll remove unbiased transmission to see the effect of unbiased mutation alone. 
 
 まず、バイアスのない変異を前章で構築した基本的なモデルをもとにシミュレートする。バイアスのない伝達の過程を取り除き、バイアスのない変異の影響だけを観察できるようにする。
 
-<!-- As in the previous model, we assume $N$ individuals each of whom possesses one of two discrete cultural traits, denoted $A$ and $B$. In each generation, from $t=1$ to $t=t_{\text{max}}$, the $N$ individuals are replaced with $N$ new individuals. Instead of random copying, each individual now gives rise to a new individual with the same cultural trait as them. (Another way of looking at this is in terms of timesteps, such as years: the same $N$ individual live for $t_{\text{max}}$ years and keep their cultural trait from one year to the next.) -->
+As in the previous model, we assume $N$ individuals each of whom possesses one of two discrete cultural traits, denoted $A$ and $B$. In each generation, from $t=1$ to $t=t_{\text{max}}$, the $N$ individuals are replaced with $N$ new individuals. Instead of random copying, each individual now gives rise to a new individual with the same cultural trait as them. (Another way of looking at this is in terms of timesteps, such as years: the same $N$ individual live for $t_{\text{max}}$ years and keep their cultural trait from one year to the next.)
 
 いままでのモデルと同様、人数$population_size$の個人がそれぞれ、ふたつの独立した文化的形質$A$か$B$を有しているとしよう。$
 generation = 1$から$generation = generations$までの各世代において、人数$population_size$の個人は同じく人数$population_size$の新しい個人に入れ替えられる。ただし今回は個々人がランダムに誰かから形質をコピーするのではなく、新しい個人は一つ前の世代の文化的形質をそのままコピーする。これは次のような状況とも考えられる。つまり、年数のようなタイムステップとしても捉えられる。$population_size$人の個人がちょうど$generations$年間生き、そのあいだ、毎年同じ文化的形質を有し続けるのだ。
 
-<!-- At each generation, however, there is a probability $\mu$ that each individual mutates from their current trait to the other trait (the Greek letter Mu is the standard notation for the mutation rate in genetic evolution, and it has an analogous function here). For example, vegetarian individuals can decide to eat animal products, and vice versa. Remember, this is not copied from other individuals, as in the previous model, but can be thought of as an individual decision. Another way to see this is that the probability of changing trait applies to each individual independently; whether an individual mutates has no bearing on whether or how many other individuals have mutated. On average, this means that $\mu N$ individuals mutate each generation. Like in the previous model, we are interested in tracking the proportion $p$ of agents with trait $A$ over time. -->
+At each generation, however, there is a probability $\mu$ that each individual mutates from their current trait to the other trait (the Greek letter Mu is the standard notation for the mutation rate in genetic evolution, and it has an analogous function here). For example, vegetarian individuals can decide to eat animal products, and vice versa. Remember, this is not copied from other individuals, as in the previous model, but can be thought of as an individual decision. Another way to see this is that the probability of changing trait applies to each individual independently; whether an individual mutates has no bearing on whether or how many other individuals have mutated. On average, this means that $\mu N$ individuals mutate each generation. Like in the previous model, we are interested in tracking the proportion $p$ of agents with trait $A$ over time.
 
 しかし、各世代において個々人は$mutation_rate$^[原著では$\mu$。ギリシャ文字ミュー$\mu$は遺伝子進化において変異率をあらわす際の標準的な文字であり、ここでも類似の機能をもつ。]の確率で今の形質からもうひとつの形質に持ち替える。たとえば、ベジタリアンの個人が動物性の食品を食べ始めたり、その逆だったり、という具合だ。ここで気をつけてほしいのは、これらは（これまでのモデルのように）他の個人からコピーされるのではなく、個々人による意思決定による産物のたぐいであることだ。こうも考えられる。形質を持ち替える確率は各個人に独立して作用し、個人が変異するかどうかは他に何人変異した人がいるかになんの影響も受けない。平均して、各世代$mutation_rate population_size$人の個人が変異することになる。以前のモデルと同様、$A$を有する個人の割合$proportion\_of\_trait\_a$の推移に興味がある。
 
-<!-- We'll wrap this in a function called `unbiased_mutation()`, using much of the same code as `unbiased_transmission_3()`. As before, we need to call the tidyverse library in order to use the tibble command, and later commands like ggplot2. -->
+We'll wrap this in a function called `unbiased_mutation()`, using much of the same code as `unbiased_transmission_3()`. As before, we need to call the tidyverse library in order to use the tibble command, and later commands like ggplot2.
 
 `model_unbiased_mutation()`という関数でラップしよう。ほとんどのコードは`model_unbiased_transmissions_varying_initial_condition`からの流用だ。以前と同様、tibbleコマンドやggplot2などを使うためにtidyverseライブラリを読み込む。
 
@@ -88,133 +88,89 @@ model_unbiased_mutation <- function(
 
 バイアスなしの変異を実装する最もありがちな方法は（上記の例では採用してい*ない*が）、もう一重`for`ループを追加することだろう。各個人を一人ひとり集会していき、そのたびにその個人の形質が変異すべきかどうかを`mutation_rate`を使って計算していくのだ。これでもまあ動くには動くのだが、Rはループ計算が遅いことで非常に悪名高い。Rプログラミングにおいては、可能な限り「ベクトル化」されたコードのほうがよりよいとされている。`is_mutant <- sample()`で始まる行や、`population <-`で始まる行で行っているのがその「ベクトル化」である。
 
-<!-- First, we pre-specify the probability of mutating for each individual. For this, we again use the function `sample()`, picking `TRUE` (corresponding to being a mutant) or `FALSE` (not mutating, i.e. keeping the same cultural trait) for $N$ times. The draw, however, is not random: the probability of drawing `TRUE` is equal to $\mu$, and the probability of drawing `FALSE` is $1-\mu$. You can think about the procedure in this way: each individual in the population flips a biased coin that has $\mu$ probability to land on, say, heads, and $1-\mu$ to land on tails. If it lands on heads they change their cultural trait. -->
+First, we pre-specify the probability of mutating for each individual. For this, we again use the function `sample()`, picking `TRUE` (corresponding to being a mutant) or `FALSE` (not mutating, i.e. keeping the same cultural trait) for $N$ times. The draw, however, is not random: the probability of drawing `TRUE` is equal to $\mu$, and the probability of drawing `FALSE` is $1-\mu$. You can think about the procedure in this way: each individual in the population flips a biased coin that has $\mu$ probability to land on, say, heads, and $1-\mu$ to land on tails. If it lands on heads they change their cultural trait.
 
 まず、各個人の変異する確率を前もって計算しておく。またしても`sample()`関数を使い、`TRUE`（変異体mutantとして選ばれたことに対応する）と`FALSE`（変異体でないこと、つまり前世代と同じ文化的形質を保持し続けることに対応する）から選ぶことを`population_size`回繰り返して`is_mutant`というベクトルとして保管しておく。いままでと違い、今回のサンプリングは完全なランダムではない。`TRUE`を選ぶ確率、つまり変異する確率は変異確率$mutation_rate$と等しくし、また`FALSE`を選ぶ確率は$1 - mutation_rate$となるようにした。つぎのように考えるとわかりやすいだろう。各個人はゆがんだ（バイアスのある）コインを投げる^[バイアスのあるコインを投げるからといって、これがバイアスのある変異であるわけではない。変異そのものはバイアスがないが、その生成確率じたいは50:50ではなく、むしろもっと低い(5:95など)、というだけである。]。表の出る確率は$mutation_rate$で、裏の出る確率は$1 - mutation_rate$だ。もし表が出たら、その個人は今持っている形質を持ち替えないといけない。
 
- ここで`is_mutant`の命名について軽く触れておく^[原著では`mutate`と命名されており、これ自体が変異させる関数であるかのように思わせる命令形(mutateせよ)の名前であり、あまりわかりやすいとはいえない。]。これは、長さ`population_size`の`TRUE`か`FALSE`のみを含むベクトルだ。こういった`TRUE`と`FALSE`のboolean型の真偽値を保管する場合、`is_`の接頭語がふさわしい。今回の場合、「このスロットにいる個人は変異体mutantか？」という質問に対する「はい(`TRUE`)」と「いいえ(`FALSE`)」を保管するから、`is_mutant`という名前がわかりやすいだろう。 
+ここで`is_mutant`の命名について軽く触れておく^[原著では`mutate`と命名されており、これ自体が変異させる関数であるかのように思わせる命令形(mutateせよ)の名前であり、あまりわかりやすいとはいえない。]。これは、長さ`population_size`の`TRUE`か`FALSE`のみを含むベクトルだ。こういった`TRUE`と`FALSE`のboolean型の真偽値を保管する場合、`is_`の接頭語がふさわしい。今回の場合、「このスロットにいる個人は変異体mutantか？」という質問に対する「はい(`TRUE`)」と「いいえ(`FALSE`)」を保管するから、`is_mutant`という名前がわかりやすいだろう。
 
-<!--In the subsequent lines we change the traits for the 'mutant' individuals. We need to check whether there are individuals that change their trait, both from $A$ to $B$ and vice versa, using the two `if` conditionals. If there are no such individuals, then assigning a new value to an empty tibble returns an error. To avoid this, we make sure that the number of rows is greater than 0 (using `nrow()>0` within the `if`). -->
+In the subsequent lines we change the traits for the 'mutant' individuals. We need to check whether there are individuals that change their trait, both from $A$ to $B$ and vice versa, using the two `if` conditionals. If there are no such individuals, then assigning a new value to an empty tibble returns an error. To avoid this, we make sure that the number of rows is greater than 0 (using `nrow()>0` within the `if`). 
 
 続く`population[is_mutant] <- `ではじまる行では変異体として選ばれた個人の形質を持ち替えさせている^[原著ではかなり違う方法を使っているが、こちらのほうがより可読性が高いのではないかと思う。ただし`recode()`が遅いのか、処理速度は原著の方法を流用したほうが高い。]。`population[is_mutant]`は変異体の変異前の形質のベクトルになるから、これに形質をひっくり返したベクトルを代入することで変異させることができる。`"A"`を`"B"`に、`"B"`を`"A"`にする方法は色々あるが、ここでは`tidyverse`の`recode()`関数を使って`recode( <古い形質> = "<新しい形質>")`というふうに書く。
 
-<!--To plot the results, we can use the same function `plot_multiple_runs()` we wrote in the [previous chapter][Unbiased transmission]. -->
-
-結果をプロットするには、[前章][バイアスなしの伝達]の`plot_multiple_runs()`がそのまま使える。
+To plot the results, we can use the same function `plot_multiple_runs()` we wrote in the [previous chapter][Unbiased transmission].
 
 ```{r 2-2, echo=FALSE}
-plot_multiple_runs <- function(data) {
-  ggplot(data = data, aes(x = generation, y = proportion_of_trait_a)) +
+plot_multiple_runs <- function(data_model) {
+  ggplot(data = data_model, aes(y = p, x = generation)) +
     geom_line(aes(colour = run)) +
     stat_summary(fun = mean, geom = "line", size = 1) +
     ylim(c(0, 1)) +
     theme_bw() +
-    ylab("proportion of individuals with trait A")
+    labs(y = "p (proportion of individuals with trait A)")
 }
 ```
 
 Let's now run and plot the model:
 
-```{r 2-3, fig.cap = "バイアスのない変異下では形質の頻度0.5近辺で変動する"}
-model_unbiased_mutation(
-  population_size = 100, 
-  generations = 200, 
-  runs = 5, 
-  initial_proportion_of_trait_a = 0.5, 
-  mutation_rate = 0.05) |>
-  plot_multiple_runs()
+```{r 2-3, fig.cap = "Trait frequencies fluctuate around 0.5 under unbiased mutation"}
+data_model <- unbiased_mutation(N = 100, mu = 0.05, p_0 = 0.5, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
 ```
 
-<!-- Unbiased mutation produces random fluctuations over time and does not alter the overall frequency of $A$, which stays around $p=0.5$. Because mutations from $A$ to $B$ are as equally likely as $B$ to $A$, there is no overall directional trend. -->
+Unbiased mutation produces random fluctuations over time and does not alter the overall frequency of $A$, which stays around $p=0.5$. Because mutations from $A$ to $B$ are as equally likely as $B$ to $A$, there is no overall directional trend. 
 
-バイアスのない変異はランダムな変動は生み出すものの全体の$A$の頻度は世代を通して変わらず$proportion\_of\_trait\_a = 0.5$近辺である。$A$から$B$への変異が$B$から$A$への変異と同じくらい起こりうるため、全体に方向性のある傾向は生じないのである。
+If you remember from the previous chapter, with unbiased transmission, when populations were small (e.g. $N=100$) generally one of the traits disappeared after a few generations. Here, though, with $N=100$, both traits remain until the end of the simulation. Why this difference? You can think of it in this way: when one trait becomes popular, say the frequency of $A$ is equal to $0.8$, with unbiased transmission it is more likely that individuals of the new generation will pick up $A$ randomly when copying. The few individuals with trait $B$ will have 80% probability of copying $A$. With unbiased mutation, on the other hand, since $\mu$ is applied independently to each individual, when $A$ is common then there will be more individuals that will flip to $B$ (specifically, $\mu p N$ individuals, which in our case is 4) than individuals that will flip to $A$ (equal to $\mu (1-p) N$ individuals, in our case 1) keeping the traits at similar frequencies.
 
-<!-- If you remember from the previous chapter, with unbiased transmission, when populations were small (e.g. $N=100$) generally one of the traits disappeared after a few generations. Here, though, with $N=100$, both traits remain until the end of the simulation. Why this difference? You can think of it in this way: when one trait becomes popular, say the frequency of $A$ is equal to $0.8$, with unbiased transmission it is more likely that individuals of the new generation will pick up $A$ randomly when copying. The few individuals with trait $B$ will have 80% probability of copying $A$. With unbiased mutation, on the other hand, since $\mu$ is applied independently to each individual, when $A$ is common then there will be more individuals that will flip to $B$ (specifically, $\mu p N$ individuals, which in our case is 4) than individuals that will flip to $A$ (equal to $\mu (1-p) N$ individuals, in our case 1) keeping the traits at similar frequencies. -->
+But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.1$ and $p=0.9$? Would $A$ disappear? Would unbiased mutation keep $p$ at these initial values, like we saw unbiased transmission does in Model 1?
 
-バイアスのない伝達では、小さな集団(たとえば$population_size = 100$程度)ではかなりの頻度でどちらかの形質が数世代のうちに消滅したことを覚えているだろうか。今回のモデルでは、$population_size = 100$でもどちらの形質もシミュレーションの最後まで生き残っている。この差は何故生まれるのか？こう考えることができる。どちらかの形質が人気になり、たとえば$A$の頻度が$0.8$に達したとしよう。バイアスのない伝達においては、新しい世代の個々人は$A$をランダムに選び取る確率がかなり高くなる。形質$B$を有する少数派の個人は、80%の確率で$A$に持ち替える可能性があるためだ。他方、バイアスのない変異においては$mutation_rate$が個々人に独立に働くため、$A$の頻度が$0.8$である状況下^[原著では0.8であると明記されておらず、commonである場合としか書いていないが、この文以下の計算結果から0.8を想定していることがわかる]では、$B$に鞍替えする個人（具体的には$mutation_rate \times proportion_of_trait_a \times population_size$人、上記のセッティングでは4人）は$A$に鞍替えする個人（具体的には$mutation_rate \times (1 - proportion_of_trait_a) \times population_size$人、上記のセッティングでは1人）よりも多くなり、形質の頻度は$A$も$B$も同じくらいになるようにバランスされることになる。
+To find out, let's change $p_0$, which specifies the initial probability of drawing an $A$ rather than a $B$ in the first generation.
 
-<!-- But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.1$ and $p=0.9$? Would $A$ disappear? Would unbiased mutation keep $p$ at these initial values, like we saw unbiased transmission does in Model 1? -->
-
-しかし、異なる$A$と$B$の頻度で開始したらどうなるのだろう？たとえば、$proportion_of_trait_a = 0.1$とか$proportion_of_trait_a = 0.9$であったら？$A$は消えてしまうのだろうか？バイアスのない変異は、バイアスのない伝達であるModel 1でみたように、$proportion_of_trait_a$を初期値近辺で維持するのか？
-
-<!-- To find out, let's change $p_0$, which specifies the initial probability of drawing an $A$ rather than a $B$ in the first generation. -->
-
-検証するため、$initial_proportion_of_trait_a$を変えて第1世代の個人が$B$よりも$A$を引く確率を下げてみよう。
-
-```{r 2-4, fig.cap = "バイアスのない変異は初期頻度に関係なく形質頻度を0.5に収束させる"}
-model_unbiased_mutation(
-  population_size = 100, 
-  generations = 200, 
-  runs = 5, 
-  initial_proportion_of_trait_a = 0.1, 
-  mutation_rate = 0.05) |>
-  plot_multiple_runs()
+```{r 2-4, fig.cap = "Unbiased mutation causes trait frequencies to converge on 0.5, irrespective of starting frequencies"}
+data_model <- unbiased_mutation(N = 100, mu = 0.05, p_0 = 0.1, t_max = 200, r_max = 5)
+plot_multiple_runs(data_model)
 ```
 
-<!-- You should see $p$ go from $0.1$ up to $0.5$. In fact, whatever the initial starting frequencies of $A$ and $B$, unbiased mutation always leads to $p=0.5$, for the reason explained above: unbiased mutation always tends to balance the proportion of $A$s and $B$s. -->
-
-$proportion\_of\_trait\_a$が$0.1$から$0.5$まで上昇しているはずだ。じつは、$A$と$B$の開始時の頻度がなんであろうと、前述した理由によってバイアスのない変異は$proportion\_of\_trait\_a = 0.5$に導く。バイアスのない変異はつねに$A$と$B$のバランスを保つようにはたらく。
+You should see $p$ go from $0.1$ up to $0.5$. In fact, whatever the initial starting frequencies of $A$ and $B$, unbiased mutation always leads to $p=0.5$, for the reason explained above: unbiased mutation always tends to balance the proportion of $A$s and $B$s.
 
 ## Biased mutation
 
 A more interesting case is biased mutation. Let's assume now that there is a probability $\mu_b$ that an individual with trait $B$ mutates into $A$, but there is no possibility of trait $A$ mutating into trait $B$. Perhaps trait $A$ is a particularly catchy or memorable version of a story or an intuitive explanation of a phenomenon, and $B$ is difficult to remember or unintuitive to understand.
 
-より興味深いバイアスのある変異にうつろう。確率$mutation\_rate\_biased$^[原著では$\mu_b$]で個人が形質$B$から$A$に持ち替えるが、形質$A$を持っている個人は形質$B$に持ち替える可能性がゼロだとしよう。形質$A$はたとえばとくべつキャッチーで覚えやすい話だったり現象の直感的な説明だと考えられる。そして$B$は覚えにくく、非直感的な理解を要求する。
-
 The function `biased_mutation()` captures this unidirectional mutation.
 
-以下の関数`model_biased_mutation()`はこの一方向性の変異をとらえている。
-
 ```{r 2-5}
-model_biased_mutation <- function(
-  population_size,
-  generations,
-  runs, 
-  initial_proportion_of_trait_a,
-  mutation_rate_biased) {
-  output <- tibble(
-    run = factor(), 
-    generation = numeric(), 
-    proportion_of_trait_a = numeric()
-  )
-  for (run in 1:runs) {
-    # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
-      generation = 1:generations, 
-      proportion_of_trait_a = rep(NA, generations)
-    )
-    # 第1世代
-    population <- sample(
-      c("A", "B"), 
-      population_size, replace = TRUE, 
-      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
-    )
-    # 第1世代のproportion_of_trait_aを計算
-    proportion_of_trait_a <- sum(population == "A") / population_size
-    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
-    for (generation in 2:generations) {
-      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
-      previous_population <- population
-      # 変異する個人('mutant')を決める
-      is_mutant <- sample(
-        c(TRUE, FALSE), 
-        population_size, 
-        prob = c(mutation_rate_biased, 1 - mutation_rate_biased),
-        replace = TRUE
-      )
-      # is_mutantがTRUEであるスロットの形質がもしAならBに、もしBならAにする。
-      population[is_mutant] <- "A"
-      # proportion_of_trait_aを計算し、tibbleのうち
-      # proportion_of_trait_a列のgeneration行目に格納する
-      output_single_run$proportion_of_trait_a[generation] <- 
-      sum(population == "A") / population_size
+biased_mutation <- function(N, mu_b, p_0, t_max, r_max) {
+   # Create the output tibble
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+
+  for (r in 1:r_max) {
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE, 
+                                        prob = c(p_0, 1 - p_0)))
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Determine 'mutant' individuals
+      mutate <- sample(c(TRUE, FALSE), N, prob = c(mu_b, 1 - mu_b), replace = TRUE) 
+      
+      # If there are 'mutants' from B to A
+      if (nrow(population[mutate & previous_population$trait == "B", ]) > 0) {
+        # Then flip them to A
+        population[mutate & previous_population$trait == "B", ]$trait <- "A"
+      }
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
     }
-    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
-    output <- bind_rows(output, output_single_run)
   }
-  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
-  output
+  # Export data from function
+  output 
 }
 ```
 

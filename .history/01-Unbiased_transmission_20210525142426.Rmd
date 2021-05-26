@@ -11,7 +11,7 @@ library(tidyverse)
 
 ```
 
-# バイアスなしの伝達
+# バイアスなしの伝達 Unbiased transmission
 
 <!-- We start by simulating a simple case of unbiased cultural transmission. We will detail each step of the simulation and explain the code line-by-line. In the following chapters, we will reuse most of this initial model, building up the complexity of our simulations.  -->
 
@@ -95,11 +95,11 @@ output <- tibble(generation = 1:generations, proportion_of_trait_a = rep(NA_real
 output
 ```
 
-`output`をコンソールに入れてみると、`proportion_of_trait_a`の列の型がlgl(logical型)ではなくdouble型になっていることがわかる。
+`output`をコンソールに入れてみると、`proportion\_of\_trait\_a`の列の型がlgl(logical型)ではなくdouble型になっていることがわかる。
 
 <!-- We can, however, fill in the first value of `p` for our already-created first generation of individuals, held in `population`. The command below sums the number of $A$s in `population` and divides by $N$ to get a proportion out of 1 rather than an absolute number. It then puts this proportion in the first slot of `p` in `output`, the one for the first generation, $t=1$. We can again write the name of the tibble, `output`, to see that it worked. -->
 
-`NA`を入力することには成功したが、考えてみると第1世代の集団の形質は既に生成しているのだから、第1世代の`proportion_of_trait_a`の値は計算可能のはずだ。以下のコードでは`population`ベクトル内の文字列`"A"`の数を数え上げ、`population\_size`で割ることで割合を計算している。そしてその値を`output`のテーブルの`proportion_of_trait_a`の列の第一行目（`[1]`）つまり第1世代$generation=1$に代入している。チャンクの2行目ではこれまでと同様、テーブルの変数名を書くことでうまくいっているか確認している。
+`NA`を入力することには成功したが、考えてみると第1世代の集団の形質は既に生成しているのだから、第1世代の`proportion\_of\_trait\_a`の値は計算可能のはずだ。以下のコードでは`population`ベクトル内の文字列`"A"`の数を数え上げ、`population\_size`で割ることで割合を計算している。そしてその値を`output`のテーブルの`proportion\_of\_trait\_a`の列の第一行目（`[1]`）つまり第1世代$generation=1$に代入している。チャンクの2行目ではこれまでと同様、テーブルの変数名を書くことでうまくいっているか確認している。
 
 ```{r 1-7}
 output$proportion_of_trait_a[1] <- sum(population == "A") / population_size
@@ -108,7 +108,7 @@ output
 
 <!-- This first value of `p` should be around $0.5$, meaning that around 50 individuals have trait $A$, and 50 have trait $B$. Even though `sample()` returns either trait with equal probability, this does not necessarily mean that we will get exactly 50 $A$s and 50 $B$s. This happens with simulations and finite population sizes: they are probabilistic (or stochastic), not deterministic. Analogously, flipping a coin 100 times will not always give exactly 50 heads and 50 tails. Sometimes we will get 51 heads, sometimes 49, etc. To see this in our simulation, you can re-run all of the above code and you should get a different $p$. -->
 
-この`proportion_of_trait_a`の第1世代の値は$0.5$前後になっているはずだ。つまり$population\_size=100$人のうち50人程度が形質$A$を有し、残り50人程度が形質$B$を有しているはずだ。`sample()`関数はそれぞれの形質を同じ確率で返すはずなのだが、だからといって形質$A$をちょうど50、形質$B$をちょうど50返すというわけではない。これは、有限な人口サイズでシミュレーションをする場合にはつきものの現象で、決定論的ではなく確率論的なふるまいだ。コインを100回投げたとしても、常に表が50回でて裏が50回でるわけではないのと同じだ。ときには表が51回、ときには表が49回、などとでるはずだ。上記の`sample()`関数からこのシミュレーションをやりなおすと、毎回異なる`proportion_of_trait_a`の値が算出されることでこの現象を確かめられる。
+この`proportion\_of\_trait\_a`の第1世代の値は$0.5$前後になっているはずだ。つまり$population\_size=100$人のうち50人程度が形質$A$を有し、残り50人程度が形質$B$を有しているはずだ。`sample()`関数はそれぞれの形質を同じ確率で返すはずなのだが、だからといって形質$A$をちょうど50、形質$B$をちょうど50返すというわけではない。これは、有限な人口サイズでシミュレーションをする場合にはつきものの現象で、決定論的ではなく確率論的なふるまいだ。コインを100回投げたとしても、常に表が50回でて裏が50回でるわけではないのと同じだ。ときには表が51回、ときには表が49回、などとでるはずだ。上記の`sample()`関数からこのシミュレーションをやりなおすと、毎回異なる`proportion\_of\_trait\_a`の値が算出されることでこの現象を確かめられる。
 
 ## Execute generation turn-over many times
 
@@ -125,7 +125,7 @@ output
 
 * いまの`population`ベクトルは先程までの集団の形質を保存しているため、`previous_population`という別のベクトルに保管し、今世代の個人にとってのデモンストレーター^[形質をコピーしてくる源となる、いわば先輩たち]とする。こうすることによってオーバーラップしない、複数世代が混在しない世代間の斜めの伝達が実装できる
 * `previous_population`ベクトルからランダムに形質を選択した今世代の個人を生成する
-* 今世代の`proportion_of_trait_a`を計算し、`output`の該当するセルに保管する
+* 今世代の`proportion\_of\_trait\_a`を計算し、`output`の該当するセルに保管する
 
 <!-- To iterate, we'll use a for-loop, using `t` to track the generation. We've already done generation 1 so we'll start at generation 2. The random picking of models is done with `sample()` again, but this time picking from the traits held in `previous_population`. Note that we have added comments briefly explaining what each line does. This is perhaps superfluous when the code is this simple, but it's always good practice. Code often gets cut-and-pasted into other places and loses its context. Explaining what each line does lets other people - and a future, forgetful you - know what's going on. -->
 
@@ -144,7 +144,7 @@ output
 
 <!-- Now we should have 200 values of `p` stored in `output`, one for each generation. You can list them by typing `output`, but more effective is to plot them.-->
 
-上記のコードチャンクを実行すれば、200世代に渡って`proportion_of_trait_a`が計算・記録されているはずだ。`output`とタイプすることでそのリストを閲覧することもできるが、その結果をプロット（描画）するほうがずっと効果的だ。
+上記のコードチャンクを実行すれば、200世代に渡って`proportion\_of\_trait\_a`が計算・記録されているはずだ。`output`とタイプすることでそのリストを閲覧することもできるが、その結果をプロット（描画）するほうがずっと効果的だ。
 
 ## モデルの結果をプロットするPlotting the model results
 
@@ -155,7 +155,7 @@ output
 
 <!-- In the first line in the code below, we are telling ggplot that the data we want to plot is in the tibble `output`. Then, with the command `aes()` we declare the 'aesthetics' of the plot, that is, how we want our data mapped in our plot. In this case, we want the values of `p` on the y-axis, and the values of `generation` on the x-axis (this is why earlier we created, in the tibble `output`, a column to keep the count of generations).-->
 
-下記のコードの1行目では、ggplotにプロットしたいデータは`output`tibbleだということを伝えている。それから、`aes()`関数で見た目aestheticsを宣言する。見た目とはいうが、ここではプロットにおいてデータをどう表示したいかを司る。今回の場合では、`proportion_of_trait_a`をy軸に、`generation`をx軸にしたい（そしてこれが`output`tibbleにおいて`generation`の列を作っておいた理由である）。
+下記のコードの1行目では、ggplotにプロットしたいデータは`output`tibbleだということを伝えている。それから、`aes()`関数で見た目aestheticsを宣言する。見た目とはいうが、ここではプロットにおいてデータをどう表示したいかを司る。今回の場合では、`proportion\_of\_trait\_a`をy軸に、`generation`をx軸にしたい（そしてこれが`output`tibbleにおいて`generation`の列を作っておいた理由である）。
 
 <!-- We then use `geom_line()`. In ggplot, 'geoms' describe what kind of visual representation should be plotted: lines, bars, boxes and so on. This visual representation is independent of the mapping that we declared before with `aes()`. The same data, with the same mapping, can be visually represented in many different ways. In this case, we are asking ggplot to represent the data as a line. You can change `geom_line()` in the code below to `geom_point()` and see what happens (other geoms have less obvious effects, and we will see some of them in later chapters). -->
 
@@ -245,7 +245,7 @@ data_unbiased_transmission |>
   plot_single_run()
 ```
 
-ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`|>`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
+ここで、`|>`はRの4.1.0から実装されたパイプである^[類似の機能を提供するものに`magrittr`ライブラリの提供するパイプ`%>%`が有名である。`|>`のほうが動作が速いと言われている]。パイプの左側(left hand side, LHS)で生成された返り値を、パイプの右側(right hand side, RHS)に渡し、実行するという機能がある。たとえば上記のコードは以下と同値である^[原著ではこのようにプロットしているが、日本語版ではパイプの使用がむしろコードの可読性を高めるという立場からパイプをしばしば使っている]。
 
 ```{r 1-14}
 plot_single_run(data_unbiased_transmission)
@@ -279,19 +279,11 @@ model_unbiased_transmission(population_size = 10000, generations = 200) |>
 新しい変数$runs$を独立した試行回数として導入しよう。全体を新たなforループでくるみ、$runs$回の試行を繰り返す。`model_unbiased_transmission()`関数を書き換え、複数回試行を取り扱えるようにし、`model_unbiased_transmissions()`としよう^[原著では`unbiased_transmission_2()`。]。  
 ```{r 1-16}
 model_unbiased_transmissions <- function(population_size, generations, runs) {
-  output <- tibble(
-    run = factor(), 
-    generation = numeric(), 
-    proportion_of_trait_a = numeric()
-  )
+  output <- tibble(run = factor(), generation = numeric(), proportion_of_trait_a = numeric())
   # 毎回の試行
   for (run in 1:runs) {
     # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
-      generation = 1:generations, 
-      proportion_of_trait_a = rep(NA, generations)
-    )
+    output_single_run <- tibble(run = rep(run, generations) %>% as.factor(), generation = 1:generations, proportion_of_trait_a = rep(NA, generations))
     # 第1世代
     population <- sample(c("A", "B"), population_size, replace = TRUE)
     # 第1世代のproportion_of_trait_aを計算
@@ -302,10 +294,8 @@ model_unbiased_transmissions <- function(population_size, generations, runs) {
       previous_population <- population
       # ランダムに前世代の個人から形質をコピーする
       population <- sample(previous_population, population_size, replace = TRUE)
-      # proportion_of_trait_aを計算し、
-      # tibbleのうちproportion_of_trait_a列のgeneration行目に格納する
-      output_single_run$proportion_of_trait_a[generation] <- 
-      sum(population == "A") / population_size
+      # proportion_of_trait_aを計算し、tibbleのうちproportion_of_trait_a列のgeneration行目に格納する
+      output_single_run$proportion_of_trait_a[generation] <- sum(population == "A") / population_size
     }
     # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
     output <- bind_rows(output, output_single_run)
@@ -319,12 +309,12 @@ model_unbiased_transmissions <- function(population_size, generations, runs) {
 
 We also need a new column called `run` that keeps track of which run the data in the other two columns belongs to. Note that the definition of `run` is preceded by `as.factor()`. This specifies the type of data to put in the `run` column. We want `run` to be a 'factor' or categorical variable so that, even if runs are labelled with numbers (1, 2, 3...), this should not be misinterpreted as a continuous, real number: there is no sense in which run 2 is twice as 'runny' as run 1, or run 3 half as 'runny' as run 6. Runs could equally have been labelled using letters, or any other arbitrary scheme. While omitting `as.factor()` does not make any difference when running the simulation, it would create problems when plotting the data because ggplot would treat runs as continuous real numbers rather than discrete categories (you can see this yourself by modifying the definition of `output` in the previous code chunk). This is a good example of how it is important to have a clear understanding of your data before trying to plot or analyse them. -->
 
-ここでいくつかの変更を加えている。まず、`output`tibbleには全試行のデータを格納できるようにしなければならない。そのため、従前と同様`generation`と`proportion_of_trait_a`を保管するのに加え、何回目の試行であるかを示す列`run`を追加した^[原著では最初に最終的なアウトプットと同サイズの巨大なtibbleをつくり、`NA`を入れるなどして初期化している。本バージョンでは型だけ指定した0行３列のtibbleの殻を用意し、試行が終了するたびに行を一気に追加するようにしている。この変更と今までの高速化により、筆者の環境で7.5倍程度高速化している]。まずは`output`tibbleには１行も追加せず、型だけ指定してみよう。列の中身を`numeric()`としておくことで連続値のみで構成される行であると、また`factor()`としておくことでfactor型（カテゴリカルな値）のみで構成される行であると指定できる。そしてそれぞれの試行において、`generation`の更新のたびに結果を`output_single_run` tibbleに格納していく（１試行につきひとつの`output_single_run`を使い回す）。そして試行がおわるたびに`bind_rows()`関数で結果を`output`tibbleの下部に付け加えていく^[`bind_rows()`関数の使い方に関しては [tidyverse](https://dplyr.tidyverse.org/reference/bind.html) のマニュアルを参照。]。`run`は`as.factor()`関数にパイプでつなぎ、factor型、つまりカテゴリカル変数として記録している。これは、`run`を1,2,3という数字で記録しても、何番目の試行であるというだけの理由でつけられた便宜上のラベルであり、3番目の試行が6番目の試行にくらべて半分しか「試行」でない、ということはありえず、連続値の実数として捉えられるべきではないからだ。試行は文字やその他どんな方法でラベル付けしてもいいたぐいのものである。`as.factor()`を除いてもシミュレーションの実行そのものにはなんの差もうまないが、データをプロットする段になって問題が起きる。というのも、ggplotが試行を離散のカテゴリとしてではなく連続の実数として扱うためだ（この差は上記コードで`factor()`を`numeric()`にしたうえで`|> as.factor()`を削除することで確認できる）。に必要なデータの構造をプロットや解析をするまえに考えることの重要性を示すよい例である^[と原著では書いているが、factor型への変更などはシミュレーションをまわしたあとでもごく簡単に(`data |> mutate(run = as.factor(run))`とするか、`geom_line(aes(group = as.factor(run))`)できるし、連続値として保存しておくことの利点も大きい。まずは連続値として保管しておき、プロットの段になってデータを微調整する、というワークフローのほうが現実的には有用だと私は思う。]。
+ここでいくつかの変更を加えている。まず、`output`tibbleには全試行のデータを格納できるようにしなければならない。そのため、従前と同様`generation`と`proportion_of_trait_a`を保管するのに加え、何回目の試行であるかを示す列`run`を追加した^[原著では最初に最終的なアウトプットと同サイズの巨大なtibbleをつくり、`NA`を入れるなどして初期化している。本バージョンでは型だけ指定した0行３列のtibbleの殻を用意し、試行が終了するたびに行を一気に追加するようにしている。この変更と今までの高速化により、筆者の環境で7.5倍程度高速化している]。まずは`output`tibbleには１行も追加せず、型だけ指定してみよう。列の中身を`numeric()`としておくことで連続値のみで構成される行であると、また`factor()`としておくことでfactor型（カテゴリカルな値）のみで構成される行であると指定できる。そしてそれぞれの試行において、`generation`の更新のたびに結果を`output_single_run` tibbleに格納していく（１試行につきひとつの`output_single_run`を使い回す）。そして試行がおわるたびに`bind_rows()`関数で結果を`output`tibbleの下部に付け加えていく^[`bind_rows()`関数の使い方に関しては [tidyverse](https://dplyr.tidyverse.org/reference/bind.html) のマニュアルを参照。]。`run`は`as.factor()`関数にパイプでつなぎ、factor型、つまりカテゴリカル変数として記録している。これは、`run`を1,2,3という数字で記録しても、何番目の試行であるというだけの理由でつけられた便宜上のラベルであり、3番目の試行が6番目の試行にくらべて半分しか「試行」でない、ということはありえず、連続値の実数として捉えられるべきではないからだ。試行は文字やその他どんな方法でラベル付けしてもいいたぐいのものである。`as.factor()`を除いてもシミュレーションの実行そのものにはなんの差もうまないが、データをプロットする段になって問題が起きる。というのも、ggplotが試行を離散のカテゴリとしてではなく連続の実数として扱うためだ（この差は上記コードで`factor()`を`numeric()`にしたうえで`%>% as.factor()`を削除することで確認できる）。に必要なデータの構造をプロットや解析をするまえに考えることの重要性を示すよい例である^[と原著では書いているが、factor型への変更などはシミュレーションをまわしたあとでもごく簡単に(`data %>% mutate(run = as.factor(run))`とするか、`geom_line(aes(group = as.factor(run))`)できるし、連続値として保存しておくことの利点も大きい。まずは連続値として保管しておき、プロットの段になってデータを微調整する、というワークフローのほうが現実的には有用だと私は思う。]。
 
 
 <!-- Going back to the function, we then set up a loop which executes once for each run. The code within this loop is mostly the same as before, except that we now use the `[output$generation == t & output$run == r, ]` notation to put $p$ into the right place in `output`.  -->
 
-関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion\_of\_trait\_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
+関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion_of_trait_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
 
 <!-- The plotting function is also changed to handle multiple runs: -->
 
@@ -381,14 +371,14 @@ output |>
 
 つぎに関数を実行し、最初に用いたのと同じパラメーター（$population_size = 100$、$generations = 200$）で5試行まわした結果をプロットしてみよう。
 
-```{r 1-21, fig.cap = "バイアスなしの文化伝達は複数回試行すると毎回異なったダイナミクスを示す"}
+```{r 1-21, fig.cap = "バイアスなしの文化伝達が複数回試行すると異なった動態を示す"}
 data <- model_unbiased_transmissions(population_size = 100, generations = 200, runs = 5)
 plot_multiple_runs(data)
 ```
 
 <!-- You should be able to see five independent runs of our simulation shown as regular thin lines, along with a thicker line showing the mean of these lines. Some runs have probably gone to 0 or 1, and the mean should be somewhere in between. The data is stored in `data_model`, which we can inspect by writing its name. -->
 
-5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては$0$か$1$に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
+5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては0か1に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
 
 ```{r 1-22}
 data
@@ -411,11 +401,11 @@ plot_multiple_runs(data)
 
 <!-- Let's add one final modification. So far the starting frequencies of $A$ and $B$ have been the same, roughly 0.5 each. But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.2$ or $p=0.9$? Would unbiased transmission keep $p$ at these initial values, or would it go to $p=0.5$ as we have found so far? -->
 
-最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい$0.5$ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
+最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい0.5ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
 
-<!-- To find out, we can add another parameter, `p_0`, which specifies the initial probability of an individual having an $A$ rather than a $B$ in the first generation. Previously this was always `p_0 = 0.5`, but in the new function below we add it to the `sample()` function to weight the initial allocation of traits. -->
+To find out, we can add another parameter, `p_0`, which specifies the initial probability of an individual having an $A$ rather than a $B$ in the first generation. Previously this was always `p_0 = 0.5`, but in the new function below we add it to the `sample()` function to weight the initial allocation of traits.
 
-これに答えるために、もう一つのパラメータ$initial\_proportion\_of\_trait\_a$^[原著では$p_0$]を加えよう。この新パラメータは第1世代の個々人が$B$ではなく$A$を有する初期の確率を設定する。いままではつねに$initial\_proportion\_of\_trait\_a = 0.5$ではじめていたが、次の新しい関数では`sample()`関数において最初の形質配分を$initial\_proportion\_of\_trait\_a$を用いて制御する。
+これに答えるために、もう一つのパラメータ$initial\_proportion\_of\_trait\_a$^[原著では$p_0$]を加えよう。この新パラメータは第1世代の個々人が$B$ではなく$A$を有する初期の確率を設定する。いままではつねに$initial_proportion_of_trait_a = 0.5$ではじめていたが、次の新しい関数では`sample()`関数において最初の形質配分を$initial\_proportion\_of\_trait\_a$を用いて制御する。
 
 ```{r 1-24}
 
@@ -425,23 +415,15 @@ model_unbiased_transmissions_varying_initial_condition <- function(
   runs, 
   initial_proportion_of_trait_a) {
   output <- tibble(
-    run = factor(), 
+    run = numeric(), 
     generation = numeric(), 
     proportion_of_trait_a = numeric()
-  )
+    )
   for (run in 1:runs) {
     # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
-      generation = 1:generations, 
-      proportion_of_trait_a = rep(NA, generations)
-    )
+    output_single_run <- tibble(run = rep(run, generations), generation = 1:generations, proportion_of_trait_a = rep(NA, generations))
     # 第1世代
-    population <- sample(
-      c("A", "B"), 
-      population_size, replace = TRUE, 
-      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
-    )
+    population <- sample(c("A", "B"), population_size, replace = TRUE, prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a))
     # 第1世代のproportion_of_trait_aを計算
     proportion_of_trait_a <- sum(population == "A") / population_size
     output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
@@ -450,10 +432,8 @@ model_unbiased_transmissions_varying_initial_condition <- function(
       previous_population <- population
       # ランダムに前世代の個人から形質をコピーする
       population <- sample(previous_population, population_size, replace = TRUE)
-      # proportion_of_trait_aを計算し、tibbleのうち
-      # proportion_of_trait_a列のgeneration行目に格納する
-      output_single_run$proportion_of_trait_a[generation] <- 
-      sum(population == "A") / population_size
+      # proportion_of_trait_aを計算し、tibbleのうちproportion_of_trait_a列のgeneration行目に格納する
+      output_single_run$proportion_of_trait_a[generation] <- sum(population == "A") / population_size
     }
     # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
     output <- bind_rows(output, output_single_run)
@@ -465,7 +445,7 @@ model_unbiased_transmissions_varying_initial_condition <- function(
 
 <!-- `unbiased_transmission_3()` is almost identical to the previous function. The only changes are the addition of $p_0$ as an argument to the function, and the $prob$ argument in the `sample()` command. The $prob$ argument gives the probability of picking each option, in our case $A$ and $B$, in the first generation. The probability of $A$ is now $p_0$, and the probability of $B$ is now $1-p_0$. We can use the same plotting function as before to visualise the result. Let's see what happens with a different value of $p_0$, for example $p_0=0.2$. -->
 
-`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial\_proportion\_of\_trait\_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば$0.2$に変えると何が起きるかを見てみよう。
+`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial_proportion_of_trait_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば0.2に変えると何が起きるかを見てみよう。
 
 ```{r 1-25, fig.cap = "ランダムな変動はあるものの、バイアスなしの伝達は初期状態から形質頻度を変えることはない"}
 model_unbiased_transmissions_varying_initial_condition(

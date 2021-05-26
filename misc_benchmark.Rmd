@@ -8,6 +8,7 @@ output: html_notebook
 ```{r}
 library(bench)
 library(tidyverse)
+library(tictoc)
 ```
 
 [bench](https://www.tidyverse.org/blog/2018/06/bench-1.0.1/)で測る。毎回シミュレーション結果は異なるのだが、それだとエラーが出るので`check = FALSE`にする。
@@ -67,15 +68,15 @@ model_unbiased_transmission_1 <- function(population_size, timesteps) {
 }
 
 
-bench_1 <- bench::mark(
+bench_1_1 <- bench::mark(
   original = unbiased_transmission_1(population_size = 1000, timesteps = 100),
   ours = model_unbiased_transmission_1(population_size = 1000, timesteps = 100),
   
   iterations = 100,
   relative = TRUE,
   check = FALSE)
-bench_1 %>% autoplot()
-bench_1
+bench_1_1 %>% autoplot()
+bench_1_1
 ```
 2倍程度の高速化、メモリー1/3
 
@@ -139,14 +140,236 @@ unbiased_transmission_2 <- function(N, t_max, r_max) {
   output 
 }
 
-bench_2 <- bench::mark(
+bench_1_2 <- bench::mark(
   original = unbiased_transmission_2(N = 1000, t_max = 100, r_max = 5),
   ours = model_unbiased_transmissions(population_size = 1000, timesteps = 100, runs = 5),
   iterations = 100,
   relative = TRUE,
   check = FALSE)
-bench_2
-bench_2 %>% autoplot()
+bench_1_2
+bench_1_2 %>% autoplot()
 ```
 7.5倍程度はやくメモリーも1/3.7
+
+
+# 2
+
+```{r}
+
+unbiased_mutation <- function(N, mu, p_0, t_max, r_max) {
+  # Create the output tibble
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max))) 
+
+  for (r in 1:r_max) {
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE, 
+                                        prob = c(p_0, 1 - p_0)))
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Determine 'mutant' individuals
+      mutate <- sample(c(TRUE, FALSE), N, prob = c(mu, 1 - mu), replace = TRUE) 
+      
+      # If there are 'mutants' from A to B
+      if (nrow(population[mutate & previous_population$trait == "A", ]) > 0) { 
+        # Then flip them to B
+        population[mutate & previous_population$trait == "A", ]$trait <- "B" 
+      }
+      
+      # If there are 'mutants' from B to A
+      if (nrow(population[mutate & previous_population$trait == "B", ]) > 0) { 
+        # Then flip them to A
+        population[mutate & previous_population$trait == "B", ]$trait <- "A" 
+      }
+      
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
+    }
+  }
+  # Export data from function
+  output 
+}
+
+model_unbiased_mutation_intermediate <- function(population_size, mutation_rate, initial_probability_of_trait_a, timesteps, runs) {
+  output <- tibble(run = numeric(), timestep = numeric(), proportion_of_trait_a = numeric())
+
+  for (run in 1:runs) {
+
+    output_single_run <- tibble(run = rep(run, timesteps),timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
+    # initialize population
+    population <- sample(c("A", "B"), population_size, replace = TRUE, prob = c(initial_probability_of_trait_a, 1 - initial_probability_of_trait_a))
+    # initialize first generation's p
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (timestep in 2:timesteps) {
+      previous_population <- population
+       should_mutate <- sample(c(TRUE, FALSE), population_size, prob = c(mutation_rate, 1 - mutation_rate), replace = TRUE)
+ if (length(population[should_mutate & previous_population == "A"]) > 0) { 
+        # Then flip them to B
+        population[should_mutate & previous_population == "A"] <- "B" 
+      }
+      
+      # If there are 'mutants' from B to A
+      if (length(population[should_mutate & previous_population == "B"]) > 0) { 
+        # Then flip them to A
+        population[should_mutate & previous_population == "B"] <- "A" 
+      }
+            output_single_run$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+    }
+  output <- bind_rows(output, output_single_run)
+  }
+  output
+}
+
+
+
+model_unbiased_mutation_old <- function(population_size,timesteps, runs,initial_probability_of_trait_a,mutation_rate) {
+  output <- tibble(run = numeric(), timestep = numeric(), proportion_of_trait_a = numeric())
+
+  for (run in 1:runs) {
+
+    output_single_run <- tibble(run = rep(run, timesteps),timestep = 1:timesteps, proportion_of_trait_a = rep(NA, timesteps))
+    # initialize population
+    population <- sample(c("A", "B"), population_size, replace = TRUE, prob = c(initial_probability_of_trait_a, 1 - initial_probability_of_trait_a))
+    # initialize first generation's p
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (timestep in 2:timesteps) {
+      previous_population <- population
+       should_mutate <- sample(c(TRUE, FALSE), population_size, prob = c(mutation_rate, 1 - mutation_rate), replace = TRUE)
+       population <- if_else(should_mutate, if_else(population == "A", "B", "A"), population)
+      output_single_run$proportion_of_trait_a[timestep] <- sum(population == "A") / population_size
+    }
+  output <- bind_rows(output, output_single_run)
+  }
+  output
+}
+
+model_unbiased_mutation <- function(
+  population_size,
+  generations,
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate) {
+  tic("total")
+  output <- tibble(
+    run = factor(), 
+    generation = numeric(), 
+    proportion_of_trait_a = numeric()
+  )
+  for (run in 1:runs) {
+    output_single_run <- tibble(
+      run = rep(run, generations) %>% as.factor(), 
+      generation = 1:generations, 
+      proportion_of_trait_a = rep(NA, generations)
+    )
+    tic("population generation")
+    population <- sample(
+      c("A", "B"), 
+      population_size, replace = TRUE, 
+      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
+    )
+    toc()
+    tic("proportion")
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    toc()
+    tic("proportion dainyu")
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    toc()
+    
+
+        for (generation in 2:generations) {
+          tic("one gen")
+      previous_population <- population
+      is_mutant <- sample(
+        c(TRUE, FALSE), 
+        population_size, 
+        prob = c(mutation_rate, 1 - mutation_rate),
+        replace = TRUE
+      )
+      population[is_mutant] <- population[is_mutant] |> recode(A = "B", B = "A")
+      output_single_run$proportion_of_trait_a[generation] <- 
+      sum(population == "A") / population_size
+    }
+    output <- bind_rows(output, output_single_run)
+  }
+  output
+}
+
+
+
+model_unbiased_mutation2 <- function(
+  population_size,
+  generations,
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate) {
+  output <- tibble(
+    run = factor(), 
+    generation = numeric(), 
+    proportion_of_trait_a = numeric()
+  )
+  for (run in 1:runs) {
+    output_single_run <- tibble(
+      run = rep(run, generations) %>% as.factor(), 
+      generation = 1:generations, 
+      proportion_of_trait_a = rep(NA, generations)
+    )
+    population <- sample(
+      c(TRUE, FALSE), # 変更点
+      population_size, replace = TRUE, 
+      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
+    ) 
+    proportion_of_trait_a <- sum(population) / population_size # 変更点
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (generation in 2:generations) {
+      previous_population <- population
+      is_mutant <- sample(
+        c(TRUE, FALSE), 
+        population_size, 
+        prob = c(mutation_rate, 1 - mutation_rate),
+        replace = TRUE
+      )
+      population[is_mutant] <- !population[is_mutant]  # 変更点
+      output_single_run$proportion_of_trait_a[generation] <- 
+      sum(population) / population_size # 変更点
+    }
+    output <- bind_rows(output, output_single_run)
+  }
+  output
+}
+!c(TRUE, FALSE) 
+
+vec <- c(F, F, T, T, F, T, T)
+is_mutant <- c(F, F,F, F, T, T, F)
+vec[is_mutant] <- !vec[is_mutant]
+vec
+tic()
+model_unbiased_mutation(1000, 100, 5, 0.5, 0.05)
+toc()
+tic()
+model_unbiased_mutation2(1000, 100, 5, 0.5, 0.05)
+toc()
+tic()
+model_unbiased_mutation_old(1000, 100, 5, 0.5, 0.05)
+toc()
+model_unbiased_mutation_intermediate(population_size = 1000, mutation_rate = 0.05, 0.5, timesteps = 100, runs = 5)
+bench_2_1 <- bench::mark(
+      ours_truefalse = model_unbiased_mutation2(1000, 100, 5, 0.5, 0.05),
+    ours_intermediate = model_unbiased_mutation_intermediate(population_size = 1000, mutation_rate = 0.05, 0.5, timesteps = 100, runs = 5),
+  ours = model_unbiased_mutation(1000, 100, 5, 0.5, 0.05),
+  original = unbiased_mutation(N = 1000, mu = 0.05, p_0 = 0.5, t_max = 100, r_max = 5),
+
+  iterations = 50,
+  relative = TRUE,
+  check = FALSE)
+bench_2_1
+bench_2_1 |> autoplot()
+```
 

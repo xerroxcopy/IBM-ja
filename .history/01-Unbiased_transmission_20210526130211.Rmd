@@ -11,7 +11,7 @@ library(tidyverse)
 
 ```
 
-# バイアスなしの伝達
+# バイアスなしの伝達 Unbiased transmission
 
 <!-- We start by simulating a simple case of unbiased cultural transmission. We will detail each step of the simulation and explain the code line-by-line. In the following chapters, we will reuse most of this initial model, building up the complexity of our simulations.  -->
 
@@ -324,7 +324,7 @@ We also need a new column called `run` that keeps track of which run the data in
 
 <!-- Going back to the function, we then set up a loop which executes once for each run. The code within this loop is mostly the same as before, except that we now use the `[output$generation == t & output$run == r, ]` notation to put $p$ into the right place in `output`.  -->
 
-関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion\_of\_trait\_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
+関数に戻ろう。各試行１度だけまわるループを設定した。ループ内部のコードは今までとほぼ全く一緒だ^[原著では$proportion_of_trait_a$の保管位置を工夫する必要がでているが、`bind_rows()`を使う本コードではそこに思い悩む必要はない。]。
 
 <!-- The plotting function is also changed to handle multiple runs: -->
 
@@ -388,7 +388,7 @@ plot_multiple_runs(data)
 
 <!-- You should be able to see five independent runs of our simulation shown as regular thin lines, along with a thicker line showing the mean of these lines. Some runs have probably gone to 0 or 1, and the mean should be somewhere in between. The data is stored in `data_model`, which we can inspect by writing its name. -->
 
-5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては$0$か$1$に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
+5回の独立した試行が通常の細めの線で、その平均が太めの線で描画されているはずだ。試行によっては0か1に達しているものもあり、平均はおそらくその間を行き来しているだろう。データは`data`に保存されており、データの変数名を打ち込めばテーブルとして確認することができる。
 
 ```{r 1-22}
 data
@@ -411,7 +411,7 @@ plot_multiple_runs(data)
 
 <!-- Let's add one final modification. So far the starting frequencies of $A$ and $B$ have been the same, roughly 0.5 each. But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.2$ or $p=0.9$? Would unbiased transmission keep $p$ at these initial values, or would it go to $p=0.5$ as we have found so far? -->
 
-最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい$0.5$ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
+最後の変更を加えよう。いまのところ、$A$と$B$のスタート時の頻度はずっと同じで、だいたい0.5ずつになっている。もし$A$と$B$の初期頻度が違ったらどうなるだろう、たとえば$proportion_of_trait_a = 0.2$とか$proportion_of_trait_a = 0.9$ではじまったら？バイアスなしの伝達は$proportion_of_trait_a$を初期頻度と同じに保つだろうか、それとも今までと同様に$proportion_of_trait_a = 0.5$に落ち着くのだろうか？
 
 <!-- To find out, we can add another parameter, `p_0`, which specifies the initial probability of an individual having an $A$ rather than a $B$ in the first generation. Previously this was always `p_0 = 0.5`, but in the new function below we add it to the `sample()` function to weight the initial allocation of traits. -->
 
@@ -465,7 +465,7 @@ model_unbiased_transmissions_varying_initial_condition <- function(
 
 <!-- `unbiased_transmission_3()` is almost identical to the previous function. The only changes are the addition of $p_0$ as an argument to the function, and the $prob$ argument in the `sample()` command. The $prob$ argument gives the probability of picking each option, in our case $A$ and $B$, in the first generation. The probability of $A$ is now $p_0$, and the probability of $B$ is now $1-p_0$. We can use the same plotting function as before to visualise the result. Let's see what happens with a different value of $p_0$, for example $p_0=0.2$. -->
 
-`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial\_proportion\_of\_trait\_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば$0.2$に変えると何が起きるかを見てみよう。
+`model_unbiased_transmissions_varying_initial_condition()`は以前の関数とほぼ同一だが、引数$initial\_proportion\_of\_trait\_a$を追加し、`sample()`関数において`prob`引数を設定している。ここでの`prob`引数はそれぞれのオプション（この場合$A$と$B$）を第1世代として選ぶ確率を設定する。$A$になる確率はいま$initial\_proportion\_of\_trait\_a$であり、$B$になる確率はいま$1 - initial\_proportion\_of\_trait\_a$となる。プロットにはいままでと同じものを使える。$initial\_proportion\_of\_trait\_a$を、たとえば0.2に変えると何が起きるかを見てみよう。
 
 ```{r 1-25, fig.cap = "ランダムな変動はあるものの、バイアスなしの伝達は初期状態から形質頻度を変えることはない"}
 model_unbiased_transmissions_varying_initial_condition(

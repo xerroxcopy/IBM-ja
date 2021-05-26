@@ -159,62 +159,40 @@ $proportion\_of\_trait\_a$が$0.1$から$0.5$まで上昇しているはずだ�
 
 A more interesting case is biased mutation. Let's assume now that there is a probability $\mu_b$ that an individual with trait $B$ mutates into $A$, but there is no possibility of trait $A$ mutating into trait $B$. Perhaps trait $A$ is a particularly catchy or memorable version of a story or an intuitive explanation of a phenomenon, and $B$ is difficult to remember or unintuitive to understand.
 
-より興味深いバイアスのある変異にうつろう。確率$mutation\_rate\_biased$^[原著では$\mu_b$]で個人が形質$B$から$A$に持ち替えるが、形質$A$を持っている個人は形質$B$に持ち替える可能性がゼロだとしよう。形質$A$はたとえばとくべつキャッチーで覚えやすい話だったり現象の直感的な説明だと考えられる。そして$B$は覚えにくく、非直感的な理解を要求する。
-
 The function `biased_mutation()` captures this unidirectional mutation.
 
-以下の関数`model_biased_mutation()`はこの一方向性の変異をとらえている。
-
 ```{r 2-5}
-model_biased_mutation <- function(
-  population_size,
-  generations,
-  runs, 
-  initial_proportion_of_trait_a,
-  mutation_rate_biased) {
-  output <- tibble(
-    run = factor(), 
-    generation = numeric(), 
-    proportion_of_trait_a = numeric()
-  )
-  for (run in 1:runs) {
-    # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
-      generation = 1:generations, 
-      proportion_of_trait_a = rep(NA, generations)
-    )
-    # 第1世代
-    population <- sample(
-      c("A", "B"), 
-      population_size, replace = TRUE, 
-      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
-    )
-    # 第1世代のproportion_of_trait_aを計算
-    proportion_of_trait_a <- sum(population == "A") / population_size
-    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
-    for (generation in 2:generations) {
-      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
-      previous_population <- population
-      # 変異する個人('mutant')を決める
-      is_mutant <- sample(
-        c(TRUE, FALSE), 
-        population_size, 
-        prob = c(mutation_rate_biased, 1 - mutation_rate_biased),
-        replace = TRUE
-      )
-      # is_mutantがTRUEであるスロットの形質がもしAならBに、もしBならAにする。
-      population[is_mutant] <- "A"
-      # proportion_of_trait_aを計算し、tibbleのうち
-      # proportion_of_trait_a列のgeneration行目に格納する
-      output_single_run$proportion_of_trait_a[generation] <- 
-      sum(population == "A") / population_size
+biased_mutation <- function(N, mu_b, p_0, t_max, r_max) {
+   # Create the output tibble
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+
+  for (r in 1:r_max) {
+    population <- tibble(trait = sample(c("A", "B"), N, replace = TRUE, 
+                                        prob = c(p_0, 1 - p_0)))
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # Determine 'mutant' individuals
+      mutate <- sample(c(TRUE, FALSE), N, prob = c(mu_b, 1 - mu_b), replace = TRUE) 
+      
+      # If there are 'mutants' from B to A
+      if (nrow(population[mutate & previous_population$trait == "B", ]) > 0) {
+        # Then flip them to A
+        population[mutate & previous_population$trait == "B", ]$trait <- "A"
+      }
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
     }
-    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
-    output <- bind_rows(output, output_single_run)
   }
-  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
-  output
+  # Export data from function
+  output 
 }
 ```
 
