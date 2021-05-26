@@ -207,3 +207,8 @@ fig:1-25
 初期状態を変えるvarying-initial-conditions
 モデルのまとめsummary-of-the-model
 library
+バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation
+バイアスのない変異unbiased-mutation
+モデルのまとめ
+練習問題
+もっと深く知りたい人に

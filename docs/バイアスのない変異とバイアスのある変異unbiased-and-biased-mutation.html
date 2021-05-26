@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 1 バイアスのない変異とバイアスのある変異Unbiased and biased mutation | 文化進化のインディヴィジュアルベーストモデル</title>
+  <meta name="description" content="Chapter 1 バイアスのない変異とバイアスのある変異Unbiased and biased mutation | 文化進化のインディヴィジュアルベーストモデル" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 1 バイアスのない変異とバイアスのある変異Unbiased and biased mutation | 文化進化のインディヴィジュアルベーストモデル" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 1 バイアスのない変異とバイアスのある変異Unbiased and biased mutation | 文化進化のインディヴィジュアルベーストモデル" />
+  
+  
+  
+
+<meta name="author" content="Alberto Acerbi" />
+<meta name="author" content="Alex Mesoudi" />
+<meta name="author" content="Marco Smolla" />
+
+
+<meta name="date" content="2021-05-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="biased-transmission-direct-bias.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Individual-based models of cultural evolution</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Note to the reader</a>
+<ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#原書との違い"><i class="fa fa-check"></i><b>0.1</b> 原書との違い</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#訳語対応表"><i class="fa fa-check"></i><b>0.2</b> 訳語対応表</a></li>
+<li class="chapter" data-level="0.3" data-path="index.html"><a href="index.html#誤訳対応"><i class="fa fa-check"></i><b>0.3</b> 誤訳対応</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#本書のねらい"><i class="fa fa-check"></i>本書のねらい</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#文化進化とはなにか"><i class="fa fa-check"></i>文化進化とはなにか</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#なぜモデリングするのか"><i class="fa fa-check"></i>なぜモデリングするのか</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#why-individual-based-models"><i class="fa fa-check"></i>Why individual-based models?</a></li>
+<li class="chapter" data-level="0.4" data-path="index.html"><a href="index.html#なぜインディヴィジュアルベーストモデルか"><i class="fa fa-check"></i><b>0.4</b> なぜインディヴィジュアルベーストモデルか</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-use-this-book---the-programming"><i class="fa fa-check"></i>How to use this book - the programming</a></li>
+<li class="chapter" data-level="0.5" data-path="index.html"><a href="index.html#本書のつかいかたプログラミング"><i class="fa fa-check"></i><b>0.5</b> 本書のつかいかた：プログラミング</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-use-this-book---the-simulations"><i class="fa fa-check"></i>How to use this book - the simulations</a></li>
+<li class="chapter" data-level="0.6" data-path="index.html"><a href="index.html#本書のつかいかたシミュレーション"><i class="fa fa-check"></i><b>0.6</b> 本書のつかいかた：シミュレーション</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#conventions-and-formatting"><i class="fa fa-check"></i>Conventions and formatting</a></li>
+<li class="chapter" data-level="0.7" data-path="index.html"><a href="index.html#コーディングの慣習やスタイル"><i class="fa fa-check"></i><b>0.7</b> コーディングの慣習やスタイル</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#further-reading"><i class="fa fa-check"></i>Further reading</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#より詳しく学びたいひとへ"><i class="fa fa-check"></i>より詳しく学びたいひとへ</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path=""><a href="#part-基礎"><i class="fa fa-check"></i>(PART*) 基礎</a>
+<ul>
+<li class="chapter" data-level="0.8" data-path="index.html"><a href="index.html#シミュレーションの初期化-initialising-the-simulation"><i class="fa fa-check"></i><b>0.8</b> シミュレーションの初期化 Initialising the simulation</a></li>
+<li class="chapter" data-level="0.9" data-path="index.html"><a href="index.html#execute-generation-turn-over-many-times"><i class="fa fa-check"></i><b>0.9</b> Execute generation turn-over many times</a></li>
+<li class="chapter" data-level="0.10" data-path="index.html"><a href="index.html#モデルの結果をプロットするplotting-the-model-results"><i class="fa fa-check"></i><b>0.10</b> モデルの結果をプロットするPlotting the model results</a></li>
+<li class="chapter" data-level="0.11" data-path="index.html"><a href="index.html#モデルのコードをラップする関数を書く-write-a-function-to-wrap-the-model-code"><i class="fa fa-check"></i><b>0.11</b> モデルのコードをラップする関数を書く　Write a function to wrap the model code</a></li>
+<li class="chapter" data-level="0.12" data-path="index.html"><a href="index.html#run-several-independent-simulations-and-plot-their-results"><i class="fa fa-check"></i><b>0.12</b> Run several independent simulations and plot their results</a></li>
+<li class="chapter" data-level="0.13" data-path="index.html"><a href="index.html#初期状態を変えるvarying-initial-conditions"><i class="fa fa-check"></i><b>0.13</b> 初期状態を変えるVarying initial conditions</a></li>
+<li class="chapter" data-level="0.14" data-path="index.html"><a href="index.html#モデルのまとめsummary-of-the-model"><i class="fa fa-check"></i><b>0.14</b> モデルのまとめSummary of the model</a></li>
+<li class="chapter" data-level="0.15" data-path="index.html"><a href="index.html#further-reading-1"><i class="fa fa-check"></i><b>0.15</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><i class="fa fa-check"></i><b>1</b> バイアスのない変異とバイアスのある変異Unbiased and biased mutation</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#バイアスのない変異unbiased-mutation"><i class="fa fa-check"></i><b>1.1</b> バイアスのない変異Unbiased mutation</a></li>
+<li class="chapter" data-level="1.2" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#biased-mutation"><i class="fa fa-check"></i><b>1.2</b> Biased mutation</a></li>
+<li class="chapter" data-level="1.3" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#モデルのまとめ"><i class="fa fa-check"></i><b>1.3</b> モデルのまとめ</a></li>
+<li class="chapter" data-level="1.4" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#練習問題"><i class="fa fa-check"></i><b>1.4</b> 練習問題</a></li>
+<li class="chapter" data-level="1.5" data-path="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#もっと深く知りたい人に"><i class="fa fa-check"></i><b>1.5</b> もっと深く知りたい人に</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="biased-transmission-direct-bias.html"><a href="biased-transmission-direct-bias.html"><i class="fa fa-check"></i><b>2</b> Biased transmission: direct bias</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="biased-transmission-direct-bias.html"><a href="biased-transmission-direct-bias.html#a-simple-model-of-directly-biased-transmission"><i class="fa fa-check"></i><b>2.1</b> A simple model of directly biased transmission</a></li>
+<li class="chapter" data-level="2.2" data-path="biased-transmission-direct-bias.html"><a href="biased-transmission-direct-bias.html#strength-of-selection"><i class="fa fa-check"></i><b>2.2</b> Strength of selection</a></li>
+<li class="chapter" data-level="2.3" data-path="biased-transmission-direct-bias.html"><a href="biased-transmission-direct-bias.html#summary-of-the-model"><i class="fa fa-check"></i><b>2.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="2.4" data-path="biased-transmission-direct-bias.html"><a href="biased-transmission-direct-bias.html#further-reading-2"><i class="fa fa-check"></i><b>2.4</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="biased-transmission-frequency-dependent-indirect-bias.html"><a href="biased-transmission-frequency-dependent-indirect-bias.html"><i class="fa fa-check"></i><b>3</b> Biased transmission: frequency-dependent indirect bias</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="biased-transmission-frequency-dependent-indirect-bias.html"><a href="biased-transmission-frequency-dependent-indirect-bias.html#the-logic-of-conformity"><i class="fa fa-check"></i><b>3.1</b> The logic of conformity</a></li>
+<li class="chapter" data-level="3.2" data-path="biased-transmission-frequency-dependent-indirect-bias.html"><a href="biased-transmission-frequency-dependent-indirect-bias.html#testing-conformist-transmission"><i class="fa fa-check"></i><b>3.2</b> Testing conformist transmission</a></li>
+<li class="chapter" data-level="3.3" data-path="biased-transmission-frequency-dependent-indirect-bias.html"><a href="biased-transmission-frequency-dependent-indirect-bias.html#summary-of-the-model-1"><i class="fa fa-check"></i><b>3.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="3.4" data-path="biased-transmission-frequency-dependent-indirect-bias.html"><a href="biased-transmission-frequency-dependent-indirect-bias.html#further-readings"><i class="fa fa-check"></i><b>3.4</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="biased-transmission-demonstrator-based-indirect-bias.html"><a href="biased-transmission-demonstrator-based-indirect-bias.html"><i class="fa fa-check"></i><b>4</b> Biased transmission: demonstrator-based indirect bias</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="biased-transmission-demonstrator-based-indirect-bias.html"><a href="biased-transmission-demonstrator-based-indirect-bias.html#a-simple-demonstrator-bias"><i class="fa fa-check"></i><b>4.1</b> A simple demonstrator bias</a></li>
+<li class="chapter" data-level="4.2" data-path="biased-transmission-demonstrator-based-indirect-bias.html"><a href="biased-transmission-demonstrator-based-indirect-bias.html#predicting-the-winning-trait"><i class="fa fa-check"></i><b>4.2</b> Predicting the ‘winning’ trait</a></li>
+<li class="chapter" data-level="4.3" data-path="biased-transmission-demonstrator-based-indirect-bias.html"><a href="biased-transmission-demonstrator-based-indirect-bias.html#summary-of-the-model-2"><i class="fa fa-check"></i><b>4.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="4.4" data-path="biased-transmission-demonstrator-based-indirect-bias.html"><a href="biased-transmission-demonstrator-based-indirect-bias.html#further-readings-1"><i class="fa fa-check"></i><b>4.4</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="vertical-and-horizontal-transmission.html"><a href="vertical-and-horizontal-transmission.html"><i class="fa fa-check"></i><b>5</b> Vertical and horizontal transmission</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="vertical-and-horizontal-transmission.html"><a href="vertical-and-horizontal-transmission.html#vertical-cultural-transmission"><i class="fa fa-check"></i><b>5.1</b> Vertical cultural transmission</a></li>
+<li class="chapter" data-level="5.2" data-path="vertical-and-horizontal-transmission.html"><a href="vertical-and-horizontal-transmission.html#horizontal-cultural-transmission"><i class="fa fa-check"></i><b>5.2</b> Horizontal cultural transmission</a></li>
+<li class="chapter" data-level="5.3" data-path="vertical-and-horizontal-transmission.html"><a href="vertical-and-horizontal-transmission.html#summary-of-the-model-3"><i class="fa fa-check"></i><b>5.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="5.4" data-path="vertical-and-horizontal-transmission.html"><a href="vertical-and-horizontal-transmission.html#further-reading-3"><i class="fa fa-check"></i><b>5.4</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html"><i class="fa fa-check"></i><b>6</b> Multiple traits models</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#unbiased-transmission-with-multiple-traits"><i class="fa fa-check"></i><b>6.1</b> Unbiased transmission with multiple traits</a></li>
+<li class="chapter" data-level="6.2" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#introducing-innovation"><i class="fa fa-check"></i><b>6.2</b> Introducing innovation</a></li>
+<li class="chapter" data-level="6.3" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#optimising-the-code"><i class="fa fa-check"></i><b>6.3</b> Optimising the code</a></li>
+<li class="chapter" data-level="6.4" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#the-distribution-of-popularity"><i class="fa fa-check"></i><b>6.4</b> The distribution of popularity</a></li>
+<li class="chapter" data-level="6.5" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#summary-of-the-model-4"><i class="fa fa-check"></i><b>6.5</b> Summary of the model</a></li>
+<li class="chapter" data-level="6.6" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#further-readings-2"><i class="fa fa-check"></i><b>6.6</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path=""><a href="#part-advanced-topics---the-evolution-of-cultural-evolution"><i class="fa fa-check"></i>(PART*) Advanced topics - The evolution of cultural evolution</a>
+<ul>
+<li class="chapter" data-level="6.7" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#modelling-rogers-paradox"><i class="fa fa-check"></i><b>6.7</b> Modelling Rogers’ Paradox</a></li>
+<li class="chapter" data-level="6.8" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#summary-of-the-model-5"><i class="fa fa-check"></i><b>6.8</b> Summary of the model</a></li>
+<li class="chapter" data-level="6.9" data-path="multiple-traits-models.html"><a href="multiple-traits-models.html#further-reading-4"><i class="fa fa-check"></i><b>6.9</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html"><i class="fa fa-check"></i><b>7</b> Rogers’ Paradox: A Solution</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#modelling-critical-social-learners"><i class="fa fa-check"></i><b>7.1</b> Modelling critical social learners</a></li>
+<li class="chapter" data-level="7.2" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#summary-of-the-model-6"><i class="fa fa-check"></i><b>7.2</b> Summary of the model</a></li>
+<li class="chapter" data-level="7.3" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#further-reading-5"><i class="fa fa-check"></i><b>7.3</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path=""><a href="#part-advanced-topics---cultural-inheritance"><i class="fa fa-check"></i>(PART*) Advanced topics - Cultural inheritance</a>
+<ul>
+<li class="chapter" data-level="7.4" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#copying-and-selection"><i class="fa fa-check"></i><b>7.4</b> Copying and selection</a></li>
+<li class="chapter" data-level="7.5" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#convergent-transformation"><i class="fa fa-check"></i><b>7.5</b> Convergent transformation</a></li>
+<li class="chapter" data-level="7.6" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#emergent-similarity"><i class="fa fa-check"></i><b>7.6</b> Emergent similarity</a></li>
+<li class="chapter" data-level="7.7" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#cultural-fitness"><i class="fa fa-check"></i><b>7.7</b> Cultural fitness</a></li>
+<li class="chapter" data-level="7.8" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#summary-of-the-model-7"><i class="fa fa-check"></i><b>7.8</b> Summary of the model</a></li>
+<li class="chapter" data-level="7.9" data-path="rogers-paradox-a-solution.html"><a href="rogers-paradox-a-solution.html#further-readings-3"><i class="fa fa-check"></i><b>7.9</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="social-learning-of-social-learning-rules.html"><a href="social-learning-of-social-learning-rules.html"><i class="fa fa-check"></i><b>8</b> Social learning of social learning rules</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="social-learning-of-social-learning-rules.html"><a href="social-learning-of-social-learning-rules.html#openness-and-conservatism"><i class="fa fa-check"></i><b>8.1</b> Openness and conservatism</a></li>
+<li class="chapter" data-level="8.2" data-path="social-learning-of-social-learning-rules.html"><a href="social-learning-of-social-learning-rules.html#maintaining-open-populations"><i class="fa fa-check"></i><b>8.2</b> Maintaining open populations</a></li>
+<li class="chapter" data-level="8.3" data-path="social-learning-of-social-learning-rules.html"><a href="social-learning-of-social-learning-rules.html#summary-of-the-model-8"><i class="fa fa-check"></i><b>8.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="8.4" data-path="social-learning-of-social-learning-rules.html"><a href="social-learning-of-social-learning-rules.html#further-readings-4"><i class="fa fa-check"></i><b>8.4</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html"><i class="fa fa-check"></i><b>9</b> Traits inter-dependence</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#compatible-and-incompatible-traits"><i class="fa fa-check"></i><b>9.1</b> Compatible and incompatible traits</a></li>
+<li class="chapter" data-level="9.2" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#many-traits-model"><i class="fa fa-check"></i><b>9.2</b> Many-traits model</a></li>
+<li class="chapter" data-level="9.3" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#summary-of-the-model-9"><i class="fa fa-check"></i><b>9.3</b> Summary of the model</a></li>
+<li class="chapter" data-level="9.4" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#further-readings-5"><i class="fa fa-check"></i><b>9.4</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path=""><a href="#part-advanced-topics---culture-and-populations"><i class="fa fa-check"></i>(PART*) Advanced topics - Culture and populations</a>
+<ul>
+<li class="chapter" data-level="9.5" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#the-tasmania-case"><i class="fa fa-check"></i><b>9.5</b> The Tasmania Case</a></li>
+<li class="chapter" data-level="9.6" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#modelling-the-tasmania-case"><i class="fa fa-check"></i><b>9.6</b> Modelling the Tasmania Case</a></li>
+<li class="chapter" data-level="9.7" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#calculating-critical-population-sizes-based-on-skill-complexity"><i class="fa fa-check"></i><b>9.7</b> Calculating critical population sizes based on skill complexity</a></li>
+<li class="chapter" data-level="9.8" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#summary-of-the-model-10"><i class="fa fa-check"></i><b>9.8</b> Summary of the model</a></li>
+<li class="chapter" data-level="9.9" data-path="traits-inter-dependence.html"><a href="traits-inter-dependence.html#further-readings-6"><i class="fa fa-check"></i><b>9.9</b> Further readings</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="social-network-structure.html"><a href="social-network-structure.html"><i class="fa fa-check"></i><b>10</b> Social network structure</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="social-network-structure.html"><a href="social-network-structure.html#network-basics"><i class="fa fa-check"></i><b>10.1</b> Network basics</a></li>
+<li class="chapter" data-level="10.2" data-path="social-network-structure.html"><a href="social-network-structure.html#generating-networks"><i class="fa fa-check"></i><b>10.2</b> Generating networks</a></li>
+<li class="chapter" data-level="10.3" data-path="social-network-structure.html"><a href="social-network-structure.html#plotting-networks"><i class="fa fa-check"></i><b>10.3</b> Plotting networks</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="social-network-structure.html"><a href="social-network-structure.html#network-layout"><i class="fa fa-check"></i><b>10.3.1</b> Network layout</a></li>
+<li class="chapter" data-level="10.3.2" data-path="social-network-structure.html"><a href="social-network-structure.html#network-styling"><i class="fa fa-check"></i><b>10.3.2</b> Network styling</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="social-network-structure.html"><a href="social-network-structure.html#analyse-social-networks"><i class="fa fa-check"></i><b>10.4</b> Analyse social networks</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="social-network-structure.html"><a href="social-network-structure.html#network-properties-and-characteristics"><i class="fa fa-check"></i><b>10.4.1</b> Network properties and characteristics</a></li>
+<li class="chapter" data-level="10.4.2" data-path="social-network-structure.html"><a href="social-network-structure.html#vertex-properties"><i class="fa fa-check"></i><b>10.4.2</b> Vertex properties</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="social-network-structure.html"><a href="social-network-structure.html#modelling-information-transmission-in-social-networks"><i class="fa fa-check"></i><b>10.5</b> Modelling information transmission in social networks</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="social-network-structure.html"><a href="social-network-structure.html#gossip-diffusion-in-networked-populations"><i class="fa fa-check"></i><b>10.5.1</b> Gossip diffusion in networked populations</a></li>
+<li class="chapter" data-level="10.5.2" data-path="social-network-structure.html"><a href="social-network-structure.html#complex-versus-simple-contagion-information-transmission"><i class="fa fa-check"></i><b>10.5.2</b> Complex versus simple contagion information transmission</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="social-network-structure.html"><a href="social-network-structure.html#summary-of-the-model-11"><i class="fa fa-check"></i><b>10.6</b> Summary of the model</a></li>
+<li class="chapter" data-level="10.7" data-path="social-network-structure.html"><a href="social-network-structure.html#further-reading-6"><i class="fa fa-check"></i><b>10.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html"><i class="fa fa-check"></i><b>11</b> Group structured populations and migration</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#modelling-migration-and-contact-between-population-subsets"><i class="fa fa-check"></i><b>11.1</b> Modelling migration and contact between population subsets</a></li>
+<li class="chapter" data-level="11.2" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#subdivided-population-with-limited-contact"><i class="fa fa-check"></i><b>11.2</b> Subdivided population with limited contact</a></li>
+<li class="chapter" data-level="11.3" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#subdivided-populations-with-migration"><i class="fa fa-check"></i><b>11.3</b> Subdivided populations with migration</a></li>
+<li class="chapter" data-level="11.4" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#varying-contact-and-migration-probability-for-repeated-simulation-runs"><i class="fa fa-check"></i><b>11.4</b> Varying contact and migration probability for repeated simulation runs</a></li>
+<li class="chapter" data-level="11.5" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#model-extensions"><i class="fa fa-check"></i><b>11.5</b> Model extensions</a>
+<ul>
+<li class="chapter" data-level="" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#innovation-or-mutation"><i class="fa fa-check"></i>Innovation or mutation</a></li>
+<li><a href="group-structured-populations-and-migration.html#copy-m-models">Copy <span class="math inline">\(m\)</span> models</a></li>
+<li class="chapter" data-level="" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#variable-migration-probability-among-subsets"><i class="fa fa-check"></i>Variable migration probability among subsets</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#summary-of-the-model-12"><i class="fa fa-check"></i><b>11.6</b> Summary of the model</a></li>
+<li class="chapter" data-level="11.7" data-path="group-structured-populations-and-migration.html"><a href="group-structured-populations-and-migration.html#further-reading-7"><i class="fa fa-check"></i><b>11.7</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="12" data-path="library.html"><a href="library.html"><i class="fa fa-check"></i><b>12</b> library</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">文化進化のインディヴィジュアルベーストモデル</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation" class="section level1" number="1">
+<h1><span class="header-section-number">Chapter 1</span> バイアスのない変異とバイアスのある変異Unbiased and biased mutation</h1>
+<!-- Evolution doesn't work without a source of variation that introduces new variation upon which selection, drift and other processes can act. In genetic evolution, mutation is almost always blind with respect to function. Beneficial genetic mutations are no more likely to arise when they are needed than when they are not needed - in fact, most genetic mutations are neutral or detrimental to an organism. Cultural evolution is more interesting, in that novel variation may sometimes be directed to solve specific problems, or systematically biased due to features of our cognition. In the models below, we'll simulate both unbiased and biased mutation. -->
+<p>淘汰や浮動といった進化的プロセスは、新たな変異を生み出す源なしには成り立たない。遺伝子進化において、変異はほぼつねに変異が引き起こす機能と無関係に、盲目に発生する。有益な遺伝的変異が無益な遺伝的変異よりも起きやすいということはない。というか、実際にはほとんどの遺伝的変異は生物にとって中立か有害である。文化進化には新奇の変異が特定の問題を解決するよう方向づけされていたり、我々の認知の特徴によってシステマティックにバイアスがかかっている場合があるという興味深い特徴がある。以下で取り扱うモデルでは、バイアスのない変異とバイアスのある変異両方をシミュレートしてみたい。</p>
+<div id="バイアスのない変異unbiased-mutation" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> バイアスのない変異Unbiased mutation</h2>
+<!-- First, we will simulate unbiased mutation in the same basic model as used in the previous chapter. We'll remove unbiased transmission to see the effect of unbiased mutation alone. -->
+<p>まず、バイアスのない変異を前章で構築した基本的なモデルをもとにシミュレートする。バイアスのない伝達の過程を取り除き、バイアスのない変異の影響だけを観察できるようにする。</p>
+<!-- As in the previous model, we assume $N$ individuals each of whom possesses one of two discrete cultural traits, denoted $A$ and $B$. In each generation, from $t=1$ to $t=t_{\text{max}}$, the $N$ individuals are replaced with $N$ new individuals. Instead of random copying, each individual now gives rise to a new individual with the same cultural trait as them. (Another way of looking at this is in terms of timesteps, such as years: the same $N$ individual live for $t_{\text{max}}$ years and keep their cultural trait from one year to the next.) -->
+<p>いままでのモデルと同様、人数<span class="math inline">\(population\_size\)</span>の個人がそれぞれ、ふたつの独立した文化的形質<span class="math inline">\(A\)</span>か<span class="math inline">\(B\)</span>を有しているとしよう。<span class="math inline">\(generation = 1\)</span>から<span class="math inline">\(generation = generations\)</span>までの各世代において、人数<span class="math inline">\(population\_size\)</span>の個人は同じく人数<span class="math inline">\(population\_size\)</span>の新しい個人に入れ替えられる。ただし今回は個々人がランダムに誰かから形質をコピーするのではなく、新しい個人は一つ前の世代の文化的形質をそのままコピーする。これは次のような状況とも考えられる。つまり、年数のようなタイムステップとしても捉えられる。<span class="math inline">\(population\_size\)</span>人の個人がちょうど<span class="math inline">\(generations\)</span>年間生き、そのあいだ、毎年同じ文化的形質を有し続けるのだ。</p>
+<!-- At each generation, however, there is a probability $\mu$ that each individual mutates from their current trait to the other trait (the Greek letter Mu is the standard notation for the mutation rate in genetic evolution, and it has an analogous function here). For example, vegetarian individuals can decide to eat animal products, and vice versa. Remember, this is not copied from other individuals, as in the previous model, but can be thought of as an individual decision. Another way to see this is that the probability of changing trait applies to each individual independently; whether an individual mutates has no bearing on whether or how many other individuals have mutated. On average, this means that $\mu N$ individuals mutate each generation. Like in the previous model, we are interested in tracking the proportion $p$ of agents with trait $A$ over time. -->
+<p>しかし、各世代において個々人は<span class="math inline">\(mutation\_rate\)</span><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>の確率で今の形質からもうひとつの形質に持ち替える。たとえば、ベジタリアンの個人が動物性の食品を食べ始めたり、その逆だったり、という具合だ。ここで気をつけてほしいのは、これらは（これまでのモデルのように）他の個人からコピーされるのではなく、個々人による意思決定による産物のたぐいであることだ。こうも考えられる。形質を持ち替える確率は各個人に独立して作用し、個人が変異するかどうかは他に何人変異した人がいるかになんの影響も受けない。平均して、各世代<span class="math inline">\(mutation\_rate \times population\_size\)</span>人の個人が変異することになる。以前のモデルと同様、<span class="math inline">\(A\)</span>を有する個人の割合<span class="math inline">\(proportion\_of\_trait\_a\)</span>の推移に興味がある。</p>
+<!-- We'll wrap this in a function called `unbiased_mutation()`, using much of the same code as `unbiased_transmission_3()`. As before, we need to call the tidyverse library in order to use the tibble command, and later commands like ggplot2. -->
+<p><code>model_unbiased_mutation()</code>という関数でラップしよう。ほとんどのコードは<code>model_unbiased_transmissions_varying_initial_condition()</code>からの流用だ。以前と同様、tibbleコマンドやggplot2などを使うためにtidyverseライブラリを読み込む。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-3" aria-hidden="true" tabindex="-1"></a>model_unbiased_mutation <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb1-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-4" aria-hidden="true" tabindex="-1"></a>  population_size,</span>
+<span id="cb1-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-5" aria-hidden="true" tabindex="-1"></a>  generations,</span>
+<span id="cb1-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-6" aria-hidden="true" tabindex="-1"></a>  runs, </span>
+<span id="cb1-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-7" aria-hidden="true" tabindex="-1"></a>  initial_proportion_of_trait_a,</span>
+<span id="cb1-8"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-8" aria-hidden="true" tabindex="-1"></a>  mutation_rate) {</span>
+<span id="cb1-9"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-9" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-10"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">run =</span> <span class="fu">factor</span>(), </span>
+<span id="cb1-11"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">generation =</span> <span class="fu">numeric</span>(), </span>
+<span id="cb1-12"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">proportion_of_trait_a =</span> <span class="fu">numeric</span>()</span>
+<span id="cb1-13"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-14"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (run <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>runs) {</span>
+<span id="cb1-15"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1回の試行の結果を保管するtibbleを初期化</span></span>
+<span id="cb1-16"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-16" aria-hidden="true" tabindex="-1"></a>    output_single_run <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-17"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">run =</span> <span class="fu">rep</span>(run, generations) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">as.factor</span>(), </span>
+<span id="cb1-18"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">generation =</span> <span class="dv">1</span><span class="sc">:</span>generations, </span>
+<span id="cb1-19"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">proportion_of_trait_a =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, generations)</span>
+<span id="cb1-20"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-21"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 第1世代</span></span>
+<span id="cb1-22"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-22" aria-hidden="true" tabindex="-1"></a>    population <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb1-23"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), </span>
+<span id="cb1-24"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-24" aria-hidden="true" tabindex="-1"></a>      population_size, <span class="at">replace =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb1-25"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">prob =</span> <span class="fu">c</span>(initial_proportion_of_trait_a, <span class="dv">1</span> <span class="sc">-</span> initial_proportion_of_trait_a)</span>
+<span id="cb1-26"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-27"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 第1世代のproportion_of_trait_aを計算</span></span>
+<span id="cb1-28"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-28" aria-hidden="true" tabindex="-1"></a>    proportion_of_trait_a <span class="ot">&lt;-</span> <span class="fu">sum</span>(population <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">/</span> population_size</span>
+<span id="cb1-29"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-29" aria-hidden="true" tabindex="-1"></a>    output_single_run<span class="sc">$</span>proportion_of_trait_a[<span class="dv">1</span>] <span class="ot">&lt;-</span> proportion_of_trait_a</span>
+<span id="cb1-30"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (generation <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>generations) {</span>
+<span id="cb1-31"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える</span></span>
+<span id="cb1-32"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-32" aria-hidden="true" tabindex="-1"></a>      previous_population <span class="ot">&lt;-</span> population</span>
+<span id="cb1-33"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-33" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 変異する個人(&#39;mutant&#39;)を決める</span></span>
+<span id="cb1-34"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-34" aria-hidden="true" tabindex="-1"></a>      is_mutant <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb1-35"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), </span>
+<span id="cb1-36"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-36" aria-hidden="true" tabindex="-1"></a>        population_size, </span>
+<span id="cb1-37"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-37" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">c</span>(mutation_rate, <span class="dv">1</span> <span class="sc">-</span> mutation_rate),</span>
+<span id="cb1-38"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-39"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-39" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb1-40"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># is_mutantがTRUEであるスロットの形質がもしAならBに、もしBならAにする</span></span>
+<span id="cb1-41"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-41" aria-hidden="true" tabindex="-1"></a>      population[is_mutant] <span class="ot">&lt;-</span> population[is_mutant] <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">recode</span>(<span class="at">A =</span> <span class="st">&quot;B&quot;</span>, <span class="at">B =</span> <span class="st">&quot;A&quot;</span>)</span>
+<span id="cb1-42"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-42" aria-hidden="true" tabindex="-1"></a>      <span class="co"># proportion_of_trait_aを計算し、tibbleのうち</span></span>
+<span id="cb1-43"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># proportion_of_trait_a列のgeneration行目に格納する</span></span>
+<span id="cb1-44"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-44" aria-hidden="true" tabindex="-1"></a>      output_single_run<span class="sc">$</span>proportion_of_trait_a[generation] <span class="ot">&lt;-</span> </span>
+<span id="cb1-45"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(population <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">/</span> population_size</span>
+<span id="cb1-46"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-46" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-47"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える</span></span>
+<span id="cb1-48"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-48" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(output, output_single_run)</span>
+<span id="cb1-49"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-49" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-50"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする</span></span>
+<span id="cb1-51"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-51" aria-hidden="true" tabindex="-1"></a>  output</span>
+<span id="cb1-52"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb1-52" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<!-- The only changes from the previous model are the addition of `mu`, the parameter that specifies the probability of mutation, in the function definition and new lines of code within the `for` loop on `t` which replace the random copying command with unbiased mutation. Let's examine these lines to see how they work. -->
+<p><code>mutation_rate</code>の追加が唯一の変更である。<code>mutation_rate</code>パラメータは変異確率を決めるもので、<code>generation</code>を更新していくforループ内で、ランダムコピーするコマンドをバイアスなしの変異に置き換えている。変更点をひとつずつみていこう。</p>
+<!-- The most obvious way of implementing unbiased mutation - which is *not* done above - would have been to set up another `for` loop. We would cycle through every individual one by one, each time calculating whether it should mutate or not based on `mu`. This would certainly work, but R is notoriously slow at loops. It's always preferable in R, where possible, to use 'vectorised' code. That's what is done above in our three added lines, starting from `mutate <- sample()`.  -->
+<p>バイアスなしの変異を実装する最もありがちな方法は（上記の例では採用してい<em>ない</em>が）、もう一重<code>for</code>ループを追加することだろう。各個人を一人ひとり集会していき、そのたびにその個人の形質が変異すべきかどうかを<code>mutation_rate</code>を使って計算していくのだ。これでもまあ動くには動くのだが、Rはループ計算が遅いことで非常に悪名高い。Rプログラミングにおいては、可能な限り「ベクトル化」されたコードのほうがよりよいとされている。<code>is_mutant &lt;- sample()</code>で始まる行や、<code>population &lt;-</code>で始まる行で行っているのがその「ベクトル化」である。</p>
+<!-- First, we pre-specify the probability of mutating for each individual. For this, we again use the function `sample()`, picking `TRUE` (corresponding to being a mutant) or `FALSE` (not mutating, i.e. keeping the same cultural trait) for $N$ times. The draw, however, is not random: the probability of drawing `TRUE` is equal to $\mu$, and the probability of drawing `FALSE` is $1-\mu$. You can think about the procedure in this way: each individual in the population flips a biased coin that has $\mu$ probability to land on, say, heads, and $1-\mu$ to land on tails. If it lands on heads they change their cultural trait. -->
+<p>まず、各個人の変異する確率を前もって計算しておく。またしても<code>sample()</code>関数を使い、<code>TRUE</code>（変異体mutantとして選ばれたことに対応する）と<code>FALSE</code>（変異体でないこと、つまり前世代と同じ文化的形質を保持し続けることに対応する）から選ぶことを<code>population_size</code>回繰り返して<code>is_mutant</code>というベクトルとして保管しておく。いままでと違い、今回のサンプリングは完全なランダムではない。<code>TRUE</code>を選ぶ確率、つまり変異する確率は変異確率<span class="math inline">\(mutation\_rate\)</span>と等しくし、また<code>FALSE</code>を選ぶ確率は<span class="math inline">\(1 - mutation\_rate\)</span>となるようにした。つぎのように考えるとわかりやすいだろう。各個人はゆがんだ（バイアスのある）コインを投げる<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。表の出る確率は<span class="math inline">\(mutation\_rate\)</span>で、裏の出る確率は<span class="math inline">\(1 - mutation\_rate\)</span>だ。もし表が出たら、その個人は今持っている形質を持ち替えないといけない。</p>
+<p>ここで<code>is_mutant</code>の命名について軽く触れておく<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。これは、長さ<code>population_size</code>の<code>TRUE</code>か<code>FALSE</code>のみを含むベクトルだ。こういった<code>TRUE</code>と<code>FALSE</code>のboolean型の真偽値を保管する場合、<code>is_</code>の接頭語がふさわしい。今回の場合、「このスロットにいる個人は変異体mutantか？」という質問に対する「はい(<code>TRUE</code>)」と「いいえ(<code>FALSE</code>)」を保管するから、<code>is_mutant</code>という名前がわかりやすいだろう。</p>
+<!--In the subsequent lines we change the traits for the 'mutant' individuals. We need to check whether there are individuals that change their trait, both from $A$ to $B$ and vice versa, using the two `if` conditionals. If there are no such individuals, then assigning a new value to an empty tibble returns an error. To avoid this, we make sure that the number of rows is greater than 0 (using `nrow()>0` within the `if`). -->
+<p>続く<code>population[is_mutant] &lt;-</code>ではじまる行では変異体として選ばれた個人の形質を持ち替えさせている<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。<code>population[is_mutant]</code>は変異体の変異前の形質のベクトルになるから、これに形質をひっくり返したベクトルを代入することで変異させることができる。<code>"A"</code>を<code>"B"</code>に、<code>"B"</code>を<code>"A"</code>にする方法は色々あるが、ここでは<code>tidyverse</code>の<code>recode()</code>関数を使って<code>recode( &lt;古い形質&gt; = "&lt;新しい形質&gt;")</code>というふうに書く。</p>
+<!--To plot the results, we can use the same function `plot_multiple_runs()` we wrote in the [previous chapter][Unbiased transmission]. -->
+<p>結果をプロットするには、[前章][バイアスなしの伝達]の<code>plot_multiple_runs()</code>がそのまま使える。</p>
+<!-- Let's now run and plot the model: -->
+<p>コードを実行し、プロットしてみよう：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_unbiased_mutation</span>(</span>
+<span id="cb2-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">population_size =</span> <span class="dv">100</span>, </span>
+<span id="cb2-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">generations =</span> <span class="dv">200</span>, </span>
+<span id="cb2-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">runs =</span> <span class="dv">5</span>, </span>
+<span id="cb2-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_proportion_of_trait_a =</span> <span class="fl">0.5</span>, </span>
+<span id="cb2-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mutation_rate =</span> <span class="fl">0.05</span>) <span class="sc">|</span><span class="er">&gt;</span></span>
+<span id="cb2-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_multiple_runs</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:2-3"></span>
+<img src="IBM-cultevo-ja_files/figure-html/2-3-1.png" alt="バイアスのない変異下では形質の頻度0.5近辺で変動する" width="672" />
+<p class="caption">
+Figure 1.1: バイアスのない変異下では形質の頻度0.5近辺で変動する
+</p>
+</div>
+<!-- Unbiased mutation produces random fluctuations over time and does not alter the overall frequency of $A$, which stays around $p=0.5$. Because mutations from $A$ to $B$ are as equally likely as $B$ to $A$, there is no overall directional trend. -->
+<p>バイアスのない変異はランダムな変動は生み出すものの全体の<span class="math inline">\(A\)</span>の頻度は世代を通して変わらず<span class="math inline">\(proportion\_of\_trait\_a = 0.5\)</span>近辺である。<span class="math inline">\(A\)</span>から<span class="math inline">\(B\)</span>への変異が<span class="math inline">\(B\)</span>から<span class="math inline">\(A\)</span>への変異と同じくらい起こりうるため、全体に方向性のある傾向は生じないのである。</p>
+<!-- If you remember from the previous chapter, with unbiased transmission, when populations were small (e.g. $N=100$) generally one of the traits disappeared after a few generations. Here, though, with $N=100$, both traits remain until the end of the simulation. Why this difference? You can think of it in this way: when one trait becomes popular, say the frequency of $A$ is equal to $0.8$, with unbiased transmission it is more likely that individuals of the new generation will pick up $A$ randomly when copying. The few individuals with trait $B$ will have 80% probability of copying $A$. With unbiased mutation, on the other hand, since $\mu$ is applied independently to each individual, when $A$ is common then there will be more individuals that will flip to $B$ (specifically, $\mu p N$ individuals, which in our case is 4) than individuals that will flip to $A$ (equal to $\mu (1-p) N$ individuals, in our case 1) keeping the traits at similar frequencies. -->
+<p>バイアスのない伝達では、小さな集団(たとえば<span class="math inline">\(population\_size = 100\)</span>程度)ではかなりの頻度でどちらかの形質が数世代のうちに消滅したことを覚えているだろうか。今回のモデルでは、<span class="math inline">\(population\_size = 100\)</span>でもどちらの形質もシミュレーションの最後まで生き残っている。この差は何故生まれるのか？こう考えることができる。どちらかの形質が人気になり、たとえば<span class="math inline">\(A\)</span>の頻度が<span class="math inline">\(0.8\)</span>に達したとしよう。バイアスのない伝達においては、新しい世代の個々人は<span class="math inline">\(A\)</span>をランダムに選び取る確率がかなり高くなる。形質<span class="math inline">\(B\)</span>を有する少数派の個人は、80%の確率で<span class="math inline">\(A\)</span>に持ち替える可能性があるためだ。他方、バイアスのない変異においては<span class="math inline">\(mutation\_rate\)</span>が個々人に独立に働くため、<span class="math inline">\(A\)</span>の頻度が<span class="math inline">\(0.8\)</span>である状況下<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>では、<span class="math inline">\(B\)</span>に鞍替えする個人（具体的には<span class="math inline">\(mutation\_rate \times proportion\_of\_trait\_a \times population\_size\)</span>人、上記のセッティングでは4人）は<span class="math inline">\(A\)</span>に鞍替えする個人（具体的には<span class="math inline">\(mutation\_rate \times (1 - proportion\_of\_trait\_a) \times population\_size\)</span>人、上記のセッティングでは1人）よりも多くなり、形質の頻度は<span class="math inline">\(A\)</span>も<span class="math inline">\(B\)</span>も同じくらいになるようにバランスされることになる。</p>
+<!-- But what if we were to start at different initial frequencies of $A$ and $B$? Say, $p=0.1$ and $p=0.9$? Would $A$ disappear? Would unbiased mutation keep $p$ at these initial values, like we saw unbiased transmission does in Model 1? -->
+<p>しかし、異なる<span class="math inline">\(A\)</span>と<span class="math inline">\(B\)</span>の頻度で開始したらどうなるのだろう？たとえば、<span class="math inline">\(proportion\_of\_trait\_a = 0.1\)</span>とか<span class="math inline">\(proportion\_of_\trait\_a = 0.9\)</span>であったら？<span class="math inline">\(A\)</span>は消えてしまうのだろうか？バイアスのない変異は、バイアスのない伝達であるModel 1でみたように、<span class="math inline">\(proportion\_of\_trait\_a\)</span>を初期値近辺で維持するのか？</p>
+<!-- To find out, let's change $p_0$, which specifies the initial probability of drawing an $A$ rather than a $B$ in the first generation. -->
+<p>検証するため、<span class="math inline">\(initial\_proportion\_of\_trait\_a\)</span>を変えて第1世代の個人が<span class="math inline">\(B\)</span>よりも<span class="math inline">\(A\)</span>を引く確率を下げてみよう。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_unbiased_mutation</span>(</span>
+<span id="cb3-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">population_size =</span> <span class="dv">100</span>, </span>
+<span id="cb3-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">generations =</span> <span class="dv">200</span>, </span>
+<span id="cb3-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">runs =</span> <span class="dv">5</span>, </span>
+<span id="cb3-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_proportion_of_trait_a =</span> <span class="fl">0.1</span>, </span>
+<span id="cb3-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mutation_rate =</span> <span class="fl">0.05</span>) <span class="sc">|</span><span class="er">&gt;</span></span>
+<span id="cb3-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_multiple_runs</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:2-4"></span>
+<img src="IBM-cultevo-ja_files/figure-html/2-4-1.png" alt="バイアスのない変異は初期頻度に関係なく形質頻度を0.5に収束させる" width="672" />
+<p class="caption">
+Figure 1.2: バイアスのない変異は初期頻度に関係なく形質頻度を0.5に収束させる
+</p>
+</div>
+<!-- You should see $p$ go from $0.1$ up to $0.5$. In fact, whatever the initial starting frequencies of $A$ and $B$, unbiased mutation always leads to $p=0.5$, for the reason explained above: unbiased mutation always tends to balance the proportion of $A$s and $B$s. -->
+<p><span class="math inline">\(proportion\_of\_trait\_a\)</span>が<span class="math inline">\(0.1\)</span>から<span class="math inline">\(0.5\)</span>まで上昇しているはずだ。じつは、<span class="math inline">\(A\)</span>と<span class="math inline">\(B\)</span>の開始時の頻度がなんであろうと、前述した理由によってバイアスのない変異は<span class="math inline">\(proportion\_of\_trait\_a = 0.5\)</span>に導く。バイアスのない変異はつねに<span class="math inline">\(A\)</span>と<span class="math inline">\(B\)</span>のバランスを保つようにはたらく。</p>
+</div>
+<div id="biased-mutation" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Biased mutation</h2>
+<!-- A more interesting case is biased mutation. Let's assume now that there is a probability $\mu_b$ that an individual with trait $B$ mutates into $A$, but there is no possibility of trait $A$ mutating into trait $B$. Perhaps trait $A$ is a particularly catchy or memorable version of a story or an intuitive explanation of a phenomenon, and $B$ is difficult to remember or unintuitive to understand. -->
+<p>より興味深いバイアスのある変異にうつろう。確率<span class="math inline">\(mutation\_rate\_biased\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>で個人が形質<span class="math inline">\(B\)</span>から<span class="math inline">\(A\)</span>に持ち替えるが、形質<span class="math inline">\(A\)</span>を持っている個人は形質<span class="math inline">\(B\)</span>に持ち替える可能性がゼロだとしよう。形質<span class="math inline">\(A\)</span>はたとえばとくべつキャッチーで覚えやすい話だったり現象の直感的な説明だと考えられる。そして<span class="math inline">\(B\)</span>は覚えにくく、非直感的な理解を要求する。</p>
+<!-- The function `biased_mutation()` captures this unidirectional mutation. -->
+<p>以下の関数<code>model_biased_mutation()</code>はこの一方向性の変異をとらえている。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-1" aria-hidden="true" tabindex="-1"></a>model_biased_mutation <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb4-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-2" aria-hidden="true" tabindex="-1"></a>  population_size,</span>
+<span id="cb4-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-3" aria-hidden="true" tabindex="-1"></a>  generations,</span>
+<span id="cb4-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-4" aria-hidden="true" tabindex="-1"></a>  runs, </span>
+<span id="cb4-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-5" aria-hidden="true" tabindex="-1"></a>  initial_proportion_of_trait_a,</span>
+<span id="cb4-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-6" aria-hidden="true" tabindex="-1"></a>  mutation_rate_biased) {</span>
+<span id="cb4-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-7" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-8"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">run =</span> <span class="fu">factor</span>(), </span>
+<span id="cb4-9"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">generation =</span> <span class="fu">numeric</span>(), </span>
+<span id="cb4-10"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">proportion_of_trait_a =</span> <span class="fu">numeric</span>()</span>
+<span id="cb4-11"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-12"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (run <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>runs) {</span>
+<span id="cb4-13"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1回の試行の結果を保管するtibbleを初期化</span></span>
+<span id="cb4-14"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-14" aria-hidden="true" tabindex="-1"></a>    output_single_run <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-15"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">run =</span> <span class="fu">rep</span>(run, generations) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">as.factor</span>(), </span>
+<span id="cb4-16"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">generation =</span> <span class="dv">1</span><span class="sc">:</span>generations, </span>
+<span id="cb4-17"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">proportion_of_trait_a =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, generations)</span>
+<span id="cb4-18"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-19"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 第1世代</span></span>
+<span id="cb4-20"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-20" aria-hidden="true" tabindex="-1"></a>    population <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb4-21"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), </span>
+<span id="cb4-22"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-22" aria-hidden="true" tabindex="-1"></a>      population_size, <span class="at">replace =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-23"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">prob =</span> <span class="fu">c</span>(initial_proportion_of_trait_a, <span class="dv">1</span> <span class="sc">-</span> initial_proportion_of_trait_a)</span>
+<span id="cb4-24"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-25"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 第1世代のproportion_of_trait_aを計算</span></span>
+<span id="cb4-26"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-26" aria-hidden="true" tabindex="-1"></a>    proportion_of_trait_a <span class="ot">&lt;-</span> <span class="fu">sum</span>(population <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">/</span> population_size</span>
+<span id="cb4-27"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-27" aria-hidden="true" tabindex="-1"></a>    output_single_run<span class="sc">$</span>proportion_of_trait_a[<span class="dv">1</span>] <span class="ot">&lt;-</span> proportion_of_trait_a</span>
+<span id="cb4-28"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (generation <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>generations) {</span>
+<span id="cb4-29"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える</span></span>
+<span id="cb4-30"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-30" aria-hidden="true" tabindex="-1"></a>      previous_population <span class="ot">&lt;-</span> population</span>
+<span id="cb4-31"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 変異する個人(&#39;mutant&#39;)を決める</span></span>
+<span id="cb4-32"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-32" aria-hidden="true" tabindex="-1"></a>      is_mutant <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb4-33"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), </span>
+<span id="cb4-34"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-34" aria-hidden="true" tabindex="-1"></a>        population_size, </span>
+<span id="cb4-35"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">c</span>(mutation_rate_biased, <span class="dv">1</span> <span class="sc">-</span> mutation_rate_biased),</span>
+<span id="cb4-36"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-37"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-37" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-38"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-38" aria-hidden="true" tabindex="-1"></a>      <span class="co"># is_mutantがTRUEであるスロットの形質をすべてAにする</span></span>
+<span id="cb4-39"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-39" aria-hidden="true" tabindex="-1"></a>      population[is_mutant] <span class="ot">&lt;-</span> <span class="st">&quot;A&quot;</span></span>
+<span id="cb4-40"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># proportion_of_trait_aを計算し、tibbleのうち</span></span>
+<span id="cb4-41"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-41" aria-hidden="true" tabindex="-1"></a>      <span class="co"># proportion_of_trait_a列のgeneration行目に格納する</span></span>
+<span id="cb4-42"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-42" aria-hidden="true" tabindex="-1"></a>      output_single_run<span class="sc">$</span>proportion_of_trait_a[generation] <span class="ot">&lt;-</span> </span>
+<span id="cb4-43"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(population <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">/</span> population_size</span>
+<span id="cb4-44"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-44" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-45"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える</span></span>
+<span id="cb4-46"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-46" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(output, output_single_run)</span>
+<span id="cb4-47"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-48"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする</span></span>
+<span id="cb4-49"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-49" aria-hidden="true" tabindex="-1"></a>  output</span>
+<span id="cb4-50"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb4-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<!-- There are just two changes in this code compared to `unbiased_mutation()`. First, we've replaced `mu` with `mu_b` to keep the two parameters distinct and avoid confusion. Second, the line in `unbiased_mutation()` which caused individuals with $A$ to mutate to $B$ has been deleted. -->
+<p><code>model_unbiased_mutation()</code>からの変更は2点のみだ。まず、混同を避けるために <code>mutation_rate</code> を <code>mutation_rate_biased</code> とし、明確に別のパラメータとした。つぎに、<code>model_unbiased_mutation()</code>において<span class="math inline">\(A\)</span>から<span class="math inline">\(B\)</span>に形質が変化する処理が<code>recode()</code>によって実装されていたが、それをなくし、すべて<code>"A"</code>を代入するようにした(<code>population[is_mutant] &lt;- "A"</code>)<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>。</p>
+<!-- Let's see what effect this has by running `biased_mutation()`. We'll start with the population entirely composed of individuals with $B$, i.e. $p_0=0$, to see how quickly and in what manner $A$ spreads via biased mutation. -->
+<p><code>model_biased_mutation()</code>を走らせて、効果をみよう。まず、全個人が<span class="math inline">\(B\)</span>で構成されている集団、つまり<span class="math inline">\(proportion\_of\_trait\_a = 0\)</span>からはじめ、どれくらいのはやさで、またどのように<span class="math inline">\(A\)</span>Aがバイアスのある変異によって拡散していくかをみる。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_biased_mutation</span>(</span>
+<span id="cb5-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">population_size =</span> <span class="dv">100</span>, </span>
+<span id="cb5-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">generations =</span> <span class="dv">200</span>, </span>
+<span id="cb5-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">runs =</span> <span class="dv">5</span>, </span>
+<span id="cb5-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_proportion_of_trait_a =</span> <span class="dv">0</span>,</span>
+<span id="cb5-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mutation_rate_biased =</span> <span class="fl">0.05</span>) <span class="sc">|</span><span class="er">&gt;</span> </span>
+<span id="cb5-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_multiple_runs</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:2-6"></span>
+<img src="IBM-cultevo-ja_files/figure-html/2-6-1.png" alt="バイアスのある変異によって有利な形質が不利な形質を置き換えていく" width="672" />
+<p class="caption">
+Figure 1.3: バイアスのある変異によって有利な形質が不利な形質を置き換えていく
+</p>
+</div>
+<!-- The plot shows a steep increase that slows and plateaus at $p=1$ by around generation $t=100$. There should be a bit of fluctuation in the different runs, but not much. Now let's try a larger sample size. -->
+<p>プロットでは<span class="math inline">\(proportion\_of\_trait\_a\)</span>が急激に増え、それからゆっくりになり<span class="math inline">\(generation = 100\)</span>近辺で<span class="math inline">\(1\)</span>に達して平らになった（plateauに至った）。各試行である程度の変動はあるものの、そこまで大きくはないはずだ。もっと大きなサンプルサイズで試してみよう。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_biased_mutation</span>(</span>
+<span id="cb6-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">population_size =</span> <span class="dv">10000</span>, </span>
+<span id="cb6-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">generations =</span> <span class="dv">200</span>, </span>
+<span id="cb6-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">runs =</span> <span class="dv">5</span>, </span>
+<span id="cb6-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_proportion_of_trait_a =</span> <span class="dv">0</span>,</span>
+<span id="cb6-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mutation_rate_biased =</span> <span class="fl">0.05</span>) <span class="sc">|</span><span class="er">&gt;</span> </span>
+<span id="cb6-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_multiple_runs</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:2-7"></span>
+<img src="IBM-cultevo-ja_files/figure-html/2-7-1.png" alt="集団サイズを大きくしても、バイアスのある変異が有利な形質の頻度を上昇させる速度は変わらない" width="672" />
+<p class="caption">
+Figure 1.4: 集団サイズを大きくしても、バイアスのある変異が有利な形質の頻度を上昇させる速度は変わらない
+</p>
+</div>
+<!-- With $N = 10000$ the line should be smooth with little (if any) fluctuation across the runs. But notice that it plateaus at about the same generation, around $t=100$. Population size has little effect on the rate at which a novel trait spreads via biased mutation. $\mu_b$, on the other hand, does affect this speed. Let's double the biased mutation rate to 0.1. -->
+<p><span class="math inline">\(population\_size = 10000\)</span>では、試行間でほとんど変動はなく、なめらかな曲線になっているはずだ。しかし、前回とほぼ同じくらいの世代数、<span class="math inline">\(generation = 100\)</span>近辺で平らになっていることに注意してほしい。集団サイズは新奇の形質がバイアスのある変異で拡散していく速さにほとんど全く影響を及ぼさない。他方、<span class="math inline">\(mutation\_rate\_biased\)</span>の数値は速さに影響を与える。バイアスのある変異率を<span class="math inline">\(0.1\)</span>に倍加してみよう。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_biased_mutation</span>(</span>
+<span id="cb7-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">population_size =</span> <span class="dv">10000</span>, </span>
+<span id="cb7-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">generations =</span> <span class="dv">200</span>, </span>
+<span id="cb7-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">runs =</span> <span class="dv">5</span>, </span>
+<span id="cb7-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_proportion_of_trait_a =</span> <span class="dv">0</span>,</span>
+<span id="cb7-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mutation_rate_biased =</span> <span class="fl">0.1</span>) <span class="sc">|</span><span class="er">&gt;</span> </span>
+<span id="cb7-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_multiple_runs</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:2-8"></span>
+<img src="IBM-cultevo-ja_files/figure-html/2-8-1.png" alt="Increasing the mutation rate increases the rate at which biased mutation causes the favoured trait to increase in frequency" width="672" />
+<p class="caption">
+Figure 1.5: Increasing the mutation rate increases the rate at which biased mutation causes the favoured trait to increase in frequency
+</p>
+</div>
+<!-- Now trait $A$ reaches fixation around generation $t=50$. Play around with $N$ and $\mu_b$ to confirm that the latter determines the rate of diffusion of trait $A$, and that it takes the same form each time - roughly an 'r' shape with an initial steep increase followed by a plateauing at $p=1$. -->
+<p>こちらでは<span class="math inline">\(A\)</span>は<span class="math inline">\(generation = 50\)</span>近辺で固定化する。<span class="math inline">\(population\_size\)</span>と<span class="math inline">\(mutation\_rate\_biased\)</span>をいじってみて、後者が形質<span class="math inline">\(A\)</span>の拡散・普及速度を決定することを確認し、また曲線がいつも同じような形、アルファベットの小文字rのような形で最初は急激な増加をしたあとに、<span class="math inline">\(proportion\_of\_trait\_a = 1\)</span>に近づくにつれ平らになる様子を確認しよう。</p>
+</div>
+<div id="モデルのまとめ" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> モデルのまとめ</h2>
+<!-- With this simple model, we can draw the following insights. Unbiased mutation, which resembles genetic mutation in being non-directional, always leads to an equal mix of the two traits. It introduces and maintains cultural variation in the population. It is interesting to compare unbiased mutation to unbiased transmission from the previous chapter. While unbiased transmission did not change $p$ over time, unbiased mutation always converges on $p=0.5$, irrespective of the starting frequency. (NB $p = 0.5$ assuming there are two traits; more generally, $p=1/v$, where $v$ is the number of traits.) -->
+<p>今回の単純なモデルから、次のような洞察が導き出せる。無方向的であるという意味において遺伝的変異に類似するバイアスのない変異は、つねに2つの形質を同じくらいの割合にバランスさせる。バイアスのない変異は集団に文化的形質を持ち込み、それを維持する。バイアスのない変異とバイアスのない伝達を比べると、バイアスのない伝達は<span class="math inline">\(proportion\_of\_trait\_a\)</span>を維持し続けるのに対して、バイアスのない変異はつねに、初期頻度に<span class="math inline">\(proportion\_of\_trait\_a\)</span>を<span class="math inline">\(0.5\)</span>に収束させた（<span class="math inline">\(proportion\_of\_trait\_a = 0.5\)</span>は2つの形質を想定した場合である、ということに注意する必要がある。これを形質数が<span class="math inline">\(v\)</span>の場合に一般化すると、バイアスのない変異は<span class="math inline">\(proportion\_of\_trait\_a\)</span>を<span class="math inline">\(1/v\)</span>に収束させる）。</p>
+<!-- Biased mutation, which is far more common - perhaps even typical - in cultural evolution, shows different dynamics. Novel traits favoured by biased mutation spread in a characteristic fashion - an r-shaped diffusion curve - with a speed characterised by the mutation rate $\mu_b$. Population size has little effect, whether $N = 100$ or $N = 10000$. Whenever biased mutation is present ($\mu_b>0$), the favoured trait goes to fixation, even if it is not initially present. -->
+<p>バイアスのある変異は、文化進化においてはバイアスのない変異に比べずっと一般的であり、典型的ですらある。二者は異なるダイナミクスを示す。バイアスのある変異によって有利になった新奇の形質は特徴的な広がり方（r型の普及曲線）を呈し、その速度は突然変異率<span class="math inline">\(mutation\_rate\_biased\)</span>によって決定される。集団サイズ<span class="math inline">\(population\_size\)</span>は<span class="math inline">\(100\)</span>であろうと<span class="math inline">\(10000\)</span>であろうとほぼまったく影響を及ぼさなかった。バイアスのある変異が存在する(<span class="math inline">\(mutation\_rate\_biased &gt; 0\)</span>)ならいつでも、有利な形質はたとえ開始時に全く存在しなくても、最終的に固定化にまで至る。</p>
+<!-- In terms of programming techniques, the major novelty in this model is the use of `sample()` to determine which individuals should undergo whatever the fixed probability specifies (in our case, mutation). This could be done with a loop, but vectorising code in the way we did here is much faster in R than loops. -->
+<p>プログラミング上のテクニックでいえば、今回のモデルでの新しさは<code>sample()</code>関数で固定の確率（今回は変異率）のもとでなにかをする・しないというのを個人それぞれについて計算したことがあげられる。ループでもできないことはないのだが、我々が実装したようなベクトル化したコードはRにおいてループに比べてずっと速い。また日本語版では<code>recode()</code>関数をもちいて可読性をあげ、コード行数を減らす工夫を施している。速度は4倍程度になった<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。興味のある人は原著のコードと見比べてみてほしい。</p>
+</div>
+<div id="練習問題" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> 練習問題</h2>
+<p>最初の<code>model_unbiased_mutation()</code>はもう少し高速化できる。<span class="math inline">\(A\)</span>と<span class="math inline">\(B\)</span>がコインの裏表の関係にあることを利用してみよう。<span class="math inline">\(A\)</span>を<code>TRUE</code>、<span class="math inline">\(B\)</span>を<code>FALSE</code>として扱うと、<code>recode()</code>による置き換えではなく、<code>!population</code>とすることで形質をひっくり返すことができるようになる。<code>recode()</code>は他のtidyverseの関数と一貫性がなく、あまり読みやすい関数とはいえず（2021-05-26時点でLifecycleは’questioning’になっている）、実行速度もいまいちである。これを<code>!population</code>というとても単純な計算で置き換えられるのは大きい（翻訳者の環境で2倍程度の速度向上）。また<code>sum()</code>関数も少しだけ書き換えられる。</p>
+<p>解答例を以下に示す。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-1" aria-hidden="true" tabindex="-1"></a>model_unbiased_mutation_truefalse <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb8-2"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  population_size,</span>
+<span id="cb8-3"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  generations,</span>
+<span id="cb8-4"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  runs, </span>
+<span id="cb8-5"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-5" aria-hidden="true" tabindex="-1"></a>  initial_proportion_of_trait_a,</span>
+<span id="cb8-6"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-6" aria-hidden="true" tabindex="-1"></a>  mutation_rate) {</span>
+<span id="cb8-7"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-7" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-8"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">run =</span> <span class="fu">factor</span>(), </span>
+<span id="cb8-9"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">generation =</span> <span class="fu">numeric</span>(), </span>
+<span id="cb8-10"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">proportion_of_trait_a =</span> <span class="fu">numeric</span>()</span>
+<span id="cb8-11"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (run <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>runs) {</span>
+<span id="cb8-13"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-13" aria-hidden="true" tabindex="-1"></a>    output_single_run <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-14"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">run =</span> <span class="fu">rep</span>(run, generations) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">as.factor</span>(), </span>
+<span id="cb8-15"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">generation =</span> <span class="dv">1</span><span class="sc">:</span>generations, </span>
+<span id="cb8-16"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">proportion_of_trait_a =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, generations)</span>
+<span id="cb8-17"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-18"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-18" aria-hidden="true" tabindex="-1"></a>    population <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb8-19"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="co"># 変更点</span></span>
+<span id="cb8-20"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-20" aria-hidden="true" tabindex="-1"></a>      population_size, <span class="at">replace =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb8-21"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">prob =</span> <span class="fu">c</span>(initial_proportion_of_trait_a, <span class="dv">1</span> <span class="sc">-</span> initial_proportion_of_trait_a)</span>
+<span id="cb8-22"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-22" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb8-23"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-23" aria-hidden="true" tabindex="-1"></a>    proportion_of_trait_a <span class="ot">&lt;-</span> <span class="fu">sum</span>(population) <span class="sc">/</span> population_size <span class="co"># 変更点</span></span>
+<span id="cb8-24"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-24" aria-hidden="true" tabindex="-1"></a>    output_single_run<span class="sc">$</span>proportion_of_trait_a[<span class="dv">1</span>] <span class="ot">&lt;-</span> proportion_of_trait_a</span>
+<span id="cb8-25"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (generation <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>generations) {</span>
+<span id="cb8-26"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-26" aria-hidden="true" tabindex="-1"></a>      previous_population <span class="ot">&lt;-</span> population</span>
+<span id="cb8-27"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-27" aria-hidden="true" tabindex="-1"></a>      is_mutant <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb8-28"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), </span>
+<span id="cb8-29"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-29" aria-hidden="true" tabindex="-1"></a>        population_size, </span>
+<span id="cb8-30"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">c</span>(mutation_rate, <span class="dv">1</span> <span class="sc">-</span> mutation_rate),</span>
+<span id="cb8-31"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-32"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-32" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb8-33"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-33" aria-hidden="true" tabindex="-1"></a>      population[is_mutant] <span class="ot">&lt;-</span> <span class="sc">!</span>population[is_mutant]  <span class="co"># 変更点</span></span>
+<span id="cb8-34"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-34" aria-hidden="true" tabindex="-1"></a>      output_single_run<span class="sc">$</span>proportion_of_trait_a[generation] <span class="ot">&lt;-</span> </span>
+<span id="cb8-35"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sum</span>(population) <span class="sc">/</span> population_size <span class="co"># 変更点</span></span>
+<span id="cb8-36"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-37"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-37" aria-hidden="true" tabindex="-1"></a>    output <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(output, output_single_run)</span>
+<span id="cb8-38"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-38" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-39"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-39" aria-hidden="true" tabindex="-1"></a>  output</span>
+<span id="cb8-40"><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#cb8-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>さらに高速化を試みるなら、</p>
+<ul>
+<li><code>proportion_of_trait_a</code>の計算がループのたびに行われているのを、最後に一気に<code>population_size</code>で割るとどうなるか（そのためにはpopulationを毎ループ保持しておく必要がある。<code>population</code>をベクトルではなくtibbleとして作り直すべきだろう）</li>
+<li><code>is_mutant</code>を世代のたびに計算しているが、全<code>runs</code>、全<code>generations</code>について一気に、つまり<code>population_size</code>ぶんの<code>sample()</code>ではなく<code>population_size \times generations \times runs</code>ぶんの<code>sample()</code>を一気に計算したらどうなるか</li>
+</ul>
+<p>といった検討が思い浮かぶ。もしかすると速くなるかもしれないし、遅くなるかもしれない。特に前者のアイディアは、tibbleの利用によって遅くなるぶんと、一気に計算することによって速くなるぶんを比べると、遅くなるぶんのほうが大きそうではある。また後者のアイディアは高速化には貢献しそうだが、データ構造を大きく変えなければならず、可読性も犠牲になりそうだ。このように、高速化を施すことはコードの総合的な品質としては一長一短であることが多く、一筋縄にはいかない。<code>bench</code>ライブラリの<code>mark()</code>や<code>tictoc</code>ライブラリの<code>tic()</code>, <code>toc()</code>関数などを活用して、速さを測りながら高速化してみよう。</p>
+<p>ベンチマークしながら一歩ずつ高速化するのは非常に有意義である。当初<code>if_else()</code>と<code>recode()</code>を使った高速化を試みた(<code>population &lt;- if_else(is_mutant, population[is_mutant] |&gt; recode(A = "B", B = "A"), population)</code>)が、むしろオリジナルよりも遅くなった。</p>
+</div>
+<div id="もっと深く知りたい人に" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> もっと深く知りたい人に</h2>
+<!-- @boyd_culture_1985 model what they call 'guided variation', which is equivalent to biased mutation as modelled in this chapter. @henrich_cultural_2001 shows how biased mutation / guided variation generates r-shaped curves similar to those generated here. -->
+<p><span class="citation"><a href="library.html#ref-boyd_culture_1985" role="doc-biblioref">Boyd and Richerson</a> (<a href="library.html#ref-boyd_culture_1985" role="doc-biblioref">1985</a>)</span>　では誘導された変異guided variationをモデリングしている。誘導された変異は本章でモデルしたバイアスのある変異に対応する。<span class="citation"><a href="library.html#ref-henrich_cultural_2001" role="doc-biblioref">Henrich</a> (<a href="library.html#ref-henrich_cultural_2001" role="doc-biblioref">2001</a>)</span> はバイアスのある変異/誘導された変異がどのように生じるかについて説明している。</p>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>原著では<span class="math inline">\(\mu\)</span>。ギリシャ文字ミュー<span class="math inline">\(\mu\)</span>は遺伝子進化において変異率をあらわす際の標準的な文字であり、ここでも類似の機能をもつ。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>バイアスのあるコインを投げるからといって、これがバイアスのある変異であるわけではない。変異そのものはバイアスがないが、その生成確率じたいは50:50ではなく、むしろもっと低い(5:95など)、というだけである。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>原著では<code>mutate</code>と命名されており、これ自体が変異させる関数であるかのように思わせる命令形(mutateせよ)の名前であり、あまりわかりやすいとはいえない。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>原著ではかなり違う方法を使っているが、こちらのほうがより可読性が高いのではないかと思う。ただし<code>recode()</code>が遅いのか、処理速度は原著の方法を流用したほうが高い。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>原著では0.8であると明記されておらず、commonである場合としか書いていないが、この文以下の計算結果から0.8を想定していることがわかる<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>原著では<span class="math inline">\(\mu_b\)</span><a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>左辺（LHS）のベクトルの長さは容易に1以上になり、代入する<code>"A"</code>との長さが一致しないように思えるが、Rでは代入するものがひとつであればそれを代入先のベクトルの長さになるまで自動で繰り返してくれる<code>rep("A", length(population[is_mutant])</code>。これをリサイクルという。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>この速度の向上は<code>recode()</code>関数の導入によるものではない。<a href="バイアスのない変異とバイアスのある変異unbiased-and-biased-mutation.html#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="biased-transmission-direct-bias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["IBM-cultevo-ja.pdf", "IBM-cultevo-ja.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

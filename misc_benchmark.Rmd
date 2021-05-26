@@ -362,9 +362,9 @@ toc()
 model_unbiased_mutation_intermediate(population_size = 1000, mutation_rate = 0.05, 0.5, timesteps = 100, runs = 5)
 bench_2_1 <- bench::mark(
       ours_truefalse = model_unbiased_mutation2(1000, 100, 5, 0.5, 0.05),
-    ours_intermediate = model_unbiased_mutation_intermediate(population_size = 1000, mutation_rate = 0.05, 0.5, timesteps = 100, runs = 5),
+    # ours_intermediate = model_unbiased_mutation_intermediate(population_size = 1000, mutation_rate = 0.05, 0.5, timesteps = 100, runs = 5),
   ours = model_unbiased_mutation(1000, 100, 5, 0.5, 0.05),
-  original = unbiased_mutation(N = 1000, mu = 0.05, p_0 = 0.5, t_max = 100, r_max = 5),
+  # original = unbiased_mutation(N = 1000, mu = 0.05, p_0 = 0.5, t_max = 100, r_max = 5),
 
   iterations = 50,
   relative = TRUE,
@@ -372,4 +372,4 @@ bench_2_1 <- bench::mark(
 bench_2_1
 bench_2_1 |> autoplot()
 ```
-
+oursにくらべ、true falseのものは2倍速い。オリジナルに比べ、oursは4倍以上速い。
