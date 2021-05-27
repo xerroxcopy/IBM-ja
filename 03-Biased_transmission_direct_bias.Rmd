@@ -54,8 +54,8 @@ model_biased_transmission_direct <- function (
     proportion_of_trait_a <- sum(population == "A") / population_size
     output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
     for (generation in 2:generations) {
-      # 今timestepの集団に属する個人は、それぞれデモンストレーターを前世代から適当に一人指名する
-      is_demonstrator_trait_a <- sample(population, population_size, replace = TRUE) == "A"
+      # 今世代の集団に属する個人は、それぞれデモンストレーターを前世代から適当に一人指名する
+      demonstrator_trait <- sample(population, population_size, replace = TRUE)
       # バイアスのあるコピー確率でコピーするか否かを決める
       should_copy_a_everyone <- sample(
         c(TRUE, FALSE),
@@ -69,14 +69,10 @@ model_biased_transmission_direct <- function (
         prob = c(probability_b, 1 - probability_b),
         replace = TRUE
       )
+
+      is_demonstrator_trait_a <- demonstrator_trait == "A"
       should_copy_a <- is_demonstrator_trait_a & should_copy_a_everyone
       should_copy_b <- !is_demonstrator_trait_a & should_copy_b_everyone
-      
-      # population <- case_when(
-      #   demonstrator_trait == "A" & should_copy_a ~ "A",
-      #   demonstrator_trait == "B" & should_copy_b ~ "B",
-      #   TRUE ~ population
-      # )
       if(length(should_copy_a) > 0) {
         population[should_copy_a] <- "A"}
       if(length(should_copy_b) > 0) {
@@ -94,67 +90,100 @@ model_biased_transmission_direct <- function (
 }
 ```
 
-test ours .343 intermediate .262
-```{r}
-tic()
-model_biased_transmission_direct(10000, .1, 0, .01, 150, 1)
-toc()
-```
-
-
 Most of `biased_transmission_direct()` is recycled from the previous models. As before, we initialise the data structure `output` from multiple runs, and in generation $t=1$, we create a `population` tibble to hold the trait of each individual. 
+
+`model_biased_transmission-direct()`の大部分はいままでのモデルの使いまわしだ。いままでと同様、データ構造`output`を初期化し、$generation = 1$で`population`ベクトルに個々人の形質を保持している。
 
 The major change is that we now include biased transmission. We first select at random the demonstrators from the previous generation (using the same code we used in `unbiased_transmission()`) and we store their trait in `demonstrator_trait`. Then we get the probabilities for copying $A$ and for copying $B$ for the entire population, using the same code used in `biased_mutation()`. Again using the same code as in `biased mutation()`, we have the individuals copy the trait at hand with the desired probability.
 
+大きな変更点はバイアスのある伝達の導入だ。まず、デモンストレーターを前世代からランダムに選ぶ（`model_unbiased_transmission()`で使ったコードの流用だ）。デモンストレーターの形質は`demonstrator_trait`ベクトルに保管する。つぎに$A$をコピーする確率と$B$をコピーする確率を全員について計算する。`model_biased_mutation()`のコードを再利用して、望み通りの確率でデモンストレーターの形質をコピーするかどうかを個々人に決定させることができる^[ここはやや複雑なのでもう少し説明する。まず、デモンストレーターは実際にそのデモンストレーターの形質をコピーするか否かに関わらず全員分サンプリングする。以前実装したバイアスのない伝達では、目の前に現れたデモンストレーターの持つ形質を無批判にじぶんのものとしていた（`probability_a = 1`, `probability_b = 1`）。今回のバイアスのある伝達では、個々人はデモンストレーターの形質を本当にコピーしたものかどうかを吟味する。たとえば`probability_a = 0.5, probability_b = 0.1`だったとしよう。ある世代の個人であるあなたが先代の個人から$A$をもったデモンストレーターをランダムに指名していたとしよう。あなたは半分の確率でその人のいうとおり$A$を受け入れるし、そうでなければ自分の形質を保ち続ける。ここで、形質$A$を持っているあなたのデモンストレーターがたまたま形質$A$を有していたら、`probability_a`が0だろうと0.9だろうと必ず$A$を保持するのだし、デモンストレーターの形質が$B$でも`probability_b`が0なら絶対にデモンストレーターから$B$を受け入れることはないのだから、コピーの可否を吟味する計算をしなくてもよいのではないかと思うかもしれない。それはそのとおりなのだが、Rは、一気に大量に単純な計算をするのは得意で、条件分岐やforループは不得意だ。そこで、かなりの部分が無駄になるとわかっていても、全員ぶん一気に`probability_a`と`probability_b`を計算しておいたほうが計算機として（も、なるべくコードを単純にしたいモデラーとしても）都合がいいのだ。]。
+
+
 Let's run our function `biased_transmission_direct()`. As before, to plot the results, we can use the function `plot_multiple_runs()` we wrote in the first chapter.
+
+`model_biased_transmission_direct()`を実行してみよう。以前と同様、結果のプロットには`plot_multiple_runs()`を再利用する。
 
 As noted above, the interesting case is when one trait is favoured over the other. We can assume, for example, $s_a=0.1$ and $s_b=0$. This means that when individuals encounter another individual with trait $A$ they copy them 1 out every 10 times, but when individuals encounter another individual with trait $B$, they never switch. We can also assume that the favoured trait, $A$, is initially rare in the population ($p_0=0.01$) to see how selection favours this initially-rare trait (Note that $p_0$ needs to be higher than 0; since there is no mutation in this model, we need to include at least some $A$s at the beginning of the simulation, otherwise it would never appear). 
 
+上記の通り、いま興味があるのは、ある形質がもう片方の形質よりも好まれている状況だ。たとえば、$probability\_a = 0.1$と$probability\_b = 0$を想定してみよう。この状況下では、ある個人が形質$A$を有する個人と遭遇した場合、その形質を10回に1回コピーするが、形質$B$を有する個人と遭遇しても絶対に形質$A$から形質$B$に持ち替えることはない^[形質$B$を有する個人がその形質をキープしつづけることはありうることに注意。原著でもnever switch、つまり持ち替えることはない、と書いている。]。より好まれる形質$A$の開始時の頻度がとても低い、という想定も盛り込もう（$initial\_proportion\_of\_trait\_a = 0.01$）。この設定によって、開始時は珍しい形質を、選択がどのように選好していくかを観察することができる。ここで、$initial\_proportion\_of\_trait\_a$がゼロではないことに注意してほしい。このモデルには変異のプロセスが含まれていないため、最低でもごく一部の個人が開始時に$A$を有していないと$A$が現れようがない。
+
+
 ```{r 3-2, echo=FALSE}
-plot_multiple_runs <- function(data_model) {
-  ggplot(data = data_model, aes(y = p, x = generation)) +
+plot_multiple_runs <- function(data) {
+  ggplot(data = data, aes(x = generation, y = proportion_of_trait_a)) +
     geom_line(aes(colour = run)) +
     stat_summary(fun = mean, geom = "line", size = 1) +
     ylim(c(0, 1)) +
     theme_bw() +
-    labs(y = "p (proportion of individuals with trait A)")
+    ylab("proportion of individuals with trait A")
 }
 ```
 
-```{r 3-3, fig.cap = "Biased transmission generates an s-shaped diffusion curve"}
-data_model <- biased_transmission_direct(N = 10000, s_a = 0.1, s_b = 0 , 
-                                         p_0 = 0.01, t_max = 150, r_max = 5)
-plot_multiple_runs(data_model)
+```{r 3-3, fig.cap = "バイアスのある伝達はs字型の拡散曲線をなす"}
+model_biased_transmission_direct(
+  population_size = 10000, 
+  probability_a = 0.1, 
+  probability_b = 0 , 
+  initial_proportion_of_trait_a = 0.01, 
+  generations = 150, 
+  runs = 5) |>
+  plot_multiple_runs()
 ```
 
 With a moderate selection strength, we can see that $A$ gradually replaces $B$ and goes to fixation. It does this in a characteristic manner: the increase is slow at first, then picks up speed, then plateaus.
 
+中くらいの淘汰圧では、$A$がゆっくりと$B$に取って代わっていき、最終的に固定化する。拡散過程は特徴的で、最初はゆっくり増えていくが、しだいにはやくなり、その後なだらかになる。
+
 Note the difference from biased mutation. Where biased mutation was r-shaped, with a steep initial increase, biased transmission is s-shaped, with an initial slow uptake. This is because the strength of biased transmission (like selection in general) is proportional to the variation in the population. When $A$ is rare initially, there is only a small chance of picking another individual with $A$. As $A$ spreads, the chances of picking an $A$ individual increases. As $A$ becomes very common, there are few $B$ individuals left to switch. In the case of biased mutation, instead, the probability of switching is independent of the variation in the population. 
 
-## Strength of selection
+バイアスのある変異との差に注目してほしい。バイアスのある変異では拡散曲線はr字型で、最初に急増した。バイアスのある伝達はs字型で、最初はゆっくりとした増加だ。これは、バイアスのある伝達（ほかの淘汰全般にいえるが）の強さが集団内での普及度合いに比例するからだ。開始直後、$A$が珍しいあいだはほかの個人が$A$をコピーする機会はごく限られている。$A$が普及するにつれ、$A$を有する個人をデモンストレーターとして指名する機会は多くなっていく。$A$がとても一般的になると、こんどは$A$に切り替えようとする$B$を有する個人がほとんどいなくなってくる。いっぽう、バイアスのある変異では普及度合いとは独立に個々人が形質を持ち替えるかどうかを決める。
+
+## 淘汰圧の強さ
 
 On what does the strength of selection depend? First, the strength is independent of the specific values of $s_a$ and $s_b$. What counts is their relative difference, which in the above case is $s_a-s_b = 0.1$. If we run a simulation with, say, $s_a=0.6$ and $s_b=0.5$, we see the same pattern, albeit with slightly more noise. That is, the single runs are more different from one another compared to the previous simulation. This is because switches from $A$ to $B$ are now also possible.
 
-```{r 3-4, fig.cap = "Biased transmission depends on the relative difference between the transmission parameters of each trait"}
-data_model <- biased_transmission_direct(N = 10000, s_a = 0.6, s_b = 0.5 , 
-                                         p_0 = 0.01, t_max = 150, r_max = 5)
-plot_multiple_runs(data_model)
+淘汰圧の強さはなにによって決定されるのだろうか？まず、強さは$probability\_a$や$probability\_b$の特定の値によって決まるわけではない。意味があるのはそれらの相対的な差である。上記の例での差は$probability\_a - probability\_b = 0.1$である。もしたとえば$probability\_a = 0.6$と$probability\_b = 0.5$でシミュレーションを走らせればほぼ同様のパターンが観察できる。ただし、少しだけノイズが増えてガタツキの多い拡散曲線になるだろう。というのも、こちらの設定では試行ごとの差がでやすいためだ。これは、後者の設定だと$A$から$B$への切り替えが可能になるためだ。図示してみよう。
+
+```{r 3-4, fig.cap = "バイアスのある伝達は各形質の伝達パラメータの相対的な差に依存する"}
+model_biased_transmission_direct(
+  population_size = 10000, 
+  probability_a = 0.6, 
+  probability_b = 0.5, 
+  initial_proportion_of_trait_a = 0.01, 
+  generations = 150, 
+  runs = 5) |>
+  plot_multiple_runs()
 ```
 
 To change the selection strength, we need to modify the difference between $s_a$ and $s_b$. We can double the strength by setting $s_a = 0.2$, and keeping $s_b=0$.
 
-```{r 3-5, fig.cap = "Increasing the relative difference between transmission parameters increases the rate at which the favoured trait spreads"}
-data_model <- biased_transmission_direct(N = 10000, s_a = 0.2, s_b = 0 , 
-                                         p_0 = 0.01, t_max = 150, r_max = 5)
-plot_multiple_runs(data_model)
+選択の強さを変更するには、$probability\_a$と$probability\_b$の差を変更する。$probability\_b$は$0$のままで、$probability\_a$を倍の$0.2$にすることで、選択の強さを2倍にすることができる。
+
+```{r 3-5, fig.cap = "伝達パラメータの相対的な差を大きくすると、より好まれている形質の拡がる速度が大きくなる"}
+model_biased_transmission_direct(
+  population_size = 10000, 
+  probability_a = 0.2, 
+  probability_b = 0, 
+  initial_proportion_of_trait_a = 0.01, 
+  generations = 150, 
+  runs = 5) |>
+  plot_multiple_runs()
 ```
 
 As we might expect, increasing the strength of selection increases the speed with which $A$ goes to fixation. Note, though, that it retains the s-shape.
 
+期待したとおり、選択の強さを増すと$A$が固定化するまでの速度が増える。ただし、曲線全体の形は変わらずs型であることに注意すること。
 
 ## Summary of the model
 
 We have seen how biased transmission causes a trait favoured by cultural selection to spread and go to fixation in a population, even when it is initially very rare. Biased transmission differs in its dynamics from biased mutation. Its action is proportional to the variation in the population at the time at which it acts. It is strongest when there is lots of variation (in our model, when there are equal numbers of $A$ and $B$ at $p=0.5$), and weakest when there is little variation (when $p$ is close to 0 or 1).
+
+## 練習問題
+
+（問題3-1）`probability\_b`は$0$のままで、`probability\_a`を$0$から$0.5$まで$0.1$刻みで変えて、それをひとつの図にプロットしてみよう。世代数は変わらず$generations = 150$、試行回数は$runs = 100$
+
+（問題3-2）`probability\_a`と`probability\_b`を$0$から$0.5$まで$0.1$刻みで変えて、それをひとつの図にプロットしてみよう。できれば`pmap()`関数を使いnested tibbleを構築し、それを`unnest()`してからプロットしよう。
+
 
 
 ## Further reading
