@@ -231,10 +231,10 @@ model_biased_mutation <- function(
 ```{r 2-6, fig.cap = "バイアスのある変異によって有利な形質が不利な形質を置き換えていく"}
 model_biased_mutation(
   population_size = 100, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.05, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.05) |> 
   plot_multiple_runs()
 ```
 
@@ -245,10 +245,10 @@ model_biased_mutation(
 ```{r 2-7, fig.cap = "集団サイズを大きくしても、バイアスのある変異が有利な形質の頻度を上昇させる速度は変わらない"}
 model_biased_mutation(
   population_size = 10000, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.05, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.05) |> 
   plot_multiple_runs()
 ```
 
@@ -260,10 +260,10 @@ $population\_size = 10000$では、試行間でほとんど変動はなく、な
 ```{r 2-8, fig.cap = "突然変異率をあげると、バイアスのある変異が引き起こす有利な形質の頻度の上昇速度もあがる"}
 model_biased_mutation(
   population_size = 10000, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.1, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.1) |> 
   plot_multiple_runs()
 ```
 
@@ -296,10 +296,10 @@ model_biased_mutation(
 ```{r}
 model_unbiased_mutation_truefalse <- function(
   population_size,
-  initial_proportion_of_trait_a,
-  mutation_rate, 
   generations,
-  runs) {
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate) {
   output <- tibble(
     run = factor(), 
     generation = numeric(), 

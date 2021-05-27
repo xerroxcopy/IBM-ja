@@ -1,4 +1,4 @@
-# バイアスのない変異とバイアスのある変異
+# バイアスのない変異とバイアスのある変異Unbiased and biased mutation
 
 <!-- Evolution doesn't work without a source of variation that introduces new variation upon which selection, drift and other processes can act. In genetic evolution, mutation is almost always blind with respect to function. Beneficial genetic mutations are no more likely to arise when they are needed than when they are not needed - in fact, most genetic mutations are neutral or detrimental to an organism. Cultural evolution is more interesting, in that novel variation may sometimes be directed to solve specific problems, or systematically biased due to features of our cognition. In the models below, we'll simulate both unbiased and biased mutation. -->
 
@@ -27,10 +27,10 @@ library(tidyverse)
 
 model_unbiased_mutation <- function(
   population_size,
-  initial_proportion_of_trait_a,
-  mutation_rate, 
   generations,
-  runs) {
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate) {
   output <- tibble(
     run = factor(), 
     generation = numeric(), 
@@ -145,10 +145,10 @@ model_unbiased_mutation(
 ```{r 2-4, fig.cap = "バイアスのない変異は初期頻度に関係なく形質頻度を0.5に収束させる"}
 model_unbiased_mutation(
   population_size = 100, 
+  generations = 200, 
+  runs = 5, 
   initial_proportion_of_trait_a = 0.1, 
-  mutation_rate = 0.05,
-  generations = 200,
-  runs = 5) |>
+  mutation_rate = 0.05) |>
   plot_multiple_runs()
 ```
 
@@ -169,10 +169,10 @@ $proportion\_of\_trait\_a$が$0.1$から$0.5$まで上昇しているはずだ�
 ```{r 2-5}
 model_biased_mutation <- function(
   population_size,
-  initial_proportion_of_trait_a,
-  mutation_rate_biased, 
   generations,
-  runs) {
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate_biased) {
   output <- tibble(
     run = factor(), 
     generation = numeric(), 
@@ -231,10 +231,10 @@ model_biased_mutation <- function(
 ```{r 2-6, fig.cap = "バイアスのある変異によって有利な形質が不利な形質を置き換えていく"}
 model_biased_mutation(
   population_size = 100, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.05, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.05) |> 
   plot_multiple_runs()
 ```
 
@@ -245,10 +245,10 @@ model_biased_mutation(
 ```{r 2-7, fig.cap = "集団サイズを大きくしても、バイアスのある変異が有利な形質の頻度を上昇させる速度は変わらない"}
 model_biased_mutation(
   population_size = 10000, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.05, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.05) |> 
   plot_multiple_runs()
 ```
 
@@ -260,10 +260,10 @@ $population\_size = 10000$では、試行間でほとんど変動はなく、な
 ```{r 2-8, fig.cap = "突然変異率をあげると、バイアスのある変異が引き起こす有利な形質の頻度の上昇速度もあがる"}
 model_biased_mutation(
   population_size = 10000, 
-  initial_proportion_of_trait_a = 0,
-  mutation_rate_biased = 0.1, 
   generations = 200, 
-  runs = 5) |> 
+  runs = 5, 
+  initial_proportion_of_trait_a = 0,
+  mutation_rate_biased = 0.1) |> 
   plot_multiple_runs()
 ```
 
@@ -296,10 +296,10 @@ model_biased_mutation(
 ```{r}
 model_unbiased_mutation_truefalse <- function(
   population_size,
-  initial_proportion_of_trait_a,
-  mutation_rate, 
   generations,
-  runs) {
+  runs, 
+  initial_proportion_of_trait_a,
+  mutation_rate) {
   output <- tibble(
     run = factor(), 
     generation = numeric(), 

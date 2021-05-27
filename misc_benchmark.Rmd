@@ -373,3 +373,203 @@ bench_2_1
 bench_2_1 |> autoplot()
 ```
 oursにくらべ、true falseのものは2倍速い。オリジナルに比べ、oursは4倍以上速い。
+
+
+
+```{r}
+model_biased_transmission_direct <- function (
+  population_size, 
+  probability_a, 
+  probability_b,
+  initial_proportion_of_trait_a,
+  generations,
+  runs) {
+  output <- tibble(
+    run = factor(), 
+    generation = numeric(), 
+    proportion_of_trait_a = numeric()
+  )
+  for (run in 1:runs) {
+    # 1回の試行の結果を保管するtibbleを初期化
+    output_single_run <- tibble(
+      run = rep(run, generations) |> as.factor(), 
+      generation = 1:generations, 
+      proportion_of_trait_a = rep(NA, generations)
+    )
+    # 第1世代
+    population <- sample(
+      c("A", "B"), 
+      population_size, replace = TRUE, 
+      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
+    )
+    # 第1世代のproportion_of_trait_aを計算
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (generation in 2:generations) {
+      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
+      previous_population <- population
+      # 今timestepの集団に属する個人は、それぞれデモンストレーターを前世代から適当に一人指名する
+      demonstrator_trait <- sample(previous_population, population_size, replace = TRUE)
+      # バイアスのあるコピー確率でコピーするか否かを決める
+      should_copy_a <- sample(
+        c(TRUE, FALSE),
+        population_size,
+        prob = c(probability_a, 1 - probability_a),
+        replace = TRUE
+      )
+      should_copy_b <- sample(
+        c(TRUE, FALSE),
+        population_size,
+        prob = c(probability_b, 1 - probability_b),
+        replace = TRUE
+      )
+      population <- case_when(
+        demonstrator_trait == "A" & should_copy_a ~ "A",
+        demonstrator_trait == "B" & should_copy_b ~ "B",
+        TRUE ~ previous_population
+      )
+      # proportion_of_trait_aを計算し、tibbleのうち
+      # proportion_of_trait_a列のgeneration行目に格納する
+      output_single_run$proportion_of_trait_a[generation] <- 
+      sum(population == "A") / population_size
+    }
+    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
+    output <- bind_rows(output, output_single_run)
+  }
+  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
+  output
+}
+biased_transmission_direct <- function (N, s_a, s_b, p_0, t_max, r_max) {
+  
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+  
+  for (r in 1:r_max) {
+    # Create first generation
+    population <- tibble(trait = sample(c("A", "B"), N, 
+                                        replace = TRUE, prob = c(p_0, 1 - p_0))) 
+    
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
+      
+      # For each individual, pick a random individual from the previous generation
+      demonstrator_trait <- 
+        tibble(trait = sample(previous_population$trait, N, replace = TRUE)) 
+      
+      # Biased probabilities to copy:
+      copy_a <- sample(c(TRUE, FALSE), N, prob = c(s_a, 1 - s_a), replace = TRUE) 
+      copy_b <- sample(c(TRUE, FALSE), N, prob = c(s_b, 1 - s_b), replace = TRUE) 
+      
+      # If the demonstrator has trait A and the individual wants to copy A, then copy A
+      if (nrow(population[copy_a & demonstrator_trait$trait == "A", ]) > 0) {
+        population[copy_a & demonstrator_trait$trait == "A", ]$trait <- "A" 
+      }  
+      
+      # If the demonstrator has trait B and the individual wants to copy B, then copy B
+      if (nrow(population[copy_b & demonstrator_trait$trait == "B", ]) > 0) {
+        population[copy_b & demonstrator_trait$trait == "B", ]$trait <- "B" 
+      }  
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
+    }
+  }
+  # Export data from function
+  output 
+}
+bench_3_1 <- bench::mark(
+      ours = model_biased_transmission_direct(10000, .1, 0, .01, 150, 1),
+  original = biased_transmission_direct(10000, .1, 0, .01, 150, 1),
+  iterations = 15,
+  relative = TRUE,
+  check = FALSE)
+bench_3_1
+bench_3_1 |> autoplot()
+
+```
+```{r}
+model_biased_transmission_direct2 <- function (
+  population_size, 
+  probability_a, 
+  probability_b,
+  initial_proportion_of_trait_a,
+  generations,
+  runs) {
+  output <- tibble(
+    run = factor(), 
+    generation = numeric(), 
+    proportion_of_trait_a = numeric()
+  )
+  # prepare T/F vector for all runs and generations
+  # should each individual copy a (or b)?
+  sample_size <- population_size * generations * runs
+  should_copy_a_everyone <- sample(
+        c(TRUE, FALSE),
+        sample_size,
+        prob = c(probability_a, 1 - probability_a),
+        replace = TRUE
+      )
+  should_copy_b_everyone <- sample(
+        c(TRUE, FALSE),
+        sample_size,
+        prob = c(probability_b, 1 - probability_b),
+        replace = TRUE
+      )
+  for (run in 1:runs) {
+    # 1回の試行の結果を保管するtibbleを初期化
+    output_single_run <- tibble(
+      run = rep(run, generations) |> as.factor(), 
+      generation = 1:generations, 
+      proportion_of_trait_a = rep(NA, generations)
+    )
+    # 第1世代
+    population <- sample(
+      c("A", "B"), 
+      population_size, replace = TRUE, 
+      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
+    )
+    # 第1世代のproportion_of_trait_aを計算
+    proportion_of_trait_a <- sum(population == "A") / population_size
+    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
+    for (generation in 2:generations) {
+      # 今timestepの集団に属する個人は、それぞれデモンストレーターを前世代から適当に一人指名する
+      is_demonstrator_trait_a <- sample(population, population_size, replace = TRUE) == "A"
+
+      # バイアスのあるコピー確率でコピーするか否かを決める
+      used_slots <- population_size * generations * (run - 1) + population_size * (generation - 1) 
+      which_slot <- used_slots + 1:population_size
+      should_copy_a <- is_demonstrator_trait_a & should_copy_a_everyone[which_slot]
+      should_copy_b <- !is_demonstrator_trait_a & should_copy_b_everyone[which_slot]
+      
+      # population <- case_when(
+      #   demonstrator_trait == "A" & should_copy_a ~ "A",
+      #   demonstrator_trait == "B" & should_copy_b ~ "B",
+      #   TRUE ~ population
+      # )
+      if(length(should_copy_a) > 0) {
+        population[should_copy_a] <- "A"}
+      if(length(should_copy_b) > 0) {
+        population[should_copy_b] <- "B"}
+      # proportion_of_trait_aを計算し、tibbleのうち
+      # proportion_of_trait_a列のgeneration行目に格納する
+      output_single_run$proportion_of_trait_a[generation] <- 
+      sum(population == "A") / population_size
+    }
+    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
+    output <- bind_rows(output, output_single_run)
+  }
+  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
+  output
+}
+
+tic()
+model_biased_transmission_direct2(10000, .1, 0, .01, 150, 10) |> plot_multiple_runs()
+toc()
+```
+

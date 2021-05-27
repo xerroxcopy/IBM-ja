@@ -1,106 +1,73 @@
 # バイアスのある伝達：直接バイアス
 
-<!-- So far we have looked at unbiased transmission ([Chapter 1][Unbiased transmission]) and mutation, both unbiased and biased ([Chapter 2][Unbiased and biased mutation]). Let's complete the set by looking at biased transmission. This occurs when one trait is more likely to be copied than another trait. When the choice depends on the features of the trait, it is often called 'direct' or 'content' bias. When the choice depends on features of the demonstrators (the individuals from whom one is copying), it is often called 'indirect' or 'context' bias. Both are sometimes also called 'cultural selection' because one trait is selected to be copied over another trait. In this chapter, we will look at trait-based (direct, content) bias. -->
+So far we have looked at unbiased transmission ([Chapter 1][Unbiased transmission]) and mutation, both unbiased and biased ([Chapter 2][Unbiased and biased mutation]). Let's complete the set by looking at biased transmission. This occurs when one trait is more likely to be copied than another trait. When the choice depends on the features of the trait, it is often called 'direct' or 'content' bias. When the choice depends on features of the demonstrators (the individuals from whom one is copying), it is often called 'indirect' or 'context' bias. Both are sometimes also called 'cultural selection' because one trait is selected to be copied over another trait. In this chapter, we will look at trait-based (direct, content) bias.
 
 これまでに、バイアスのない伝達（[第一章][バイアスのない伝達]）とバイアスのない変異とある変異（[第二章][バイアスのない変異とバイアスのある変異]）をとりあげてきた。本章でバイアスのある伝達を実装して一式を揃えよう。バイアスのある伝達は、ある形質がほかの形質にくらべてコピーされやすいときに起きる。形質の特徴によって形質選択がおこなわれる場合、「直接direct」バイアスとか「内容content」バイアスがある、と表現される。デモンストレーター（コピーされる側の個人）の特徴によって形質選択がおこなわれる場合、「間接indirect」バイアスとか「コンテクストcontext」バイアスがある、と表現される。どちらも、あるひとつの形質がほかの形質をさしおいて選択されコピーされているため、「文化選択」と呼ばれることもある。本章では、形質による（つまり直接/内容）バイアスをとりあげる。
 
-<!-- (As an aside, there is a confusing array of terminology in the field of cultural evolution, as illustrated by the preceding paragraph. That's why models are so useful. Words and verbal descriptions can be ambiguous. Often the writer doesn't realise that there are hidden assumptions or unrecognised ambiguities in their descriptions. They may not realise that what they mean by 'cultural selection' is entirely different from how someone else uses it. Models are great because they force us to precisely specify exactly what we mean by a particular term or process. We can use the words in the paragraph above to describe biased transmission, but it's only really clear when we model it, making all our assumptions explicit.) -->
+(As an aside, there is a confusing array of terminology in the field of cultural evolution, as illustrated by the preceding paragraph. That's why models are so useful. Words and verbal descriptions can be ambiguous. Often the writer doesn't realise that there are hidden assumptions or unrecognised ambiguities in their descriptions. They may not realise that what they mean by 'cultural selection' is entirely different from how someone else uses it. Models are great because they force us to precisely specify exactly what we mean by a particular term or process. We can use the words in the paragraph above to describe biased transmission, but it's only really clear when we model it, making all our assumptions explicit.)
 
 （余談だが、文化進化学において上記のような似た用語の乱立はよくある。だからこそモデリングが極めて有用なのである。言葉による説明は曖昧で、書き手は自分の表現に隠れた前提やその曖昧さにしばしば無自覚である。「文化選択cultural selection」という言葉を、ほかの人の文章では全く違う意味で使われている、ということに気づかずに使ってしまう、ということがありえてしまう。いっぽうモデリングにおいては、構築する者がある特定の用語やプロセスで何を意味するかを厳密に設定しなければならない。バイアスのある伝達を説明するために上記のような言葉を使うこともできるにはできるが、それをモデリングし、すべての前提を明示することでのみ、ほんとうの意味で明確な説明となるのだ。）
 
 ## 直接バイアスによるシンプルな伝達モデル
 
-<!-- To simulate biased transmission, following the simulations in [Chapter 1][Unbiased transmission], we assume there are two traits $A$ and $B$, and that each individual chooses another individual from the previous generation at random. This time, however, we give the traits two different probabilities of being copied: we can call them $s_a$ and $s_b$ respectively. When an individual encounters another individual with trait $A$, they will copy them with probability $s_a$. When they encounter an individual with trait $B$, they will copy them with probability $s_b$.  -->
+To simulate biased transmission, following the simulations in [Chapter 1][Unbiased transmission], we assume there are two traits $A$ and $B$, and that each individual chooses another individual from the previous generation at random. This time, however, we give the traits two different probabilities of being copied: we can call them $s_a$ and $s_b$ respectively. When an individual encounters another individual with trait $A$, they will copy them with probability $s_a$. When they encounter an individual with trait $B$, they will copy them with probability $s_b$. 
 
 [第一章][バイアスのない伝達]でのシミュレーションをもとに、バイアスのある伝達をシミュレートしよう。2形質$A$と$B$があり、個々人が前世代からひとり個人をランダムに選択する。今回は前回と違い、2つの形質のコピーされる確率に差をつける。それぞれを$probability\_a$と$probability\_b$としよう。ある個人が形質$A$を有する個人と接したときにその個人が$A$をコピーする確率は$probability\_a$で、形質$B$を有する個人と接したときにその個人が$B$をコピーする確率は$probability\_b$である。
 
-<!-- With $s_a=s_b$, copying is unbiased, and individuals switch to the encountered alternative with the same probability. This reproduces the results of the simulations when the transmission is unbiased. If $s_a=s_b=1$, the model is exactly the same as in [Chapter 1][Unbiased transmission]. The relevant situation in this chapter is when $s_a>s_b$ (or $s_a<s_b$) so that we have biased transmission. Perhaps $A$ (or $B$) is a more effective tool, a more memorable story, or a more easily pronounced word. -->
+With $s_a=s_b$, copying is unbiased, and individuals switch to the encountered alternative with the same probability. This reproduces the results of the simulations when the transmission is unbiased. If $s_a=s_b=1$, the model is exactly the same as in [Chapter 1][Unbiased transmission]. The relevant situation in this chapter is when $s_a>s_b$ (or $s_a<s_b$) so that we have biased transmission. Perhaps $A$ (or $B$) is a more effective tool, a more memorable story, or a more easily pronounced word.
 
-$probability\_a = probability\_b$のとき、バイアスなしのコピーであり、個々人は自らの形質と異なった形質を持つ個人と出会ったときにその形質に持ち替える確率は同じである。この場合、バイアスのない伝達のシミュレーション結果が再現される。とくに$probability\_a = probability\_b = 1$のとき、このモデルは完全に[第一章][バイアスのない伝達]で実装したものと同一になる^[逆に言えば、第一章で実装したものはバイアスのない伝達のシミュレーションモデルではあるが、その唯一の実装ではない]。本章の文脈では、バイアスのある$probability\_a > probability\_b$（もしくは$probability\_a < probability\_b$）下での伝達である。$A$（もしくは$B$）がより効果的な道具だったり、より憶えやすい物語だったり、より発音しやすい言葉だったり、という状況だ。
+$probability\_a = probability\_b$のとき、バイアスなしのコピーであり、個々人は自らの形質と異なった形質を持つ個人と出会ったときにその形質に持ち替える確率は同じである。この場合、バイアスのない伝達のシミュレーション結果が再現される。とくに$probability\_a = probability\_b = 1$のとき、このモデルは完全に[第一章][バイアスのない伝達]で実装したものと同一になる。
 
-<!-- Let's first write the function, and then explore what happens in this case. Below is a function `biased_transmission_direct()` that implements all of these ideas. -->
-
-まずは関数を書いて、何が起きるか探索してみよう。下の`model_biased_transmission-direct()`関数は上記の理念をすべて実装している。
+Let's first write the function, and then explore what happens in this case. Below is a function `biased_transmission_direct()` that implements all of these ideas.
 
 ```{r 3-1, message = FALSE}
 library(tidyverse)
 
-model_biased_transmission_direct <- function (
-  population_size, 
-  probability_a, 
-  probability_b,
-  initial_proportion_of_trait_a,
-  generations,
-  runs) {
-  output <- tibble(
-    run = factor(), 
-    generation = numeric(), 
-    proportion_of_trait_a = numeric()
-  )
-  for (run in 1:runs) {
-    # 1回の試行の結果を保管するtibbleを初期化
-    output_single_run <- tibble(
-      run = rep(run, generations) |> as.factor(), 
-      generation = 1:generations, 
-      proportion_of_trait_a = rep(NA, generations)
-    )
-    # 第1世代
-    population <- sample(
-      c("A", "B"), 
-      population_size, replace = TRUE, 
-      prob = c(initial_proportion_of_trait_a, 1 - initial_proportion_of_trait_a)
-    )
-    # 第1世代のproportion_of_trait_aを計算
-    proportion_of_trait_a <- sum(population == "A") / population_size
-    output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
-    for (generation in 2:generations) {
-      # 今timestepの集団に属する個人は、それぞれデモンストレーターを前世代から適当に一人指名する
-      is_demonstrator_trait_a <- sample(population, population_size, replace = TRUE) == "A"
-      # バイアスのあるコピー確率でコピーするか否かを決める
-      should_copy_a_everyone <- sample(
-        c(TRUE, FALSE),
-        population_size,
-        prob = c(probability_a, 1 - probability_a),
-        replace = TRUE
-      )
-      should_copy_b_everyone <- sample(
-        c(TRUE, FALSE),
-        population_size,
-        prob = c(probability_b, 1 - probability_b),
-        replace = TRUE
-      )
-      should_copy_a <- is_demonstrator_trait_a & should_copy_a_everyone
-      should_copy_b <- !is_demonstrator_trait_a & should_copy_b_everyone
+biased_transmission_direct <- function (N, s_a, s_b, p_0, t_max, r_max) {
+  
+  output <- tibble(generation = rep(1:t_max, r_max), 
+                   p = as.numeric(rep(NA, t_max * r_max)), 
+                   run = as.factor(rep(1:r_max, each = t_max)))
+  
+  for (r in 1:r_max) {
+    # Create first generation
+    population <- tibble(trait = sample(c("A", "B"), N, 
+                                        replace = TRUE, prob = c(p_0, 1 - p_0))) 
+    
+    # Add first generation's p for run r
+    output[output$generation == 1 & output$run == r, ]$p <- 
+      sum(population$trait == "A") / N 
+
+    for (t in 2:t_max) {
+      # Copy individuals to previous_population tibble
+      previous_population <- population 
       
-      # population <- case_when(
-      #   demonstrator_trait == "A" & should_copy_a ~ "A",
-      #   demonstrator_trait == "B" & should_copy_b ~ "B",
-      #   TRUE ~ population
-      # )
-      if(length(should_copy_a) > 0) {
-        population[should_copy_a] <- "A"}
-      if(length(should_copy_b) > 0) {
-        population[should_copy_b] <- "B"}
-      # proportion_of_trait_aを計算し、tibbleのうち
-      # proportion_of_trait_a列のgeneration行目に格納する
-      output_single_run$proportion_of_trait_a[generation] <- 
-      sum(population == "A") / population_size
+      # For each individual, pick a random individual from the previous generation
+      demonstrator_trait <- 
+        tibble(trait = sample(previous_population$trait, N, replace = TRUE)) 
+      
+      # Biased probabilities to copy:
+      copy_a <- sample(c(TRUE, FALSE), N, prob = c(s_a, 1 - s_a), replace = TRUE) 
+      copy_b <- sample(c(TRUE, FALSE), N, prob = c(s_b, 1 - s_b), replace = TRUE) 
+      
+      # If the demonstrator has trait A and the individual wants to copy A, then copy A
+      if (nrow(population[copy_a & demonstrator_trait$trait == "A", ]) > 0) {
+        population[copy_a & demonstrator_trait$trait == "A", ]$trait <- "A" 
+      }  
+      
+      # If the demonstrator has trait B and the individual wants to copy B, then copy B
+      if (nrow(population[copy_b & demonstrator_trait$trait == "B", ]) > 0) {
+        population[copy_b & demonstrator_trait$trait == "B", ]$trait <- "B" 
+      }  
+      # Get p and put it into output slot for this generation t and run r
+      output[output$generation == t & output$run == r, ]$p <- 
+        sum(population$trait == "A") / N 
     }
-    # output tibbleの一番下に今回の試行の結果をbind_rows()関数で付け加える
-    output <- bind_rows(output, output_single_run)
   }
-  # 全試行の結果がひとつのoutputというtibbleに集約されたので、それを返り値としてエクスポートする
-  output
+  # Export data from function
+  output 
 }
 ```
-
-test ours .343 intermediate .262
-```{r}
-tic()
-model_biased_transmission_direct(10000, .1, 0, .01, 150, 1)
-toc()
-```
-
 
 Most of `biased_transmission_direct()` is recycled from the previous models. As before, we initialise the data structure `output` from multiple runs, and in generation $t=1$, we create a `population` tibble to hold the trait of each individual. 
 
