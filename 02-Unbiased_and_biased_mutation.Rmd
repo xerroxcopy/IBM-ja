@@ -53,8 +53,6 @@ model_unbiased_mutation <- function(
     proportion_of_trait_a <- sum(population == "A") / population_size
     output_single_run$proportion_of_trait_a[1] <- proportion_of_trait_a
     for (generation in 2:generations) {
-      # 前タイムステップまでのpopulationベクトルをprevious_populationに移し替える
-      previous_population <- population
       # 変異する個人('mutant')を決める
       is_mutant <- sample(
         c(TRUE, FALSE), 
